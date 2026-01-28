@@ -20,31 +20,64 @@
 
   "packs": [
     {
+      "name": "hol-templates-actors",
+      "label": "HoL - Templates - Actors",
+      "path": "packs/hol-templates-actors.db",
+      "type": "Actor",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
       "name": "hol-weapons",
       "label": "HoL - Weapons",
-      "path": "packs/hol-weapons",
+      "path": "packs/hol-weapons.db",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
-      "name": "hol-attributes",
-      "label": "HoL - Attributes",
-      "path": "packs/hol-attributes",
+      "name": "hol-statuses",
+      "label": "HoL - Statuses",
+      "path": "packs/hol-statuses.db",
+      "type": "Item",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+
+    {
+      "name": "hol-key-items",
+      "label": "HoL - Key Items",
+      "path": "packs/hol-key-items.db",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
-      "name": "hol-units",
-      "label": "HoL - Units",
-      "path": "packs/hol-units",
-      "type": "Actor",
+      "name": "hol-refines",
+      "label": "HoL - Refines",
+      "path": "packs/hol-refines.db",
+      "type": "Item",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "hol-consumables",
+      "label": "HoL - Consumables",
+      "path": "packs/hol-consumables.db",
+      "type": "Item",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "hol-skills",
+      "label": "HoL - Skills",
+      "path": "packs/hol-skills.db",
+      "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     }
   ],
-
+  "readme": "README.md",
   "url": "https://github.com/BZega/heroes-of-lite",
   "manifest": "https://raw.githubusercontent.com/BZega/heroes-of-lite/main/module.json",
   "download": "https://github.com/BZega/heroes-of-lite/archive/refs/heads/main.zip"
