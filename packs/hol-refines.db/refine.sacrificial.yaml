@@ -1,0 +1,23 @@
+_id: 'refine.sacrificial'
+name: 'Sacrificial'
+type: 'loot'
+system:
+  description:
+    value: 'Causes the user to lose 5 HP when an Effect is used by them.'
+  cost:
+    value: -200
+  customData:
+    category: 'gmOnly'
+    appliesToWeaponGroups:
+      - staff
+    tags:
+      - damage:5
+      - target:self
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.sacrificial'

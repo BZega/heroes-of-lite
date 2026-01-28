@@ -1,0 +1,25 @@
+_id: 'refine.broader'
+name: 'Broader'
+type: 'loot'
+system:
+  description:
+    value: '+X Max Range when transformed, where X is equal to the user’s Gauge/2(rounded up).'
+  cost:
+    value: 1000
+  customData:
+    category: 'advanced'
+    appliesToWeaponGroups:
+      - breath
+    tags:
+      - when:transformed
+      - bonus:maxRange
+      - scale:gauge
+      - divisor:2
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.broader'

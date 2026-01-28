@@ -1,0 +1,25 @@
+_id: 'refine.evenstronger'
+name: 'Even Stronger'
+type: 'loot'
+system:
+  description:
+    value: 'Deals 4 Post-Combat Damage on even turns.'
+  cost:
+    value: 200
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - shifting stone
+    tags:
+      - timing:postCombat
+      - effect:postCombatDamage:4
+      - target:enemy
+      - condition:turnParity:even
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.evenstronger'

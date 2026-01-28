@@ -1,0 +1,22 @@
+_id: 'refine.recover'
+name: 'Recover'
+type: 'loot'
+system:
+  description:
+    value: 'Adds +10 the Weapon''s Power when restoring an ally''s HP.'
+  cost:
+    value: 800
+  customData:
+    category: 'advanced'
+    appliesToWeaponGroups:
+      - staff
+    statBonuses:
+      might: 10
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.recover'

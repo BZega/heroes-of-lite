@@ -1,0 +1,25 @@
+_id: 'refine.arcane'
+name: 'Arcane'
+type: 'loot'
+system:
+  description:
+    value: 'Adds +3 to the Weapon''s Might.'
+  cost:
+    value: 600
+  customData:
+    category: 'advanced'
+    appliesToWeaponGroups:
+      - anima
+      - light
+      - dark
+      - curse
+    statBonuses:
+      might: 3
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.arcane'

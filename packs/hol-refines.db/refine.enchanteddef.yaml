@@ -1,0 +1,23 @@
+_id: 'refine.enchanteddef'
+name: 'Enchanted [Def]'
+type: 'loot'
+system:
+  description:
+    value: 'The user gains +2 Defense.'
+  cost:
+    value: 400
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - lance
+      - dark
+    statBonuses:
+      def: 2
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.enchanteddef'

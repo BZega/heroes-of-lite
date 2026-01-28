@@ -1,0 +1,27 @@
+_id: 'refine.bloodletting'
+name: 'Bloodletting'
+type: 'loot'
+system:
+  description:
+    value: 'If the user initiates combat and their attack hits, the foe becomes Injured after combat for 3 Turns.'
+  cost:
+    value: 800
+  customData:
+    category: 'advanced'
+    appliesToWeaponGroups:
+      - dagger
+      - curse
+    tags:
+      - requires:initiator
+      - requires:hit
+      - timing:afterCombat
+      - status:injured
+      - duration:3
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.bloodletting'

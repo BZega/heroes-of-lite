@@ -1,0 +1,26 @@
+_id: 'refine.close'
+name: 'Close'
+type: 'loot'
+system:
+  description:
+    value: 'Min and Max Range becomes 1. Cannot be removed or changed.'
+  cost:
+    value: -200
+  customData:
+    category: 'gmOnly'
+    appliesToWeaponGroups:
+      - dagger
+      - anima
+      - light
+      - dark
+    statBonuses:
+      minRange: 1
+      maxRange: 1
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.close'

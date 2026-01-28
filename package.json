@@ -1,0 +1,17 @@
+{
+  "name": "heroes-of-lite",
+  "version": "0.1.0",
+  "description": "System support content for the Heroes of Lite homebrew",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js && echo 'Watching for changes...' && node scripts/watch.js"
+  },
+  "keywords": [
+    "foundry",
+    "foundry-vtt",
+    "heroes-of-lite"
+  ],
+  "author": "BZega",
+  "license": "MIT"
+}

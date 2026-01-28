@@ -1,0 +1,27 @@
+_id: 'refine.silence'
+name: 'Silence'
+type: 'loot'
+system:
+  description:
+    value: 'Effect: On Hit, inflicts Silence on one opponent. Range 1-2.'
+  cost:
+    value: 600
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - staff
+    statBonuses:
+      minRange: 1
+      maxRange: 2
+    tags:
+      - status:silenced
+      - requires:hit
+      - target:enemy
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.silence'

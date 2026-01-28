@@ -1,0 +1,27 @@
+_id: 'refine.rescue'
+name: 'Rescue'
+type: 'loot'
+system:
+  description:
+    value: 'Effect: Teleports one ally to a space adjacent to the user. Range 1-7.'
+  cost:
+    value: 600
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - staff
+    statBonuses:
+      minRange: 1
+      maxRange: 7
+    tags:
+      - effect:teleport
+      - target:ally
+      - requires:adjacentDestination
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.rescue'

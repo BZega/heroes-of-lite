@@ -1,0 +1,22 @@
+_id: 'refine.restore'
+name: 'Restore'
+type: 'loot'
+system:
+  description:
+    value: 'Effect: Heals an adjacent ally''s Status Effects'
+  cost:
+    value: 200
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - staff
+    tags:
+      - statusCure:all
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.restore'
