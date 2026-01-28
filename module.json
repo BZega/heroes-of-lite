@@ -22,7 +22,7 @@
     {
       "name": "hol-templates-actors",
       "label": "HoL - Templates - Actors",
-      "path": "packs/hol-templates-actors.db",
+      "path": "packs/hol-templates-actors",
       "type": "Actor",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -30,7 +30,7 @@
     {
       "name": "hol-weapons",
       "label": "HoL - Weapons",
-      "path": "packs/hol-weapons.db",
+      "path": "packs/hol-weapons",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -38,7 +38,7 @@
     {
       "name": "hol-statuses",
       "label": "HoL - Statuses",
-      "path": "packs/hol-statuses.db",
+      "path": "packs/hol-statuses",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -47,7 +47,7 @@
     {
       "name": "hol-key-items",
       "label": "HoL - Key Items",
-      "path": "packs/hol-key-items.db",
+      "path": "packs/hol-key-items",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -55,7 +55,7 @@
     {
       "name": "hol-refines",
       "label": "HoL - Refines",
-      "path": "packs/hol-refines.db",
+      "path": "packs/hol-refines",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -63,7 +63,7 @@
     {
       "name": "hol-consumables",
       "label": "HoL - Consumables",
-      "path": "packs/hol-consumables.db",
+      "path": "packs/hol-consumables",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
@@ -71,7 +71,7 @@
     {
       "name": "hol-skills",
       "label": "HoL - Skills",
-      "path": "packs/hol-skills.db",
+      "path": "packs/hol-skills",
       "type": "Item",
       "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }

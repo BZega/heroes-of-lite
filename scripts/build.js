@@ -137,7 +137,7 @@ function buildPacks() {
   console.log("Building refines...");
   const refinesData = readSeedFile("refines.json");
   const refineItems = refinesData.map(convertRefineToFoundryItem);
-  writePackDatabase("hol-refines.db", refineItems);
+  writePackDatabase("hol-refines", refineItems);
 
   console.log("\n✨ Build complete!");
 }
