@@ -1,0 +1,51 @@
+{
+  "id": "heroes-of-lite",
+  "title": "Heroes of Lite",
+  "description": "System support content for the Heroes of Lite homebrew (compendiums, data, and optional automation).",
+  "version": "0.1.0",
+  "authors": [
+    { "name": "BZega" }
+  ],
+
+  "compatibility": {
+    "minimum": "11",
+    "verified": "12"
+  },
+
+  "esmodules": [
+    "scripts/main.js"
+  ],
+
+  "styles": [],
+
+  "packs": [
+    {
+      "name": "hol-weapons",
+      "label": "HoL - Weapons",
+      "path": "packs/hol-weapons",
+      "type": "Item",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "hol-attributes",
+      "label": "HoL - Attributes",
+      "path": "packs/hol-attributes",
+      "type": "Item",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "hol-units",
+      "label": "HoL - Units",
+      "path": "packs/hol-units",
+      "type": "Actor",
+      "system": "*",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    }
+  ],
+
+  "url": "https://github.com/BZega/heroes-of-lite",
+  "manifest": "https://raw.githubusercontent.com/BZega/heroes-of-lite/main/module.json",
+  "download": "https://github.com/BZega/heroes-of-lite/archive/refs/heads/main.zip"
+}
