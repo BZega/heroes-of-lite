@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RefineSeed",
+  "type": "object",
+  "required": ["id", "name", "refineKey", "category", "costG", "appliesToWeaponTypes", "exclusiveGroup"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique ID e.g. refine.steel"
+    },
+    "name": { "type": "string" },
+
+    "refineKey": {
+      "type": "string",
+      "description": "The variant key to apply, e.g. steel, killer, brave, long, hexed"
+    },
+
+    "category": {
+      "type": "string",
+      "enum": ["basic", "advanced", "gmOnly"]
+    },
+
+    "costG": { "type": "number", "minimum": 0 },
+
+    "appliesToWeaponTypes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["sword", "lance", "axe", "bow", "dagger", "tome", "staff", "other"]
+      },
+      "minItems": 1
+    },
+
+    "exclusiveGroup": {
+      "type": "string",
+      "description": "Mutual-exclusion group. Use 'weaponVariant' so only one refine applies at a time."
+    },
+
+    "description": { "type": "string" },
+
+    "statBonuses": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "might": { "type": "number" },
+            "minRange": { "type": "number" },
+            "maxRange": { "type": "number" },
+            "hit": { "type": "number" },
+            "crit": { "type": "number" },
+            "critAvoid": { "type": "number" },
+            "avoid": { "type": "number" }
+        }
+    }
+  }
+}
