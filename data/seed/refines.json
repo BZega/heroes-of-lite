@@ -2,461 +2,589 @@
   {
     "id": "refine.steel",
     "name": "Steel",
-    "refineKey": "steel",
     "category": "basic",
     "costG": 200,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +3 to the Weapon's Might."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow"],
+    "description": "Adds +3 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 3
+    }
   },
   {
     "id": "refine.elder",
     "name": "Elder",
-    "refineKey": "elder",
     "category": "basic",
     "costG": 200,
-    "appliesToWeaponTypes": ["anima", "light", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +2 to the Weapon's Might."
+    "appliesToWeaponGroups": ["anima", "light", "dark", "curse"],
+    "description": "Adds +2 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 2
+    }
+  },
+  {
+    "id": "refine.greater",
+    "name": "Greater",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["shifting stone"],
+    "description": "Adds +2 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 2
+    }
   },
   {
     "id": "refine.eerie",
     "name": "Eerie",
-    "refineKey": "eerie",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "If the user initiates combat and their attack hits, the foe becomes Silenced after combat."
+    "appliesToWeaponGroups": ["dark", "curse"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Silenced after combat.",
+    "tags": ["requires:initiator", "requires:hit", "status:silenced"]
   },
   {
     "id": "refine.short",
     "name": "Short",
-    "refineKey": "short",
     "category": "basic",
     "costG": 1000,
-    "appliesToWeaponTypes": ["bow"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "This Weapon's Min Range is reduced by 1 (down to a Minimum of 1)"
+    "appliesToWeaponGroups": ["bow"],
+    "description": "This Weapon's Min Range is reduced by 1 (down to a Minimum of 1)",
+    "statBonuses": {
+      "minRange": -1
+    }
   },
   {
     "id": "refine.scalerending",
     "name": "Scalerending",
-    "refineKey": "scalerending",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "anima"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Deals effective damage against units with the Scaled trait."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "anima", "shifting stone"],
+    "description": "Deals effective damage against units with the Scaled trait.",
+    "tags": ["effective:scaled"]
   },
   {
     "id": "refine.furflaying",
     "name": "Furflaying",
-    "refineKey": "furflaying",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow", "anima"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Deals effective damage against units with the Furred trait."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "shifting stone"],
+    "description": "Deals effective damage against units with the Furred trait.",
+    "tags": ["effective:furred"]
   },
   {
     "id": "refine.wingclipping",
     "name": "Wingclipping",
-    "refineKey": "wingclipping",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["bow", "anima"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Deals effective damage against units with the Winged trait."
+    "appliesToWeaponGroups": ["bow", "anima"],
+    "description": "Deals effective damage against units with the Winged trait.",
+    "tags": ["effective:winged"]
   },
   {
     "id": "refine.fiendslaying",
     "name": "Fiendslaying",
-    "refineKey": "fiendslaying",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "bow", "light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Deals effective damage against units with the Fiendish trait."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "bow", "light"],
+    "description": "Deals effective damage against units with the Fiendish trait.",
+    "tags": ["effective:fiendish"]
   },
   {
     "id": "refine.poison",
     "name": "Poison",
-    "refineKey": "poison",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["dagger", "light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "If the user initiates combat and their attack hits, the foe becomes Poisoned after combat"
+    "appliesToWeaponGroups": ["dagger", "light"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Poisoned after combat",
+    "tags": ["requires:initiator", "requires:hit","status:poisoned"]
   },
   {
     "id": "refine.enchantedatk",
     "name": "Enchanted [Atk]",
-    "refineKey": "enchantedatk",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["axe", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Attack."
+    "appliesToWeaponGroups": ["axe", "dark"],
+    "description": "The user gains +2 Attack.",
+    "statBonuses": {
+      "atk": 2
+    }
   },
   {
     "id": "refine.enchanteddex",
     "name": "Enchanted [Dex]",
-    "refineKey": "enchanteddex",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["axe", "light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Dexterity."
+    "appliesToWeaponGroups": ["axe", "light"],
+    "description": "The user gains +2 Dexterity.",
+    "statBonuses": {
+      "dex": 2
+    }
   },
   {
     "id": "refine.enchantedspd",
     "name": "Enchanted [Spd]",
-    "refineKey": "enchantedspd",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["sword", "light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Speed."
+    "appliesToWeaponGroups": ["sword", "light"],
+    "description": "The user gains +2 Speed.",
+    "statBonuses": {
+      "spd": 2
+    }
   },
   {
     "id": "refine.enchanteddef",
     "name": "Enchanted [Def]",
-    "refineKey": "enchanteddef",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["lance", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Defense."
+    "appliesToWeaponGroups": ["lance", "dark"],
+    "description": "The user gains +2 Defense.",
+    "statBonuses": {
+      "def": 2
+    }
   },
   {
     "id": "refine.enchantedres",
     "name": "Enchanted [Res]",
-    "refineKey": "enchantedres",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["lance", "light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Resistance."
+    "appliesToWeaponGroups": ["lance", "light"],
+    "description": "The user gains +2 Resistance.",
+    "statBonuses": {
+      "res": 2
+    }
   },
   {
     "id": "refine.enchantedluck",
     "name": "Enchanted [Luck]",
-    "refineKey": "enchantedluck",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["sword", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "The user gains +2 Luck."
+    "appliesToWeaponGroups": ["sword", "dark"],
+    "description": "The user gains +2 Luck.",
+    "statBonuses": {
+      "luck": 2
+    }
   },
   {
     "id": "refine.mend",
     "name": "Mend",
-    "refineKey": "mend",
     "category": "basic",
     "costG": 200,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +5 to the Weapon's Power when restoring an ally's HP."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Adds +5 to the Weapon's Power when restoring an ally's HP.",
+    "statBonuses": {
+      "might": 5
+    }
   },
   {
     "id": "refine.restore",
     "name": "Restore",
-    "refineKey": "restore",
     "category": "basic",
     "costG": 200,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: Heals an adjacent ally's Status Effects"
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: Heals an adjacent ally's Status Effects",
+    "tags": ["statusCure:all"]
   },
   {
     "id": "refine.rescue",
     "name": "Rescue",
-    "refineKey": "rescue",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: Teleports one ally to a space adjacent to the user. Range 1-7."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: Teleports one ally to a space adjacent to the user. Range 1-7.",
+    "tags": ["effect:teleport", "target:ally", "requires:adjacentDestination"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 7
+    }
   },
   {
     "id": "refine.berserk",
     "name": "Berserk",
-    "refineKey": "berserk",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: On Hit, inflicts Berserk on one opponent. Range 1-2."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: On Hit, inflicts Berserk on one opponent. Range 1-2.",
+    "tags": ["status:berserk", "requires:hit", "target:enemy"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 2
+    }
   },
   {
     "id": "refine.break",
     "name": "Break",
-    "refineKey": "break",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: On Hit, inflicts Break on one opponent. Range 1-2."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: On Hit, inflicts Break on one opponent. Range 1-2.",
+    "tags": ["status:break", "requires:hit", "target:enemy"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 2
+    }
   },
   {
     "id": "refine.shock",
     "name": "Shock",
-    "refineKey": "shock",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: On Hit, inflicts Shock on one opponent. Range 1-2."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: On Hit, inflicts Shock on one opponent. Range 1-2.",
+    "tags": ["status:shock", "requires:hit", "target:enemy"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 2
+    }
   },
   {
     "id": "refine.silence",
     "name": "Silence",
-    "refineKey": "silence",
     "category": "basic",
     "costG": 600,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: On Hit, inflicts Silence on one opponent. Range 1-2."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: On Hit, inflicts Silence on one opponent. Range 1-2.",
+    "tags": ["status:silenced", "requires:hit", "target:enemy"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 2
+    }
   },
-    {
+  {
     "id": "refine.faster",
     "name": "Faster",
-    "refineKey": "faster",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["strikes"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "+X Speed when transformed, where X is equal to the user's Gauge."
+    "appliesToWeaponGroups": ["strike", "talons", "breath"],
+    "description": "+X Speed when transformed, where X is equal to the user's Gauge.",
+    "tags": ["when:transformed", "bonus:spd", "scale:gauge"]
   },
   {
     "id": "refine.bulkier",
     "name": "Bulkier",
-    "refineKey": "bulkier",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["strikes"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "+X Defense when transformed, where X is equal to the user's Gauge."
+    "appliesToWeaponGroups": ["strike", "talons", "breath"],
+    "description": "+X Defense when transformed, where X is equal to the user's Gauge.",
+    "tags": ["when:transformed", "bonus:def", "scale:gauge"]
   },
   {
     "id": "refine.calmed",
     "name": "Calmed",
-    "refineKey": "calmed",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["strikes"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "+X Resistance when transformed, where X is equal to the user's Gauge."
+    "appliesToWeaponGroups": ["strike", "talons", "breath"],
+    "description": "+X Resistance when transformed, where X is equal to the user's Gauge.",
+    "tags": ["when:transformed", "bonus:res", "scale:gauge"]
   },
   {
     "id": "refine.precise",
     "name": "Precise",
-    "refineKey": "precise",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["strikes"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "+X Hit when transformed, where X is equal to the user's Gauge/2 (rounded up)."
+    "appliesToWeaponGroups": ["strike", "talons", "breath"],
+    "description": "+X Hit when transformed, where X is equal to the user's Gauge/2 (rounded up).",
+    "tags": ["when:transformed", "bonus:hit", "scale:gauge", "divisor:2"]
   },
   {
     "id": "refine.luckier",
     "name": "Luckier",
-    "refineKey": "luckier",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponTypes": ["strikes"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "+X Avoid when transformed, where X is equal to the user's Gauge/2 (rounded up)."
+    "appliesToWeaponGroups": ["strike", "talons", "breath"],
+    "description": "+X Avoid when transformed, where X is equal to the user's Gauge/2 (rounded up).",
+    "tags": ["when:transformed", "bonus:avoid", "scale:gauge", "divisor:2"]
+  },
+  {
+    "id": "refine.evenstronger",
+    "name": "Even Stronger",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["shifting stone"],
+    "description": "Deals 4 Post-Combat Damage on even turns.",
+    "tags": ["timing:postCombat", "effect:postCombatDamage:4", "target:enemy", "condition:turnParity:even"]
+  },
+  {
+    "id": "refine.oddshaped",
+    "name": "Odd-Shaped",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["shifting stone"],
+    "description": "Deals 3 Post-Combat Damage on odd turns.",
+    "tags": ["timing:postCombat", "effect:postCombatDamage:3", "target:enemy", "condition:turnParity:odd"]
+  },
+  {
+    "id": "refine.incapacitating",
+    "name": "Incapacitating",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["curse"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Shocked after combat.",
+    "tags": ["requires:initiator", "requires:hit", "status:shocked"]
+  },
+  {
+    "id": "refine.enraging",
+    "name": "Enraging",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["curse"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Berserk after combat.",
+    "tags": ["requires:initiator", "requires:hit", "status:berserk"]
+  },
+  {
+    "id": "refine.enfeebling",
+    "name": "Enfeebling",
+    "category": "basic",
+    "costG": 200,
+    "appliesToWeaponGroups": ["curse"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Broken after combat.",
+    "tags": ["requires:initiator", "requires:hit", "status:broken"]
   },
   {
     "id": "refine.silver",
     "name": "Silver",
-    "refineKey": "silver",
     "category": "advanced",
     "costG": 600,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +4 to the Weapon's Might."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow"], 
+    "description": "Adds +4 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 4
+    }
   },
   {
     "id": "refine.arcane",
     "name": "Arcane",
-    "refineKey": "arcane",
     "category": "advanced",
     "costG": 600,
-    "appliesToWeaponTypes": ["anima", "light", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +3 to the Weapon's Might."
+    "appliesToWeaponGroups": ["anima", "light", "dark", "curse"],
+    "description": "Adds +3 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 3
+    }
   },
   {
     "id": "refine.brave",
     "name": "Brave",
-    "refineKey": "brave",
     "category": "advanced",
     "costG": 1000,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "bow", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "When the user initiates battle, the user deals 2 consecutive strikes per attack instead of 1. Nullifies the effect of Canter for the user."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "bow", "dark"],
+    "description": "When the user initiates battle, the user deals 2 consecutive strikes per attack instead of 1. Nullifies the effect of Canter for the user.",
+    "tags": ["requires:initiator", "timing:inCombat", "effect:brave", "override:canter:disable"]
   },
   {
     "id": "refine.long",
     "name": "Long",
-    "refineKey": "long",
     "category": "advanced",
     "costG": 1000,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "This Weapon's Max Range is increased by 1."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "curse"],
+    "description": "This Weapon's Max Range is increased by 1.",
+    "statBonuses": {
+      "maxRange": 1
+    }
   },
   {
     "id": "refine.resire",
     "name": "Resire",
-    "refineKey": "resire",
     "category": "advanced",
     "costG": 1000,
-    "appliesToWeaponTypes": ["light"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Restores HP equal to 1/2 the damage dealt to the opponent"
+    "appliesToWeaponGroups": ["light", "curse"],
+    "description": "Restores HP equal to 1/2 the damage dealt to the opponent",
+    "tags": ["lifesteal:50"]
   },
   {
     "id": "refine.adaptive",
     "name": "Adaptive",
-    "refineKey": "adaptive",
     "category": "advanced",
     "costG": 800,
-    "appliesToWeaponTypes": ["anima"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Weapon has WTA against Stones, Strikes, Talons, Breaths, Bows, Daggers, Staves, and Curses."
+    "appliesToWeaponGroups": ["anima"],
+    "description": "Weapon has WTA against Stones, Strikes, Talons, Breaths, Bows, Daggers, Staves, and Curses.",
+    "tags": ["wta:stones,strikes,breaths,talons,bows,daggers,staves,curses"]
   },
   {
     "id": "refine.killer",
     "name": "Killer",
-    "refineKey": "killer",
     "category": "advanced",
     "costG": 800,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "When in combat against this unit, the opponent has 5 less Critical Avoid"
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "dark"],
+    "description": "When in combat against this unit, the opponent has 5 less Critical Avoid",
+    "tags": ["mod:enemyCritAvoid:-5", "timing:inCombat"]
   },
   {
     "id": "refine.bloodletting",
     "name": "Bloodletting",
-    "refineKey": "bloodletting",
     "category": "advanced",
     "costG": 800,
-    "appliesToWeaponTypes": ["dagger"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "If the user initiates combat and their attack hits, the foe becomes Injured after combat for 3 Turns."
+    "appliesToWeaponGroups": ["dagger", "curse"],
+    "description": "If the user initiates combat and their attack hits, the foe becomes Injured after combat for 3 Turns.",
+    "tags": ["requires:initiator", "requires:hit", "timing:afterCombat", "status:injured", "duration:3"]
   },
   {
     "id": "refine.lethal",
     "name": "Lethal",
-    "refineKey": "lethal",
     "category": "advanced",
     "costG": 800,
-    "appliesToWeaponTypes": ["dagger"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Critical hits by this weapon multiply damage done by 3 instead of 2."
+    "appliesToWeaponGroups": ["dagger"],
+    "description": "Critical hits by this weapon multiply damage done by 3 instead of 2.",
+    "tags": ["critMultiplier:3"]
   },
   {
     "id": "refine.recover",
     "name": "Recover",
-    "refineKey": "recover",
     "category": "advanced",
     "costG": 800,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +10 the Weapon's Power when restoring an ally's HP."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Adds +10 the Weapon's Power when restoring an ally's HP.",
+    "statBonuses": {
+      "might": 10
+    }
   },
   {
     "id": "refine.physic",
     "name": "Physic",
-    "refineKey": "physic",
     "category": "advanced",
     "costG": 1000,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Gives all staff Effects 1-7 Range."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Gives all staff Effects 1-7 Range.",
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 7
+    }
   },
   {
     "id": "refine.warp",
     "name": "Warp",
-    "refineKey": "warp",
     "category": "advanced",
     "costG": 1000,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Effect: Teleports one adjacent ally to a tile within range. Range 1-7."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Effect: Teleports one adjacent ally to a tile within range. Range 1-7.",
+    "tags": ["effect:teleportAlly", "requires:adjacent"],
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 7
+    }
   },
   {
     "id": "refine.superior",
     "name": "Superior",
-    "refineKey": "superior",
     "category": "advanced",
     "costG": 600,
-    "appliesToWeaponTypes": ["strikes", "stones"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +3 to the Weapon's Might."
+    "appliesToWeaponGroups": ["strike", "shifting stone"],
+    "description": "Adds +3 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 3
+    }
+  },
+  {
+    "id": "refine.nimbler",
+    "name": "Nimbler",
+    "category": "advanced",
+    "costG": 1000,
+    "appliesToWeaponGroups": ["talons"],
+    "description": "+X Movement when transformed, where X is equal to the user’s Gauge/2(rounded up).",
+    "tags": ["when:transformed", "bonus:movement", "scale:gauge", "divisor:2"]
+  },
+  {
+    "id": "refine.broader",
+    "name": "Broader",
+    "category": "advanced",
+    "costG": 1000,
+    "appliesToWeaponGroups": ["breath"],
+    "description": "+X Max Range when transformed, where X is equal to the user’s Gauge/2(rounded up).",
+    "tags": ["when:transformed", "bonus:maxRange", "scale:gauge", "divisor:2"]
+  },
+  {
+    "id": "refine.evenbrighter",
+    "name": "Even Brighter",
+    "category": "basic",
+    "costG": 800,
+    "appliesToWeaponGroups": ["shifting stone"],
+    "description": "User heals 6 HP when equipped with this weapon at the start of even turns.",
+    "tags": ["timing:turnStart", "effect:heal:6", "target:self", "condition:turnParity:even", "requires:equipped"]
+  },
+  {
+    "id": "refine.oddlyglowing",
+    "name": "Oddly Glowing",
+    "category": "basic",
+    "costG": 800,
+    "appliesToWeaponGroups": ["shifting stone"],
+    "description": "User heals 7 HP when equipped with this weapon at the start of odd turns.",
+    "tags": ["timing:turnStart", "effect:heal:7", "target:self", "condition:turnParity:odd", "requires:equipped"]
   },
   {
     "id": "refine.harmful",
     "name": "Harmful",
-    "refineKey": "harmful",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Causes the target to lose 5 HP when an Effect is used on them."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Causes the target to lose 5 HP when an Effect is used on them.",
+    "tags": ["damage:5", "target:any"]
   },
   {
     "id": "refine.sacrificial",
     "name": "Sacrificial",
-    "refineKey": "sacrificial",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponTypes": ["staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Causes the user to lose 5 HP when an Effect is used by them."
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Causes the user to lose 5 HP when an Effect is used by them.",
+    "tags": ["damage:5", "target:self"]
+  },
+  {
+    "id": "refine.reciprocal",
+    "name": "Reciprocal",
+    "category": "gmOnly",
+    "costG": -200,
+    "appliesToWeaponGroups": ["curse"],
+    "description": "When the user initiates combat, the user loses 5 HP after combat.",
+    "tags": ["damage:5", "target:self", "requires:initiator"]
+  },
+  {
+    "id": "refine.half",
+    "name": "Half",
+    "category": "gmOnly",
+    "costG": 1000,
+    "appliesToWeaponGroups": ["curse"],
+    "description": "If the attack hits, instead of dealing damage, the opponent's remaining HP is halved. Cannot Critical, Follow-Up Attack, or bring their HP to 0.",
+    "tags": ["requires:hit", "effect:replaceDamage:halveRemainingHP", "limit:noCrit", "limit:noFollowUp", "limit:noLethal"]
   },
   {
     "id": "refine.cheap",
     "name": "Cheap",
-    "refineKey": "cheap",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "staff"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Subtracts -2 from the Weapon's Might. Cannot be removed or changed."
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shifting stone"],
+    "description": "Subtracts -2 from the Weapon's Might. Cannot be removed or changed.",
+    "statBonuses": {
+      "might": -2
+    }
   },
   {
     "id": "refine.close",
     "name": "Close",
-    "refineKey": "close",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponTypes": ["dagger", "anima", "light", "dark"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Min and Max Range becomes 1. Cannot be removed or changed."
+    "appliesToWeaponGroups": ["dagger", "anima", "light", "dark"],
+    "description": "Min and Max Range becomes 1. Cannot be removed or changed.",
+    "statBonuses": {
+      "minRange": 1,
+      "maxRange": 1
+    }
   },
   {
     "id": "refine.sealed",
     "name": "Sealed",
-    "refineKey": "sealed",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponTypes": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark"],
-    "exclusiveGroup": "weaponVariant",
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "shifting stone"],
     "description": "Seals away a Weapon's Basic Refine. Cannot be removed or changed."
   },
   {
     "id": "refine.hexed",
     "name": "Hexed",
-    "refineKey": "hexed",
     "category": "gmOnly",
     "costG": 1000,
-    "appliesToWeaponTypes": ["sword", "lance", "axe"],
-    "exclusiveGroup": "weaponVariant",
-    "description": "Adds +6 to the weapon's Might; If the result of the user's Accuracy check is between 1-6, the user takes the damage the attack would have dealtinstead of the opponent."
+    "appliesToWeaponGroups": ["sword", "lance", "axe"],
+    "description": "Adds +6 to the weapon's Might; If the result of the user's Accuracy check is between 1-6, the user takes the damage the attack would have dealtinstead of the opponent.",
+    "statBonuses": {
+      "might": 6
+    },
+    "tags": ["accuracyCheckBetween:1-6", "selfDamagerequires:hit"]
   }
 ]

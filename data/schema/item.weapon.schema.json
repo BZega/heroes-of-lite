@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Weapon",
+    "type": "object",
+    "required": [
+        "id",
+        "weaponGroup",
+        "damageType",
+        "range",
+        "might",
+        "costG",
+        "attributeRules"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Stable mechanical ID (e.g. weapon.base.sword)"
+        },
+
+        "weaponGroup": {
+            "type": "string",
+            "enum": ["sword", "lance", "axe", "bow", "anima", "light", "staff"]
+        },
+
+        "damageType": {
+            "type": "string",
+            "enum": ["physical", "magical"]
+        },
+
+        "range": {
+            "type": "object",
+            "required": ["min", "max"],
+            "properties": {
+                "min": { "type": "number" },
+                "max": { "type": "number" }
+            }
+        },
+
+        "might": {
+            "type": "number",
+            "description": "Base Might before Attributes"
+        },
+
+        "costG": {
+            "type": "number",
+            "const": 500
+        },
+
+        "innateAttributes": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+        },
+
+        "attributes": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+        },
+
+        "attributeRules": {
+            "type": "object",
+            "required": ["maxAttributes", "maxAdvanced", "noDuplicates"],
+            "properties": {
+                "maxAttributes": { "type": "number", "const": 2 },
+                "maxAdvanced": { "type": "number", "const": 1 },
+                "noDuplicates": { "type": "boolean", "const": true }
+            }
+        }
+    }
+}
