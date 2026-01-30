@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Consumable",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "type",
+        "typeGroup",
+        "prereq",
+        "effect"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Stable mechanical ID (e.g. consumable.base.herb)"
+        },
+
+        "name": { 
+            "type": "string",
+            "description": "The name of the consumable"
+        },
+
+        "type": {
+            "type": "string",
+            "enum": ["Technique", "Action", "Strategy", "Reflex", "Passive"],
+            "description": "The type of skill (e.g. 'Technique', 'Action', etc.)"
+        },
+
+        "typeGroup": {
+            "type": "string",
+            "enum": ["sword, lance, and axe", "dagger and bow", "anima, light, and dark", "staff", "strike, talons, and breath", "shifting stone", "fiend", "all-access", "infantry", "cavalry", "flyier", "combat"],
+            "description": "The weapon type group this skill is associated with, or 'none' if not applicable"
+        },
+
+        "prereq": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "default": [],
+            "description": "Prerequisites to learn this skill"
+        },
+
+        "requiredCharge": {
+            "type": "string",
+            "description": "How many charges are required to acquire this skill. (Only Combat Arts need charges.)"
+        },
+
+        "effect": {
+            "type": "string",
+            "description": "Description of the consumable's effect"
+        }
+    }
+}

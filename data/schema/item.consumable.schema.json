@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Consumable",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "range",
+        "uses",
+        "costG",
+        "effect"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Stable mechanical ID (e.g. consumable.base.herb)"
+        },
+
+        "name": { 
+            "type": "string",
+            "description": "The name of the consumable"
+        },
+
+        "range": {
+            "type": "string",
+            "description": "Can be Self, 1, or N/A"
+        },
+
+        "uses": {
+            "type": "number",
+            "description": "How many uses this consumable has"
+        },
+
+        "costG": {
+            "type": "number",
+            "description": "How much the consumable costs"
+        },
+
+        "effect": {
+            "type": "string",
+            "description": "Description of the consumable's effect"
+        }
+    }
+}

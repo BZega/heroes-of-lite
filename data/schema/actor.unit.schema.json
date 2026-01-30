@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Actor",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "class",
+        "level",
+        "stats"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Stable mechanical ID (e.g. actor.unit.hero)"
+        },
+
+        "name": {
+            "type": "string",
+            "description": "The name of the actor"
+        },
+
+        "weaponProficiency": {
+            "type": "string",
+            "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shifting stone", "curse"],
+            "description": "The weapon proficiency of the actor"
+        },
+
+        "trait": {
+            "type": "string",
+            "enum": ["furred", "winged", "scaled", "fiendish"],
+            "description": "The trait of the actor"
+        },
+
+        "movementType": {
+            "type": "string",
+            "enum": ["infantry", "cavalry", "flier", "armor"],
+            "description": "The movement type of the actor"
+        },
+
+        "level": {
+            "type": "number",
+            "description": "The level of the actor"
+        },
+
+        "combatStats": {
+            "type": "object",
+            "description": "Base stats of the actor",
+            "properties": {
+                "hp": { "type": "number", "minimum": 15 },
+                "atk": { "type": "number", "minimum": 3 },
+                "spd": { "type": "number", "minimum": 3 },
+                "dex": { "type": "number", "minimum": 3 },
+                "def": { "type": "number", "minimum": 3 },
+                "res": { "type": "number", "minimum": 3 },
+                "luck": { "type": "number", "minimum": 3 }
+            }
+        },
+
+        "nonCombatStats": {
+            "type": "object",
+            "description": "Non-combat stats of the actor",
+            "properties": {
+                "strength": { "type": "number", "minimum": 0, "maximum": 3 },
+                "intellect": { "type": "number", "minimum": 0, "maximum": 3 },
+                "perception": { "type": "number", "minimum": 0, "maximum": 3 },
+                "charisma": { "type": "number", "minimum": 0, "maximum": 3 },
+                "fate": { "type": "number", "minimum": 0, "maximum": 3 },
+                "finesse": { "type": "number", "minimum": 0, "maximum": 3 },
+                "acrobatics": { "type": "number", "minimum": 0, "maximum": 3 }
+            }
+        },
+
+        "derivedStats": {
+            "type": "object",
+            "description": "Derived stats of the actor",
+            "properties": {
+                "hit": { "type": "number" },
+                "avoid": { "type": "number" },
+                "crit": { "type": "number" },
+                "power": { "type": "number" },
+                "tri": { "type": "number" },
+                "size": { "type": "number" },
+                "con": { "type": "number" },
+                "aid": { "type": "number" }
+            }
+        },
+
+        "skills": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "default": [],
+            "description": "List of skill IDs the actor possesses"
+        },
+
+        "personalSkill": {
+            "type": "string",
+            "description": "ID of the actor's personal skill"
+        },
+
+        "inventory": {
+            "type": "object",
+            "description": "Actor's inventory containing weapons and items (one weapon in the inventory can be equipped)",
+            "properties": {
+                "weapons": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "List of weapon IDs in the actor's inventory"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "List of item IDs (consumables, key items) in the actor's inventory"
+                },
+                "equipped": {
+                    "type": "string",
+                    "description": "ID of the currently equipped weapon"
+                }
+            }
+        }
+    }
+}
