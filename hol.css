@@ -253,6 +253,49 @@
   margin-bottom: 1.5rem;
 }
 
+/* Compendium Read-Only Styles */
+.heroes-of-lite.sheet.item.compendium-item-readonly {
+  position: relative;
+}
+
+.heroes-of-lite.sheet.item.compendium-item-readonly::before {
+  content: "📚 Compendium Item (Read-Only)";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #f39c12;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.heroes-of-lite.sheet.item.compendium-item-readonly input:disabled,
+.heroes-of-lite.sheet.item.compendium-item-readonly select:disabled,
+.heroes-of-lite.sheet.item.compendium-item-readonly textarea:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.heroes-of-lite.sheet.item.compendium-item-readonly .refine-slot {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.heroes-of-lite.sheet.item.compendium-item-readonly .refine-slot:hover {
+  border-color: #bdc3c7;
+  background: white;
+}
+
+.heroes-of-lite.sheet.item.compendium-item-readonly .remove-refine {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .hol.sheet.characterSheet .sheet {
   width: 500px;
   height: 500px;

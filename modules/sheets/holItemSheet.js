@@ -16,11 +16,18 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    static PARTS = {
-        form: {
-            template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
-        }
-    };
+    get parts() {
+        const itemType = this.document.type;
+        const template = itemType === 'refine' 
+            ? "systems/heroes-of-lite/templates/sheets/refine-sheet.html"
+            : "systems/heroes-of-lite/templates/sheets/weapon-sheet.html";
+        
+        return {
+            form: {
+                template: template
+            }
+        };
+    }
 
     get template() {
         const itemType = this.document.type;
@@ -40,6 +47,10 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         context.img = item.img;
         context.system = foundry.utils.deepClone(item.system) || {};
 
+        // Check if this item is from a compendium (read-only)
+        context.isFromCompendium = !!item.pack;
+        context.editable = !context.isFromCompendium;
+
         // Ensure system structure exists
         if (!context.system.details) {
             context.system.details = {};
@@ -57,7 +68,8 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             name: context.name,
             type: context.type,
             attributes: context.system.attributes,
-            details: context.system.details
+            details: context.system.details,
+            isFromCompendium: context.isFromCompendium
         });
 
         return context;
@@ -66,7 +78,20 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
     _onRender(context, options) {
         super._onRender(context, options);
 
-        // Handle drag and drop for refine slots
+        // Don't allow editing of compendium items
+        if (this.document.pack) {
+            const html = this.element;
+            // Disable all form inputs
+            const inputs = html.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+            // Add visual indicator
+            html.classList.add('compendium-item-readonly');
+            return;
+        }
+
+        // Handle drag and drop for refine slots (only for non-compendium items)
         const html = this.element;
         
         // Use native DOM methods instead of jQuery
@@ -92,6 +117,12 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         event.preventDefault();
         event.stopPropagation();
         event.currentTarget.classList.remove('drag-over');
+
+        // Don't allow editing compendium items
+        if (this.document.pack) {
+            ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
+            return;
+        }
 
         const data = event.dataTransfer.getData('text/plain');
         let dropData;
@@ -194,6 +225,12 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
     async _onRemoveRefine(event) {
         event.preventDefault();
         event.stopPropagation();
+
+        // Don't allow editing compendium items
+        if (this.document.pack) {
+            ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
+            return;
+        }
 
         const slotIndex = parseInt(event.currentTarget.dataset.slot);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);

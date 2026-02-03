@@ -27,3 +27,13 @@ npm-debug.log*
 # Temporary files
 .cache/
 temp/
+
+# LevelDB files in packs (Foundry VTT compendium database files)
+packs/**/CURRENT
+packs/**/LOCK
+packs/**/LOG
+packs/**/LOG.old
+packs/**/MANIFEST-*
+packs/**/*.log
+packs/**/*.ldb
+packs/**/*.sst
