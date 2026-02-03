@@ -44,6 +44,11 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         // Check if this item is from a compendium (read-only)
         context.isFromCompendium = !!item.pack;
 
+        // Ensure system exists
+        if (!context.system) {
+            context.system = {};
+        }
+
         // Ensure system structure exists for weapons
         if (item.type === 'weapon') {
             if (!context.system.details) {
