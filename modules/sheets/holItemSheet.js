@@ -23,21 +23,13 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
     };
 
     async _prepareContext(options) {
-        // Set the correct template BEFORE preparing context
+        // Dynamically set template based on item type
         const itemType = this.document.type;
-        if (itemType === 'refine') {
-            this.options.parts = {
-                form: {
-                    template: "systems/heroes-of-lite/templates/sheets/refine-sheet.html"
-                }
-            };
-        } else {
-            this.options.parts = {
-                form: {
-                    template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
-                }
-            };
-        }
+        this.options.parts = {
+            form: {
+                template: `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`
+            }
+        };
 
         const context = await super._prepareContext(options);
         const item = this.document;
