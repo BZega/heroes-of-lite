@@ -1,8 +1,8 @@
-export default class HolItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
+export default class HolWeaponSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
     static DEFAULT_OPTIONS = {
-        classes: ["heroes-of-lite", "item-sheet"],
+        classes: ["heroes-of-lite", "item-sheet", "weapon-sheet"],
         window: {
-            icon: "fas fa-scroll",
+            icon: "fas fa-sword",
             resizable: true,
             contentClasses: ["standard-form"]
         },
@@ -11,8 +11,8 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             height: 475
         },
         actions: {
-            removeRefine: HolItemSheet.onRemoveRefine,
-            dropRefine: HolItemSheet.onDropRefine
+            removeRefine: HolWeaponSheet.onRemoveRefine,
+            dropRefine: HolWeaponSheet.onDropRefine
         }
     };
 
@@ -21,23 +21,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
         }
     };
-
-    _initializeParts() {
-        const parts = super._initializeParts();
-        
-        // Override the template based on item type
-        const itemType = this.document?.type || 'weapon';
-        const templatePath = `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`;
-        
-        console.log(`HolItemSheet | Initializing parts for type: ${itemType}, template: ${templatePath}`);
-        
-        // Return new parts object with dynamic template
-        return {
-            form: {
-                template: templatePath
-            }
-        };
-    }
 
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
@@ -56,27 +39,18 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         // Check if this item is from a compendium (read-only)
         context.isFromCompendium = !!item.pack;
 
-        // Ensure system structure exists for weapons
-        if (item.type === 'weapon') {
-            if (!context.system.details) {
-                context.system.details = {};
-            }
-            if (!context.system.attributes) {
-                context.system.attributes = {};
-            }
-
-            // Ensure refines array exists
-            if (!context.system.details.refines) {
-                context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
-            }
+        // Ensure system structure exists
+        if (!context.system.details) {
+            context.system.details = {};
+        }
+        if (!context.system.attributes) {
+            context.system.attributes = {};
         }
 
-        console.log('HolItemSheet - Item context:', {
-            name: context.name,
-            type: context.type,
-            system: context.system,
-            isFromCompendium: context.isFromCompendium
-        });
+        // Ensure refines array exists
+        if (!context.system.details.refines) {
+            context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
+        }
 
         return context;
     }
@@ -87,20 +61,17 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         // Don't allow editing of compendium items
         if (this.document.pack) {
             const html = this.element;
-            // Disable all form inputs
             const inputs = html.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 input.disabled = true;
             });
-            // Add visual indicator
             html.classList.add('compendium-item-readonly');
             return;
         }
 
-        // Handle drag and drop for refine slots (only for non-compendium items)
+        // Handle drag and drop for refine slots
         const html = this.element;
         
-        // Use native DOM methods instead of jQuery
         const refineSlots = html.querySelectorAll('[data-dropzone="refine"]');
         refineSlots.forEach(slot => {
             slot.addEventListener('dragover', this._onDragOver.bind(this));
@@ -124,7 +95,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         event.stopPropagation();
         event.currentTarget.classList.remove('drag-over');
 
-        // Don't allow editing compendium items
         if (this.document.pack) {
             ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
             return;
@@ -140,7 +110,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             return;
         }
 
-        // Only accept refine items
         if (dropData.type !== 'Item') return;
 
         const droppedItem = await foundry.documents.BaseItem.fromDropData(dropData);
@@ -157,7 +126,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             name: droppedItem.name
         };
 
-        // Update the weapon name based on refines
         const newName = this._generateWeaponName(refines);
 
         await this.document.update({
@@ -168,21 +136,9 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
     }
 
-    /**
-     * Generate weapon name from refines
-     * Format: [Refine 1] + [Refine 2] [Weapon Type]
-     * Example: "Steel Long Axe"
-     */
     _generateWeaponName(refines) {
-        // Get the base weapon type from the current name
-        // Strip out known refine prefixes to get the base type
-        let baseName = this.document.name;
-        
-        // Get current weapon type (last word typically, but could be multi-word like "Shifting Stone")
-        // We'll use the weapon group to determine the base type
         const weaponGroup = this.document.system.attributes?.weaponGroup;
         
-        // Map weapon groups to their display names
         const weaponTypeMap = {
             'sword': 'Sword',
             'lance': 'Lance',
@@ -200,11 +156,9 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             'curse': 'Curse'
         };
         
-        // Try to extract the weapon type from the current name
-        // Look for common patterns like "Iron Sword", "Steel Axe", etc.
         let weaponType = weaponTypeMap[weaponGroup] || 'Weapon';
         
-        // Try to find the base type in the current name
+        const baseName = this.document.name;
         for (const [key, displayName] of Object.entries(weaponTypeMap)) {
             if (baseName.includes(displayName)) {
                 weaponType = displayName;
@@ -212,7 +166,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             }
         }
         
-        // Build the new name: [Refine1] [Refine2] [WeaponType]
         const parts = [];
         
         if (refines[0]?.name) {
@@ -232,7 +185,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         event.preventDefault();
         event.stopPropagation();
 
-        // Don't allow editing compendium items
         if (this.document.pack) {
             ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
             return;
@@ -246,7 +198,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             name: ''
         };
 
-        // Update the weapon name based on remaining refines
         const newName = this._generateWeaponName(refines);
 
         await this.document.update({

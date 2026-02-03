@@ -1,4 +1,5 @@
-import HolItemSheet from './modules/sheets/holItemSheet.js';
+import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
+import HolRefineSheet from './modules/sheets/holRefineSheet.js';
 /**
  * Heroes of Lite - Main System File
  * Initializes the Heroes of Lite system for Foundry VTT
@@ -11,8 +12,28 @@ import HolItemSheet from './modules/sheets/holItemSheet.js';
 Hooks.once('init', async function() {
   console.log('Heroes of Lite | Initializing system...');
   
-  // Register V2 sheets - only register for Items, not Actors
-  Items.registerSheet('heroes-of-lite', HolItemSheet, { makeDefault: true });
+  // Register Handlebars helpers
+  Handlebars.registerHelper('includes', function(array, value) {
+    return Array.isArray(array) && array.includes(value);
+  });
+  
+  Handlebars.registerHelper('join', function(array, separator) {
+    return Array.isArray(array) ? array.join(separator) : '';
+  });
+  
+  // Register item sheets by type
+  Items.registerSheet('heroes-of-lite', HolWeaponSheet, {
+    types: ['weapon'],
+    makeDefault: true,
+    label: "HoL Weapon Sheet"
+  });
+  
+  Items.registerSheet('heroes-of-lite', HolRefineSheet, {
+    types: ['refine'],
+    makeDefault: true,
+    label: "HoL Refine Sheet"
+  });
+  
   // Register system settings if needed
   // game.settings.register('heroes-of-lite', 'setting-name', { ... });
   
