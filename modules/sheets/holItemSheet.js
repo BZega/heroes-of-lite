@@ -22,13 +22,15 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    get parts() {
+    _configureRenderOptions(options) {
+        super._configureRenderOptions(options);
+        
+        // Dynamically set the template based on item type
         const itemType = this.document.type;
-        return {
-            form: {
-                template: `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`
-            }
-        };
+        options.parts = ["form"];
+        this.constructor.PARTS.form.template = `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`;
+        
+        return options;
     }
 
     async _prepareContext(options) {
