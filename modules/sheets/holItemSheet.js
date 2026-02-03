@@ -16,36 +16,29 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    static get PARTS() {
-        return {
-            form: {
-                template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
-            }
-        };
-    }
-
-    get parts() {
-        const itemType = this.document.type;
-        const template = itemType === 'refine' 
-            ? "systems/heroes-of-lite/templates/sheets/refine-sheet.html"
-            : "systems/heroes-of-lite/templates/sheets/weapon-sheet.html";
-        
-        return {
-            form: {
-                template: template
-            }
-        };
-    }
-
-    get template() {
-        const itemType = this.document.type;
-        if (itemType === 'refine') {
-            return `systems/heroes-of-lite/templates/sheets/refine-sheet.html`;
+    static PARTS = {
+        form: {
+            template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
         }
-        return `systems/heroes-of-lite/templates/sheets/weapon-sheet.html`;
-    }
+    };
 
     async _prepareContext(options) {
+        // Set the correct template BEFORE preparing context
+        const itemType = this.document.type;
+        if (itemType === 'refine') {
+            this.options.parts = {
+                form: {
+                    template: "systems/heroes-of-lite/templates/sheets/refine-sheet.html"
+                }
+            };
+        } else {
+            this.options.parts = {
+                form: {
+                    template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
+                }
+            };
+        }
+
         const context = await super._prepareContext(options);
         const item = this.document;
 
