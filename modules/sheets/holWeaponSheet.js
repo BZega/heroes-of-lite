@@ -8,7 +8,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         },
         position: {
             width: 800,
-            height: 475
+            height: 560
         },
         actions: {
             removeRefine: HolWeaponSheet.onRemoveRefine,
@@ -50,6 +50,16 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         // Ensure refines array exists
         if (!context.system.details.refines) {
             context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
+        }
+
+        context.innateRefines = [];
+        if (context.system.details.innateAttributes && Array.isArray(context.system.details.innateAttributes)) {
+            for (const refineId of context.system.details.innateAttributes) {
+                const refineItem = await this._getRefineById(refineId);
+                if (refineItem) {
+                    context.innateRefines.push(refineItem);
+                }
+            }
         }
 
         return context;
@@ -370,5 +380,24 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         });
 
         console.log(`HoL | Removed refine from slot ${slotIndex}, updated name to ${newName}`);
+    }
+
+    async _getRefineById(refineId) {
+        let refineItem = game.items.get(refineId);
+        console.log('HoL | Looking up refine by ID:', refineId);
+        console.log('HoL | Found refine in world items:', refineItem);
+        if (!refineItem) {
+            for (const pack of game.packs) {
+                if (pack.documentName === 'Item') {
+                    console.log('HoL | Searching pack for refine:', pack.collection);
+                    const items = await pack.getDocuments();
+                    console.log('HoL | Pack items:', items);
+                    refineItem = items.find(i => i.flags?.['heroes-of-lite']?.sourceId === refineId);
+                    console.log('HoL | Found refine in pack:', refineItem);
+                    if (refineItem) break;
+                }
+            }
+        }
+        return refineItem;
     }
 }

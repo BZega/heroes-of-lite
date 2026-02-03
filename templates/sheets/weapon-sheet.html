@@ -57,9 +57,9 @@
 
         <h3>Innate Attributes</h3>
         <div class="innate-attributes-container">
-            {{#if system.details.innateAttributes}}
-                {{#each system.details.innateAttributes}}
-                    <span class="innate-attribute-tag">{{this}}</span>
+            {{#if innateRefines}}
+                {{#each innateRefines}}
+                    <span class="innate-attribute-tag">{{this.name}}</span>
                 {{/each}}
             {{else}}
                 <span class="empty-innate">None</span>
