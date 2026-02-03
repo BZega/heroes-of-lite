@@ -21,7 +21,7 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shifting stone", "curse"]
+                "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone", "curse"]
             },
             "minItems": 1
         },

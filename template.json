@@ -104,7 +104,17 @@
           "maxAttributes": 2,
           "maxAdvanced": 1,
           "noDuplicates": true
-        }
+        },
+        "refines": [
+          {
+            "id": "",
+            "name": ""
+          },
+          {
+            "id": "",
+            "name": ""
+          }
+        ]
       }
     },
     "skill": {

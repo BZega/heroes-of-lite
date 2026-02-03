@@ -1,1 +1,268 @@
-[]
+[
+  {
+    "id": "weapon.sword.iron",
+    "name": "Iron Sword",
+    "weaponGroup": "sword",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 6,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.lance.iron",
+    "name": "Iron Lance",
+    "weaponGroup": "lance",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 6,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.axe.iron",
+    "name": "Iron Axe",
+    "weaponGroup": "axe",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 6,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.bow.iron",
+    "name": "Iron Bow",
+    "weaponGroup": "bow",
+    "damageType": "physical",
+    "range": {
+      "min": 2,
+      "max": 2
+    },
+    "might": 4,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.dagger.iron",
+    "name": "Iron Dagger",
+    "weaponGroup": "dagger",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 2
+    },
+    "might": 4,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.anima.anima",
+    "name": "Anima",
+    "weaponGroup": "anima",
+    "damageType": "magical",
+    "range": {
+      "min": 1,
+      "max": 2
+    },
+    "might": 4,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.light.light",
+    "name": "Light",
+    "weaponGroup": "light",
+    "damageType": "magical",
+    "range": {
+      "min": 1,
+      "max": 2
+    },
+    "might": 4,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.dark.fluc",
+    "name": "Flux",
+    "weaponGroup": "dark",
+    "damageType": "magical",
+    "range": {
+      "min": 1,
+      "max": 2
+    },
+    "might": 4,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.staff.heal",
+    "name": "Heal",
+    "weaponGroup": "staff",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 5,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.strike.strike",
+    "name": "Strike",
+    "weaponGroup": "strike",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 3,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.talons.talon",
+    "name": "Talon",
+    "weaponGroup": "talons",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 3,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.breat.breath",
+    "name": "Breath",
+    "weaponGroup": "breath",
+    "damageType": "physical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 3,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.shiftingStone.shiftingStone",
+    "name": "Shifting Stone",
+    "weaponGroup": "shiftingStone",
+    "damageType": "magical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 6,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.curse.curse",
+    "name": "Curse",
+    "weaponGroup": "curse",
+    "damageType": "magical",
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "might": 0,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  }
+]

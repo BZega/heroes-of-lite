@@ -12,8 +12,8 @@
     "verified": "13"
   },
 
-  "esmodules": [],
-  "scripts": ["hol.js"],
+  "esmodules": ["hol.js"],
+  "scripts": [],
   "styles": ["hol.css"],
   
   "documentTypes": {

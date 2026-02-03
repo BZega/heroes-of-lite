@@ -1,3 +1,219 @@
+.heroes-of-lite.sheet.item {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.heroes-of-lite.sheet.item .sheet-header {
+  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.heroes-of-lite.sheet.item .header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.heroes-of-lite.sheet.item .item-image {
+  border-radius: 6px;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.heroes-of-lite.sheet.item .header-info h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.heroes-of-lite.sheet.item .header-info input {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.heroes-of-lite.sheet.item .header-info input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.heroes-of-lite.sheet.item .sheet-body {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.heroes-of-lite.sheet.item .form-group {
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.heroes-of-lite.sheet.item .form-group label {
+  font-weight: 700;
+  color: #1a3a52;
+  margin-bottom: 0.15rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.heroes-of-lite.sheet.item .form-group input,
+.heroes-of-lite.sheet.item .form-group textarea,
+.heroes-of-lite.sheet.item .form-group select {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  background: white;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+  line-height: 1.3;
+}
+
+.heroes-of-lite.sheet.item .form-group input::placeholder,
+.heroes-of-lite.sheet.item .form-group textarea::placeholder {
+  color: #999;
+}
+
+.heroes-of-lite.sheet.item .form-group input:focus,
+.heroes-of-lite.sheet.item .form-group textarea:focus,
+.heroes-of-lite.sheet.item .form-group select:focus {
+  outline: none;
+  border-color: #1a7fb0;
+  box-shadow: 0 0 4px rgba(26, 127, 176, 0.3);
+  background: #f9f9f9;
+}
+
+.heroes-of-lite.sheet.item .data-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroes-of-lite.sheet.item .two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.heroes-of-lite.sheet.item .range-inputs {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.heroes-of-lite.sheet.item .range-inputs input {
+  flex: 1;
+}
+
+.heroes-of-lite.sheet.item .range-inputs span {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+  color: #666;
+}
+
+.heroes-of-lite.sheet.item textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.heroes-of-lite.sheet.item h3 {
+  margin: 1rem 0 0.5rem 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 0.25rem;
+  font-size: 1.1rem;
+}
+
+.heroes-of-lite.sheet.item .refines-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.heroes-of-lite.sheet.item .refine-slot {
+  background: white;
+  border: 2px dashed #bdc3c7;
+  border-radius: 4px;
+  padding: 1rem;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.sheet.item .refine-slot:hover {
+  border-color: #3498db;
+  background: #f0f8ff;
+}
+
+.heroes-of-lite.sheet.item .refine-slot.drag-over {
+  background: #e8f4f8;
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+}
+
+.heroes-of-lite.sheet.item .refine-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.sheet.item .refine-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.heroes-of-lite.sheet.item .empty-slot {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.heroes-of-lite.sheet.item .remove-refine {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.heroes-of-lite.sheet.item .remove-refine:hover {
+  background: #c0392b;
+}
+
 .hol.sheet.characterSheet .sheet {
   width: 500px;
   height: 500px;
