@@ -41,13 +41,18 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         const context = await super._prepareContext(options);
         const item = this.document;
 
+        // Add item properties to context for template access
+        context.name = item.name;
+        context.img = item.img;
+        context.type = item.type;
+        
+        // Ensure system data is accessible
+        if (!context.system) {
+            context.system = item.system;
+        }
+
         // Check if this item is from a compendium (read-only)
         context.isFromCompendium = !!item.pack;
-
-        // Ensure system exists
-        if (!context.system) {
-            context.system = {};
-        }
 
         // Ensure system structure exists for weapons
         if (item.type === 'weapon') {
