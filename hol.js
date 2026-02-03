@@ -26,9 +26,10 @@ Hooks.once('init', async function() {
 Hooks.once('ready', async function() {
   console.log('Heroes of Lite | System ready!');
   
-  // Seed weapons data into a compendium on first setup
+  // Seed weapons and refines data into compendiums on first setup
   if (game.user.isGM) {
     await seedWeapons();
+    await seedRefines();
   }
 });
 
@@ -100,6 +101,76 @@ async function seedWeapons() {
     if (wasLocked) {
       await pack.configure({ locked: true });
       console.log('HoL | Re-locked hol-weapons pack');
+    }
+  }
+}
+
+/**
+ * Seed refines from the seed data file into the hol-refines compendium
+ */
+async function seedRefines() {
+  const pack = game.packs.get('heroes-of-lite.hol-refines');
+  if (!pack) {
+    console.warn('HoL | hol-refines compendium pack not found');
+    return;
+  }
+
+  // Unlock the pack so we can add items
+  const wasLocked = pack.locked;
+  if (wasLocked) {
+    await pack.configure({ locked: false });
+    console.log('HoL | Unlocked hol-refines pack');
+  }
+
+  // Fetch refines from seed data
+  try {
+    const response = await fetch('systems/heroes-of-lite/data/seed/refines.json');
+    const refines = await response.json();
+    
+    console.log(`HoL | Found ${refines.length} refines to seed`);
+    
+    // Get existing items in pack
+    const existingItems = await pack.getDocuments();
+    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
+    
+    for (const refineData of refines) {
+      if (existingIds.has(refineData.id)) {
+        console.log(`HoL | Refine already exists: ${refineData.name}`);
+        continue;
+      }
+      
+      // Create proper Foundry item document
+      const itemData = {
+        name: refineData.name,
+        type: 'refine',
+        system: {
+          category: refineData.category,
+          costG: refineData.costG,
+          appliesToWeaponGroups: refineData.appliesToWeaponGroups,
+          description: refineData.description,
+          statBonuses: refineData.statBonuses || {},
+          tags: refineData.tags || []
+        },
+        flags: {
+          'heroes-of-lite': {
+            sourceId: refineData.id
+          }
+        }
+      };
+      
+      // Create the document in the pack
+      await Item.create(itemData, {pack: pack.collection});
+      console.log(`HoL | Created refine: ${refineData.name}`);
+    }
+    
+    console.log('HoL | Refines seeding complete');
+  } catch (error) {
+    console.error('HoL | Error seeding refines:', error);
+  } finally {
+    // Re-lock the pack if it was locked before
+    if (wasLocked) {
+      await pack.configure({ locked: true });
+      console.log('HoL | Re-locked hol-refines pack');
     }
   }
 }

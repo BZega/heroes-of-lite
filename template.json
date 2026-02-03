@@ -140,40 +140,26 @@
       }
     },
     "refine": {
-      "attributes": {
-        "id": {
-          "type": "string",
-          "description": "Unique ID e.g. refine.steel"
-        },
-        "name": {
-          "type": "string"
-        },
-        "category": {
-          "type": "string",
-          "enum": ["basic", "advanced", "gmOnly"]
-        }
+      "category": "basic",
+      "costG": 0,
+      "appliesToWeaponGroups": [],
+      "description": "",
+      "statBonuses": {
+        "might": null,
+        "minRange": null,
+        "maxRange": null,
+        "hit": null,
+        "crit": null,
+        "critAvoid": null,
+        "avoid": null,
+        "atk": null,
+        "dex": null,
+        "spd": null,
+        "def": null,
+        "res": null,
+        "luck": null
       },
-      "details": {
-        "costG": 0,
-        "appliesToWeaponGroups": [],
-        "description": "",
-        "statBonuses": {
-          "might": null,
-          "minRange": null,
-          "maxRange": null,
-          "hit": null,
-          "crit": null,
-          "critAvoid": null,
-          "avoid": null,
-          "atk": null,
-          "dex": null,
-          "spd": null,
-          "def": null,
-          "res": null,
-          "luck": null
-        },
-        "tags": []
-      }
+      "tags": []
     },
     "consumable": {
       "attributes": {

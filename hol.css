@@ -214,6 +214,45 @@
   background: #c0392b;
 }
 
+/* Refine Sheet Specific Styles */
+.heroes-of-lite.sheet.item.refine-sheet .weapon-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .weapon-groups label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: normal;
+  text-transform: none;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .weapon-groups label:hover {
+  background: #f0f8ff;
+  border-color: #3498db;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .weapon-groups input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .stat-bonuses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .hol.sheet.characterSheet .sheet {
   width: 500px;
   height: 500px;

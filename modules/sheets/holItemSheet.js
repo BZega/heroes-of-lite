@@ -23,6 +23,10 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
     };
 
     get template() {
+        const itemType = this.document.type;
+        if (itemType === 'refine') {
+            return `systems/heroes-of-lite/templates/sheets/refine-sheet.html`;
+        }
         return `systems/heroes-of-lite/templates/sheets/weapon-sheet.html`;
     }
 
@@ -116,11 +120,75 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             name: droppedItem.name
         };
 
+        // Update the weapon name based on refines
+        const newName = this._generateWeaponName(refines);
+
         await this.document.update({
+            'name': newName,
             'system.details.refines': refines
         });
 
-        console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}`);
+        console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
+    }
+
+    /**
+     * Generate weapon name from refines
+     * Format: [Refine 1] + [Refine 2] [Weapon Type]
+     * Example: "Steel Long Axe"
+     */
+    _generateWeaponName(refines) {
+        // Get the base weapon type from the current name
+        // Strip out known refine prefixes to get the base type
+        let baseName = this.document.name;
+        
+        // Get current weapon type (last word typically, but could be multi-word like "Shifting Stone")
+        // We'll use the weapon group to determine the base type
+        const weaponGroup = this.document.system.attributes?.weaponGroup;
+        
+        // Map weapon groups to their display names
+        const weaponTypeMap = {
+            'sword': 'Sword',
+            'lance': 'Lance',
+            'axe': 'Axe',
+            'bow': 'Bow',
+            'dagger': 'Dagger',
+            'anima': 'Anima',
+            'light': 'Light',
+            'dark': 'Dark',
+            'staff': 'Staff',
+            'strike': 'Strike',
+            'talons': 'Talons',
+            'breath': 'Breath',
+            'shiftingStone': 'Shifting Stone',
+            'curse': 'Curse'
+        };
+        
+        // Try to extract the weapon type from the current name
+        // Look for common patterns like "Iron Sword", "Steel Axe", etc.
+        let weaponType = weaponTypeMap[weaponGroup] || 'Weapon';
+        
+        // Try to find the base type in the current name
+        for (const [key, displayName] of Object.entries(weaponTypeMap)) {
+            if (baseName.includes(displayName)) {
+                weaponType = displayName;
+                break;
+            }
+        }
+        
+        // Build the new name: [Refine1] [Refine2] [WeaponType]
+        const parts = [];
+        
+        if (refines[0]?.name) {
+            parts.push(refines[0].name);
+        }
+        
+        if (refines[1]?.name) {
+            parts.push(refines[1].name);
+        }
+        
+        parts.push(weaponType);
+        
+        return parts.join(' ');
     }
 
     async _onRemoveRefine(event) {
@@ -135,10 +203,14 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             name: ''
         };
 
+        // Update the weapon name based on remaining refines
+        const newName = this._generateWeaponName(refines);
+
         await this.document.update({
+            'name': newName,
             'system.details.refines': refines
         });
 
-        console.log(`HoL | Removed refine from slot ${slotIndex}`);
+        console.log(`HoL | Removed refine from slot ${slotIndex}, updated name to ${newName}`);
     }
 }
