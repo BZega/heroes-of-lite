@@ -41,34 +41,28 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         const context = await super._prepareContext(options);
         const item = this.document;
 
-        // Ensure we have the item data
-        context.name = item.name;
-        context.type = item.type;
-        context.img = item.img;
-        context.system = foundry.utils.deepClone(item.system) || {};
-
         // Check if this item is from a compendium (read-only)
         context.isFromCompendium = !!item.pack;
-        context.editable = !context.isFromCompendium;
 
-        // Ensure system structure exists
-        if (!context.system.details) {
-            context.system.details = {};
-        }
-        if (!context.system.attributes) {
-            context.system.attributes = {};
-        }
+        // Ensure system structure exists for weapons
+        if (item.type === 'weapon') {
+            if (!context.system.details) {
+                context.system.details = {};
+            }
+            if (!context.system.attributes) {
+                context.system.attributes = {};
+            }
 
-        // Ensure refines array exists
-        if (!context.system.details.refines) {
-            context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
+            // Ensure refines array exists
+            if (!context.system.details.refines) {
+                context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
+            }
         }
 
         console.log('HolItemSheet - Item context:', {
             name: context.name,
             type: context.type,
-            attributes: context.system.attributes,
-            details: context.system.details,
+            system: context.system,
             isFromCompendium: context.isFromCompendium
         });
 
