@@ -210,6 +210,17 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             return;
         }
 
+        let alreadyHassAdvanced = false;
+        currentRefines.forEach(refine => {
+            if (droppedItem.system?.category === 'advanced') {
+                alreadyHassAdvanced = this._checkIfAdvanced(refine);
+            }
+        });
+        if (alreadyHassAdvanced) {
+            ui.notifications.warn('This advanced refine cannot be combined with existing refines.');
+            return;
+        }
+
         const slotIndex = parseInt(event.currentTarget.dataset.slot);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         
@@ -255,6 +266,23 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         });
 
         console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
+    }
+
+    async _checkIfAdvanced(refine) {
+        if (!refine.id) return false;
+        let refineItem = game.items.get(refine.id);
+        if (!refineItem) {
+            for (const pack of game.packs) {
+                if (pack.documentName === 'Item') {
+                    refineItem = await pack.getDocument(refine.id);
+                    if (refineItem) break;
+                }
+            }
+        }
+        if (refineItem.system?.category === 'advanced') {
+            return true;
+        }
+        return false;
     }
 
     async _calculateStaffRange(refines) {
