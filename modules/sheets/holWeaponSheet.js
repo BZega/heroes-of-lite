@@ -150,18 +150,22 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         const costModifier = droppedItem.system?.costG || 0;
 
         let newMight = this.document.system.details.might + mightModifier;
-        let newRangeMin = this.document.system.details.range.min + rangeMinModifier;
-        let newRangeMax = this.document.system.details.range.max + rangeMaxModifier;
+        let newRange;
+        
+        // Staff weapons use highest range from all refines, not additive
         if (this.document.system.attributes.weaponGroup === 'staff') {
-            newRangeMin = rangeMinModifier;
-            newRangeMax = rangeMaxModifier;
+            newRange = await this._calculateStaffRange(refines);
+        } else {
+            // Other weapons add range bonuses
+            let newRangeMin = this.document.system.details.range.min + rangeMinModifier;
+            let newRangeMax = this.document.system.details.range.max + rangeMaxModifier;
+            newRange = {
+                min: newRangeMin,
+                max: newRangeMax
+            };
         }
+        
         let newCostG = this.document.system.details.costG + costModifier;
-
-        const newRange = {
-            min: newRangeMin,
-            max: newRangeMax
-        };
 
         await this.document.update({
             'name': newName,
@@ -172,6 +176,38 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         });
 
         console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
+    }
+
+    async _calculateStaffRange(refines) {
+        // For staffs, range is based on highest range from all refines
+        let maxRangeMin = 1;
+        let maxRangeMax = 1;
+
+        for (const refine of refines) {
+            if (!refine.id) continue;
+
+            let refineItem = game.items.get(refine.id);
+            if (!refineItem) {
+                for (const pack of game.packs) {
+                    if (pack.documentName === 'Item') {
+                        refineItem = await pack.getDocument(refine.id);
+                        if (refineItem) break;
+                    }
+                }
+            }
+
+            if (refineItem) {
+                const minRange = refineItem.system?.statBonuses?.minRange || 0;
+                const maxRange = refineItem.system?.statBonuses?.maxRange || 0;
+                
+                if (maxRange > maxRangeMax) {
+                    maxRangeMin = minRange;
+                    maxRangeMax = maxRange;
+                }
+            }
+        }
+
+        return { min: maxRangeMin, max: maxRangeMax };
     }
 
     _generateWeaponName(refines) {
@@ -255,26 +291,29 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         const costModifier = refineItem?.system?.costG || 0;
 
         let newMight = this.document.system.details.might - mightModifier;
-        let newRangeMin = this.document.system.details.range.min - rangeMinModifier;
-        let newRangeMax = this.document.system.details.range.max - rangeMaxModifier;
-        if (this.document.system.attributes.weaponGroup === 'staff') {
-            if (rangeMaxModifier > 1) {
-                newRangeMin = 1;
-                newRangeMax = 1;
-            }
-        }
         let newCostG = this.document.system.details.costG - costModifier;
 
-        const newRange = {
-            min: newRangeMin,
-            max: newRangeMax
-        };
-
+        // Clone and remove the refine first
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         refines[slotIndex] = {
             id: '',
             name: ''
         };
+
+        // Calculate range based on remaining refines
+        let newRange;
+        if (this.document.system.attributes.weaponGroup === 'staff') {
+            // For staffs, recalculate from remaining refines
+            newRange = await this._calculateStaffRange(refines);
+        } else {
+            // For other weapons, subtract the range modifier
+            let newRangeMin = this.document.system.details.range.min - rangeMinModifier;
+            let newRangeMax = this.document.system.details.range.max - rangeMaxModifier;
+            newRange = {
+                min: newRangeMin,
+                max: newRangeMax
+            };
+        }
 
         const newName = this._generateWeaponName(refines);
 
