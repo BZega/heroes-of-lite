@@ -1,0 +1,187 @@
+{
+  "Actor": {
+    "types": ["unit"],
+    "unit": {
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Stable mechanical ID (e.g. actor.unit.hero)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the actor"
+        },
+        "weaponProficiency": {
+          "type": "string",
+          "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shifting stone", "curse"],
+          "description": "The weapon proficiency of the actor"
+        },
+        "trait": {
+          "type": "string",
+          "enum": ["furred", "winged", "scaled", "fiendish"],
+          "description": "The trait of the actor"
+        },
+        "movementType": {
+          "type": "string",
+          "enum": ["infantry", "cavalry", "flier", "armor"],
+          "description": "The movement type of the actor"
+        },
+        "level": {
+          "type": "number",
+          "description": "The level of the actor"
+        }
+      },
+      "details": {
+        "combatStats": {
+          "hp": 15,
+          "atk": 3,
+          "spd": 3,
+          "dex": 3,
+          "def": 3,
+          "res": 3,
+          "luck": 3
+        },
+        "nonCombatStats": {
+          "strength": 0,
+          "intellect": 0,
+          "perception": 0,
+          "charisma": 0,
+          "fate": 0,
+          "finesse": 0,
+          "acrobatics": 0
+        },
+        "derivedStats": {
+          "hit": 0,
+          "avoid": 0,
+          "crit": 0,
+          "power": 0,
+          "tri": 0,
+          "size": 0,
+          "con": 0,
+          "aid": 0
+        },
+        "skills": [],
+        "personalSkill": "",
+        "inventory": {
+          "weapons": [],
+          "items": [],
+          "equipped": ""
+        }
+      }
+    }
+  },
+  "Item": {
+    "types": ["weapon", "skill", "refine", "consumable"],
+    "weapon": {
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Stable mechanical ID (e.g. weapon.base.sword)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the weapon"
+        },
+        "weaponGroup": {
+          "type": "string",
+          "enum": ["sword", "lance", "axe", "bow", "anima", "light", "staff"]
+        },
+        "damageType": {
+          "type": "string",
+          "enum": ["physical", "magical"]
+        }
+      },
+      "details": {
+        "range": {
+          "min": 1,
+          "max": 1
+        },
+        "might": 0,
+        "costG": 500,
+        "innateAttributes": [],
+        "attributes": [],
+        "attributeRules": {
+          "maxAttributes": 2,
+          "maxAdvanced": 1,
+          "noDuplicates": true
+        }
+      }
+    },
+    "skill": {
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Stable mechanical ID (e.g. skill.combat.swordmastery)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the skill"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Technique", "Action", "Strategy", "Reflex", "Passive"]
+        }
+      },
+      "details": {
+        "typeGroup": "",
+        "prerequisite": [],
+        "requiredCharge": "",
+        "effect": ""
+      }
+    },
+    "refine": {
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID e.g. refine.steel"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["basic", "advanced", "gmOnly"]
+        }
+      },
+      "details": {
+        "costG": 0,
+        "appliesToWeaponGroups": [],
+        "description": "",
+        "statBonuses": {
+          "might": null,
+          "minRange": null,
+          "maxRange": null,
+          "hit": null,
+          "crit": null,
+          "critAvoid": null,
+          "avoid": null,
+          "atk": null,
+          "dex": null,
+          "spd": null,
+          "def": null,
+          "res": null,
+          "luck": null
+        },
+        "tags": []
+      }
+    },
+    "consumable": {
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Stable mechanical ID (e.g. consumable.base.herb)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the consumable"
+        }
+      },
+      "details": {
+        "range": "",
+        "uses": 1,
+        "costG": 0,
+        "effect": ""
+      }
+    }
+  }
+}

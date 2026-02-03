@@ -9,14 +9,21 @@
 
   "compatibility": {
     "minimum": "11",
-    "verified": "12"
+    "verified": "13"
   },
 
-  "esmodules": [
-    "scripts/main.js"
-  ],
-
-  "styles": [],
+  "esmodules": [],
+  "scripts": ["hol.js"],
+  "styles": ["hol.css"],
+  
+  "documentTypes": {
+    "Actor": {
+      "base": "Actor"
+    },
+    "Item": {
+      "base": "Item"
+    }
+  },
 
   "packs": [
     {
@@ -24,7 +31,6 @@
       "label": "HoL - Templates - Actors",
       "path": "packs/hol-templates-actors",
       "type": "Actor",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -32,7 +38,6 @@
       "label": "HoL - Weapons",
       "path": "packs/hol-weapons",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -40,7 +45,6 @@
       "label": "HoL - Statuses",
       "path": "packs/hol-statuses",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
 
@@ -49,7 +53,6 @@
       "label": "HoL - Key Items",
       "path": "packs/hol-key-items",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -57,7 +60,6 @@
       "label": "HoL - Refines",
       "path": "packs/hol-refines",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -65,7 +67,6 @@
       "label": "HoL - Consumables",
       "path": "packs/hol-consumables",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -73,12 +74,11 @@
       "label": "HoL - Skills",
       "path": "packs/hol-skills",
       "type": "Item",
-      "system": "*",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     }
   ],
   "readme": "README.md",
   "url": "https://github.com/BZega/heroes-of-lite",
-  "manifest": "https://raw.githubusercontent.com/BZega/heroes-of-lite/main/module.json",
-  "download": "https://github.com/BZega/heroes-of-lite/archive/refs/heads/main.zip"
+  "manifest": "https://raw.githubusercontent.com/BZega/heroes-of-lite/main/system.json",
+  "download": ""
 }

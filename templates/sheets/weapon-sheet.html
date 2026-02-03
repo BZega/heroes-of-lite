@@ -1,0 +1,50 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="item-image" src="{{system.attributes.image}}" alt="Item Image">
+        <h1><input type="text" name="name" value="{{name}}" placeholder="Name"/></h1>
+    </header>
+    <p>HELLO!</p>
+    <section class="sheet-body">
+        <div class="form-group">
+            <label for="weaponGroup">Weapon Group</label>
+            <select name="system.attributes.weaponGroup">
+                <option value="">-- Select --</option>
+                <option value="sword" {{#if (eq system.attributes.weaponGroup "sword")}}selected{{/if}}>Sword</option>
+                <option value="lance" {{#if (eq system.attributes.weaponGroup "lance")}}selected{{/if}}>Lance</option>
+                <option value="axe" {{#if (eq system.attributes.weaponGroup "axe")}}selected{{/if}}>Axe</option>
+                <option value="bow" {{#if (eq system.attributes.weaponGroup "bow")}}selected{{/if}}>Bow</option>
+                <option value="anima" {{#if (eq system.attributes.weaponGroup "anima")}}selected{{/if}}>Anima</option>
+                <option value="light" {{#if (eq system.attributes.weaponGroup "light")}}selected{{/if}}>Light</option>
+                <option value="staff" {{#if (eq system.attributes.weaponGroup "staff")}}selected{{/if}}>Staff</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="damageType">Damage Type</label>
+            <select name="system.attributes.damageType">
+                <option value="">-- Select --</option>
+                <option value="physical" {{#if (eq system.attributes.damageType "physical")}}selected{{/if}}>Physical</option>
+                <option value="magical" {{#if (eq system.attributes.damageType "magical")}}selected{{/if}}>Magical</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="might">Might</label>
+            <input type="number" name="system.details.might" value="{{system.details.might}}" />
+        </div>
+        <div class="form-group">
+            <label for="range-min">Range Min</label>
+            <input type="number" name="system.details.range.min" value="{{system.details.range.min}}" />
+        </div>
+        <div class="form-group">
+            <label for="range-max">Range Max</label>
+            <input type="number" name="system.details.range.max" value="{{system.details.range.max}}" />
+        </div>
+        <div class="form-group">
+            <label for="costG">Cost (G)</label>
+            <input type="number" name="system.details.costG" value="{{system.details.costG}}" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="system.details.description">{{system.details.description}}</textarea>
+        </div>
+    </section>
+</form>
