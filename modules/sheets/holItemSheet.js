@@ -16,11 +16,26 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    static PARTS = {
-        form: {
-            template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
-        }
-    };
+    static get PARTS() {
+        return {
+            form: {
+                template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
+            }
+        };
+    }
+
+    get parts() {
+        const itemType = this.document.type;
+        const template = itemType === 'refine' 
+            ? "systems/heroes-of-lite/templates/sheets/refine-sheet.html"
+            : "systems/heroes-of-lite/templates/sheets/weapon-sheet.html";
+        
+        return {
+            form: {
+                template: template
+            }
+        };
+    }
 
     get template() {
         const itemType = this.document.type;
@@ -28,22 +43,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
             return `systems/heroes-of-lite/templates/sheets/refine-sheet.html`;
         }
         return `systems/heroes-of-lite/templates/sheets/weapon-sheet.html`;
-    }
-
-    async _preparePartContext(partId, context, options) {
-        context = await super._preparePartContext(partId, context, options);
-        
-        // Override the template for the form part based on item type
-        if (partId === "form") {
-            const itemType = this.document.type;
-            if (itemType === 'refine') {
-                this.constructor.PARTS.form.template = "systems/heroes-of-lite/templates/sheets/refine-sheet.html";
-            } else {
-                this.constructor.PARTS.form.template = "systems/heroes-of-lite/templates/sheets/weapon-sheet.html";
-            }
-        }
-        
-        return context;
     }
 
     async _prepareContext(options) {
