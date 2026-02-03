@@ -112,9 +112,18 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
         if (dropData.type !== 'Item') return;
 
-        const droppedItem = await foundry.documents.BaseItem.fromDropData(dropData);
+        const droppedItem = await Item.implementation.fromDropData(dropData);
         if (!droppedItem || droppedItem.type !== 'refine') {
             ui.notifications.warn('Only Refine items can be dropped here');
+            return;
+        }
+
+        const weaponGroup = this.document.system.attributes?.weaponGroup;
+        console.log('HoL | Dropped refine valid groups:', droppedItem.system?.appliesToWeaponGroups);
+        const validGroups = droppedItem.system?.appliesToWeaponGroups || [];
+        console.log('HoL | Current weapon group:', weaponGroup);
+        if (validGroups.length > 0 && !validGroups.includes(weaponGroup)) {
+            ui.notifications.warn(`This refine cannot be applied to ${weaponGroup} weapons.`);
             return;
         }
 
@@ -128,9 +137,34 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
         const newName = this._generateWeaponName(refines);
 
+        console.log('HoL | Dropped refine stat bonuses:', droppedItem);
+        console.log('Hol | Current weapon stats:', this.document);
+
+        const mightModifier = droppedItem.system?.statBonuses.might || 0;
+        const rangeMinModifier = droppedItem.system?.statBonuses.minRange || 0;
+        const rangeMaxModifier = droppedItem.system?.statBonuses.maxRange || 0;
+        const costModifier = droppedItem.system?.costG || 0;
+
+        let newMight = this.document.system.details.might + mightModifier;
+        let newRangeMin = this.document.system.details.range.min + rangeMinModifier;
+        let newRangeMax = this.document.system.details.range.max + rangeMaxModifier;
+        if (this.document.system.weaponGroup === 'staff') {
+            newRangeMin = rangeMinModifier;
+            newRangeMax = rangeMaxModifier;
+        }
+        let newCostG = this.document.system.details.costG + costModifier;
+
+        const newRange = {
+            min: newRangeMin,
+            max: newRangeMax
+        };
+
         await this.document.update({
             'name': newName,
-            'system.details.refines': refines
+            'system.details.refines': refines,
+            'system.details.might': newMight,
+            'system.details.range': newRange,
+            'system.details.costG': newCostG
         });
 
         console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
@@ -193,6 +227,31 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         const slotIndex = parseInt(event.currentTarget.dataset.slot);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         
+        const refineItem = game.items.get(refines[slotIndex]?.id);
+        console.log('HoL | Removing refine:', refines);
+        console.log('HoL | Refine item data:', refineItem);
+
+        const mightModifier = refineItem?.system?.statBonuses.might || 0;
+        const rangeMinModifier = refineItem?.system?.statBonuses.minRange || 0;
+        const rangeMaxModifier = refineItem?.system?.statBonuses.maxRange || 0;
+        const costModifier = refineItem?.system?.costG || 0;
+
+        let newMight = this.document.system.details.might - mightModifier;
+        let newRangeMin = this.document.system.details.range.min - rangeMinModifier;
+        let newRangeMax = this.document.system.details.range.max - rangeMaxModifier;
+        if (this.document.system.weaponGroup === 'staff') {
+            if (newRangeMax > 1) {
+                newRangeMin = 1;
+                newRangeMax = 1;
+            }
+        }
+        let newCostG = this.document.system.details.costG - costModifier;
+
+        const newRange = {
+            min: newRangeMin,
+            max: newRangeMax
+        };
+
         refines[slotIndex] = {
             id: '',
             name: ''
@@ -200,9 +259,14 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
         const newName = this._generateWeaponName(refines);
 
+
+
         await this.document.update({
             'name': newName,
-            'system.details.refines': refines
+            'system.details.refines': refines,
+            'system.details.might': newMight,
+            'system.details.range': newRange,
+            'system.details.costG': newCostG
         });
 
         console.log(`HoL | Removed refine from slot ${slotIndex}, updated name to ${newName}`);
