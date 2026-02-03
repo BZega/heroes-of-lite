@@ -11,8 +11,7 @@ import HolItemSheet from './modules/sheets/holItemSheet.js';
 Hooks.once('init', async function() {
   console.log('Heroes of Lite | Initializing system...');
   
-  // Register V2 sheets
-  Actors.registerSheet('heroes-of-lite', HolItemSheet, { makeDefault: true });
+  // Register V2 sheets - only register for Items, not Actors
   Items.registerSheet('heroes-of-lite', HolItemSheet, { makeDefault: true });
   // Register system settings if needed
   // game.settings.register('heroes-of-lite', 'setting-name', { ... });
