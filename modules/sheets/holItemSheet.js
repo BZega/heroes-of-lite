@@ -22,19 +22,21 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    _configureRenderOptions(options) {
-        super._configureRenderOptions(options);
+    constructor(options = {}) {
+        super(options);
         
-        // Dynamically set the template based on item type
+        // Set the correct template based on item type during construction
         const itemType = this.document?.type || 'weapon';
         const templatePath = `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`;
         
-        console.log(`HolItemSheet | Configuring render for type: ${itemType}, template: ${templatePath}`);
+        console.log(`HolItemSheet | Constructor setting template for type: ${itemType}, template: ${templatePath}`);
         
-        options.parts = ["form"];
-        this.constructor.PARTS.form.template = templatePath;
-        
-        return options;
+        // Create instance-specific PARTS
+        this.options.parts = {
+            form: {
+                template: templatePath
+            }
+        };
     }
 
     async _prepareContext(options) {
