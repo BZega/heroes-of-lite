@@ -4,107 +4,115 @@
             <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
             <div class="header-info">
                 <h1><input type="text" name="name" value="{{name}}" placeholder="Refine Name"/></h1>
+                <div class="header-details">
+                    <div class="form-group inline">
+                        <label for="category">Category:</label>
+                        <select name="system.category">
+                            <option value="basic" {{#if (eq system.category "basic")}}selected{{/if}}>Basic</option>
+                            <option value="advanced" {{#if (eq system.category "advanced")}}selected{{/if}}>Advanced</option>
+                            <option value="gmOnly" {{#if (eq system.category "gmOnly")}}selected{{/if}}>GM Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group inline">
+                        <label for="costG">Cost:</label>
+                        <input type="number" name="system.costG" value="{{system.costG}}" />
+                        <span class="currency">G</span>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
+    
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Description</a>
+        <a class="item" data-tab="weapon-groups">Weapon Groups</a>
+        <a class="item" data-tab="stat-bonuses">Stat Bonuses</a>
+    </nav>
+
     <section class="sheet-body">
-        <div class="data-row">
+        <div class="tab" data-group="primary" data-tab="description">
             <div class="form-group">
-                <label for="category">Category</label>
-                <select name="system.category">
-                    <option value="basic" {{#if (eq system.category "basic")}}selected{{/if}}>Basic</option>
-                    <option value="advanced" {{#if (eq system.category "advanced")}}selected{{/if}}>Advanced</option>
-                    <option value="gmOnly" {{#if (eq system.category "gmOnly")}}selected{{/if}}>GM Only</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="costG">Cost (G)</label>
-                <input type="number" name="system.costG" value="{{system.costG}}" />
+                <label>Description</label>
+                <textarea name="system.description" rows="10">{{system.description}}</textarea>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Description</label>
-            <textarea name="system.description" rows="3">{{system.description}}</textarea>
-        </div>
-
-        <h3>Applies to Weapon Groups</h3>
-        <div class="weapon-groups">
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="sword" {{#if (includes system.appliesToWeaponGroups "sword")}}checked{{/if}}> Sword</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="lance" {{#if (includes system.appliesToWeaponGroups "lance")}}checked{{/if}}> Lance</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="axe" {{#if (includes system.appliesToWeaponGroups "axe")}}checked{{/if}}> Axe</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="bow" {{#if (includes system.appliesToWeaponGroups "bow")}}checked{{/if}}> Bow</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dagger" {{#if (includes system.appliesToWeaponGroups "dagger")}}checked{{/if}}> Dagger</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="anima" {{#if (includes system.appliesToWeaponGroups "anima")}}checked{{/if}}> Anima</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="light" {{#if (includes system.appliesToWeaponGroups "light")}}checked{{/if}}> Light</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dark" {{#if (includes system.appliesToWeaponGroups "dark")}}checked{{/if}}> Dark</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="staff" {{#if (includes system.appliesToWeaponGroups "staff")}}checked{{/if}}> Staff</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="strike" {{#if (includes system.appliesToWeaponGroups "strike")}}checked{{/if}}> Strike</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="talons" {{#if (includes system.appliesToWeaponGroups "talons")}}checked{{/if}}> Talons</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="breath" {{#if (includes system.appliesToWeaponGroups "breath")}}checked{{/if}}> Breath</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="shiftingStone" {{#if (includes system.appliesToWeaponGroups "shiftingStone")}}checked{{/if}}> Shifting Stone</label>
-            <label><input type="checkbox" name="system.appliesToWeaponGroups" value="curse" {{#if (includes system.appliesToWeaponGroups "curse")}}checked{{/if}}> Curse</label>
-        </div>
-
-        <h3>Stat Bonuses</h3>
-        <div class="stat-bonuses">
-            <div class="form-group">
-                <label>Might</label>
-                <input type="number" name="system.statBonuses.might" value="{{system.statBonuses.might}}" />
-            </div>
-            <div class="form-group">
-                <label>Min Range</label>
-                <input type="number" name="system.statBonuses.minRange" value="{{system.statBonuses.minRange}}" />
-            </div>
-            <div class="form-group">
-                <label>Max Range</label>
-                <input type="number" name="system.statBonuses.maxRange" value="{{system.statBonuses.maxRange}}" />
-            </div>
-            <div class="form-group">
-                <label>Hit</label>
-                <input type="number" name="system.statBonuses.hit" value="{{system.statBonuses.hit}}" />
-            </div>
-            <div class="form-group">
-                <label>Crit</label>
-                <input type="number" name="system.statBonuses.crit" value="{{system.statBonuses.crit}}" />
-            </div>
-            <div class="form-group">
-                <label>Crit Avoid</label>
-                <input type="number" name="system.statBonuses.critAvoid" value="{{system.statBonuses.critAvoid}}" />
-            </div>
-            <div class="form-group">
-                <label>Avoid</label>
-                <input type="number" name="system.statBonuses.avoid" value="{{system.statBonuses.avoid}}" />
-            </div>
-            <div class="form-group">
-                <label>ATK</label>
-                <input type="number" name="system.statBonuses.atk" value="{{system.statBonuses.atk}}" />
-            </div>
-            <div class="form-group">
-                <label>DEX</label>
-                <input type="number" name="system.statBonuses.dex" value="{{system.statBonuses.dex}}" />
-            </div>
-            <div class="form-group">
-                <label>SPD</label>
-                <input type="number" name="system.statBonuses.spd" value="{{system.statBonuses.spd}}" />
-            </div>
-            <div class="form-group">
-                <label>DEF</label>
-                <input type="number" name="system.statBonuses.def" value="{{system.statBonuses.def}}" />
-            </div>
-            <div class="form-group">
-                <label>RES</label>
-                <input type="number" name="system.statBonuses.res" value="{{system.statBonuses.res}}" />
-            </div>
-            <div class="form-group">
-                <label>Luck</label>
-                <input type="number" name="system.statBonuses.luck" value="{{system.statBonuses.luck}}" />
+        <div class="tab" data-group="primary" data-tab="weapon-groups">
+            <h3>Applies to Weapon Groups</h3>
+            <div class="weapon-groups">
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="sword" {{#if (includes system.appliesToWeaponGroups "sword")}}checked{{/if}}> Sword</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="lance" {{#if (includes system.appliesToWeaponGroups "lance")}}checked{{/if}}> Lance</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="axe" {{#if (includes system.appliesToWeaponGroups "axe")}}checked{{/if}}> Axe</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="bow" {{#if (includes system.appliesToWeaponGroups "bow")}}checked{{/if}}> Bow</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dagger" {{#if (includes system.appliesToWeaponGroups "dagger")}}checked{{/if}}> Dagger</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="anima" {{#if (includes system.appliesToWeaponGroups "anima")}}checked{{/if}}> Anima</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="light" {{#if (includes system.appliesToWeaponGroups "light")}}checked{{/if}}> Light</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dark" {{#if (includes system.appliesToWeaponGroups "dark")}}checked{{/if}}> Dark</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="staff" {{#if (includes system.appliesToWeaponGroups "staff")}}checked{{/if}}> Staff</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="strike" {{#if (includes system.appliesToWeaponGroups "strike")}}checked{{/if}}> Strike</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="talons" {{#if (includes system.appliesToWeaponGroups "talons")}}checked{{/if}}> Talons</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="breath" {{#if (includes system.appliesToWeaponGroups "breath")}}checked{{/if}}> Breath</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="shiftingStone" {{#if (includes system.appliesToWeaponGroups "shiftingStone")}}checked{{/if}}> Shifting Stone</label>
+                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="curse" {{#if (includes system.appliesToWeaponGroups "curse")}}checked{{/if}}> Curse</label>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Tags (comma-separated)</label>
-            <input type="text" name="system.tags" value="{{join system.tags ", "}}" placeholder="e.g., requires:initiator, requires:hit" />
+        <div class="tab" data-group="primary" data-tab="stat-bonuses">
+            <h3>Stat Bonuses</h3>
+            <div class="stat-bonuses">
+                <div class="form-group">
+                    <label>Might</label>
+                    <input type="number" name="system.statBonuses.might" value="{{system.statBonuses.might}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Min Range</label>
+                    <input type="number" name="system.statBonuses.minRange" value="{{system.statBonuses.minRange}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Max Range</label>
+                    <input type="number" name="system.statBonuses.maxRange" value="{{system.statBonuses.maxRange}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Hit</label>
+                    <input type="number" name="system.statBonuses.hit" value="{{system.statBonuses.hit}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Crit</label>
+                    <input type="number" name="system.statBonuses.crit" value="{{system.statBonuses.crit}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Crit Avoid</label>
+                    <input type="number" name="system.statBonuses.critAvoid" value="{{system.statBonuses.critAvoid}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Avoid</label>
+                    <input type="number" name="system.statBonuses.avoid" value="{{system.statBonuses.avoid}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>ATK</label>
+                    <input type="number" name="system.statBonuses.atk" value="{{system.statBonuses.atk}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>DEX</label>
+                    <input type="number" name="system.statBonuses.dex" value="{{system.statBonuses.dex}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>SPD</label>
+                    <input type="number" name="system.statBonuses.spd" value="{{system.statBonuses.spd}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>DEF</label>
+                    <input type="number" name="system.statBonuses.def" value="{{system.statBonuses.def}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>RES</label>
+                    <input type="number" name="system.statBonuses.res" value="{{system.statBonuses.res}}" placeholder="0" />
+                </div>
+                <div class="form-group">
+                    <label>Luck</label>
+                    <input type="number" name="system.statBonuses.luck" value="{{system.statBonuses.luck}}" placeholder="0" />
+                </div>
+            </div>
         </div>
     </section>
 </form>

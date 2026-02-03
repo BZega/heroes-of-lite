@@ -188,6 +188,18 @@
   color: #2c3e50;
 }
 
+.heroes-of-lite.sheet.item .refine-name {
+  font-weight: 600;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.heroes-of-lite.sheet.item .refine-name:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
 .heroes-of-lite.sheet.item .empty-slot {
   color: #999;
   font-style: italic;
@@ -215,6 +227,81 @@
 }
 
 /* Refine Sheet Specific Styles */
+.heroes-of-lite.sheet.item.refine-sheet .header-details {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .form-group.inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .form-group.inline label {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .form-group.inline input,
+.heroes-of-lite.sheet.item.refine-sheet .form-group.inline select {
+  width: auto;
+  min-width: 100px;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .currency {
+  font-weight: bold;
+  color: #f39c12;
+}
+
+.heroes-of-lite.sheet.item .sheet-tabs {
+  display: flex;
+  border-bottom: 2px solid #e74c3c;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+}
+
+.heroes-of-lite.sheet.item .sheet-tabs .item {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #2c3e50;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.sheet.item .sheet-tabs .item:hover {
+  background: #e8e8e8;
+  color: #e74c3c;
+}
+
+.heroes-of-lite.sheet.item .sheet-tabs .item.active {
+  background: white;
+  color: #e74c3c;
+  border-bottom: 3px solid #e74c3c;
+}
+
+.heroes-of-lite.sheet.item .tab {
+  display: none;
+  padding: 1.5rem;
+}
+
+.heroes-of-lite.sheet.item .tab.active {
+  display: block;
+}
+
+.heroes-of-lite.sheet.item .tab[data-tab="description"] textarea {
+  width: 100%;
+  min-height: 300px;
+}
+
 .heroes-of-lite.sheet.item.refine-sheet .weapon-groups {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

@@ -82,6 +82,38 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         removeButtons.forEach(btn => {
             btn.addEventListener('click', this._onRemoveRefine.bind(this));
         });
+
+        // Make refine names clickable to open refine sheet
+        const refineNames = html.querySelectorAll('.refine-name');
+        refineNames.forEach(nameEl => {
+            nameEl.addEventListener('click', this._onRefineNameClick.bind(this));
+        });
+    }
+
+    async _onRefineNameClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const slotIndex = parseInt(event.currentTarget.closest('.refine-slot')?.dataset.slot);
+        const refineId = this.document.system.details.refines?.[slotIndex]?.id;
+
+        if (!refineId) return;
+
+        // Find the refine item
+        let refineItem = game.items.get(refineId);
+        
+        if (!refineItem) {
+            for (const pack of game.packs) {
+                if (pack.documentName === 'Item') {
+                    refineItem = await pack.getDocument(refineId);
+                    if (refineItem) break;
+                }
+            }
+        }
+
+        if (refineItem) {
+            refineItem.sheet.render(true);
+        }
     }
 
     _onDragOver(event) {
