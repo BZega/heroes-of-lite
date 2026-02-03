@@ -254,7 +254,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             'anima': 'Anima',
             'light': 'Light',
             'dark': 'Dark',
-            'staff': 'Staff',
+            'staff': 'Heal',
             'strike': 'Strike',
             'talons': 'Talons',
             'breath': 'Breath',
@@ -271,6 +271,11 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
                 break;
             }
         }
+        if (weaponGroup === 'staff' && refines[0]?.name === '' && refines[1]?.name === '') {
+            weaponType = 'Heal';
+        } else if (weaponGroup === 'dark' && refines[0]?.name === '' && refines[1]?.name === '') {
+            weaponType = 'Flux';
+        }
         
         const parts = [];
         
@@ -282,8 +287,13 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             parts.push(refines[1].name);
         }
         
-        parts.push(weaponType);
-        
+        console.log('HoL | Generating weapon name with refines:', refines);
+        console.log('HoL | Weapon group:', weaponGroup);
+
+
+        if ((weaponGroup !== 'staff' || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'staff')) || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'dark')) {
+            parts.push(weaponType);
+        }
         return parts.join(' ');
     }
 

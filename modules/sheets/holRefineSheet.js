@@ -7,8 +7,8 @@ export default class HolRefineSheet extends foundry.applications.api.HandlebarsA
             contentClasses: ["standard-form"]
         },
         position: {
-            width: 800,
-            height: 950
+            width: 740,
+            height: 660
         }
     };
 

@@ -297,21 +297,8 @@
   display: block;
 }
 
-.heroes-of-lite.sheet.item .tab[data-tab="description"] {
-  min-height: 700px;
-}
-
 .heroes-of-lite.sheet.item .tab[data-tab="description"] textarea {
   width: 100%;
-  min-height: 300px;
-}
-
-.heroes-of-lite.sheet.item .tab[data-tab="weapon-groups"] {
-  min-height: 700px;
-}
-
-.heroes-of-lite.sheet.item .tab[data-tab="stat-bonuses"] {
-  min-height: 900px;
 }
 
 .heroes-of-lite.sheet.item.refine-sheet .stat-bonuses {
