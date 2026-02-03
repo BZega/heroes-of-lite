@@ -297,9 +297,53 @@
   display: block;
 }
 
+.heroes-of-lite.sheet.item .tab[data-tab="description"] {
+  min-height: 700px;
+}
+
 .heroes-of-lite.sheet.item .tab[data-tab="description"] textarea {
   width: 100%;
   min-height: 300px;
+}
+
+.heroes-of-lite.sheet.item .tab[data-tab="weapon-groups"] {
+  min-height: 700px;
+}
+
+.heroes-of-lite.sheet.item .tab[data-tab="stat-bonuses"] {
+  min-height: 900px;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .stat-bonuses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .stat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .stat-row label {
+  flex: 1;
+  margin: 0;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+  text-transform: none;
+}
+
+.heroes-of-lite.sheet.item.refine-sheet .stat-row input {
+  width: 80px;
+  text-align: center;
+  padding: 0.3rem 0.5rem;
 }
 
 .heroes-of-lite.sheet.item.refine-sheet .weapon-groups {

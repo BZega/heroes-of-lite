@@ -8,7 +8,7 @@ export default class HolRefineSheet extends foundry.applications.api.HandlebarsA
         },
         position: {
             width: 800,
-            height: 600
+            height: 950
         }
     };
 
