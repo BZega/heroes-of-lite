@@ -59,7 +59,7 @@
         <div class="innate-attributes-container">
             {{#if innateRefines}}
                 {{#each innateRefines}}
-                    <span class="innate-attribute-tag">{{this.name}}</span>
+                    <span class="innate-attribute-tag" data-refine-id="{{this.id}}">{{this.name}}</span>
                 {{/each}}
             {{else}}
                 <span class="empty-innate">None</span>

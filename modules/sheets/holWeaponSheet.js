@@ -98,6 +98,26 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         refineNames.forEach(nameEl => {
             nameEl.addEventListener('click', this._onRefineNameClick.bind(this));
         });
+
+        // Make innate attribute tags clickable to open refine sheet
+        const innateAttributeTags = html.querySelectorAll('.innate-attribute-tag');
+        innateAttributeTags.forEach(tag => {
+            tag.addEventListener('click', this._onInnateAttributeClick.bind(this));
+        });
+    }
+
+    async _onInnateAttributeClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const refineId = event.currentTarget.dataset.refineId;
+        if (!refineId) return;
+
+        // Find the refine item
+        const refineItem = await this._getRefineById(refineId);
+        if (refineItem) {
+            refineItem.sheet.render(true);
+        }
     }
 
     async _onRefineNameClick(event) {

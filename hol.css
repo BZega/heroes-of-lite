@@ -161,6 +161,14 @@
   font-size: 0.85rem;
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.heroes-of-lite.sheet.item .innate-attribute-tag:hover {
+  background: linear-gradient(135deg, #7c8ff5 0%, #8a5bb5 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .heroes-of-lite.sheet.item .empty-innate {
