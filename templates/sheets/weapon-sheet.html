@@ -55,6 +55,17 @@
             </div>
         </div>
 
+        <h3>Innate Attributes</h3>
+        <div class="innate-attributes-container">
+            {{#if system.details.innateAttributes}}
+                {{#each system.details.innateAttributes}}
+                    <span class="innate-attribute-tag">{{this}}</span>
+                {{/each}}
+            {{else}}
+                <span class="empty-innate">None</span>
+            {{/if}}
+        </div>
+
         <h3>Refines</h3>
         <div class="refines-container">
             {{#each system.details.refines}}

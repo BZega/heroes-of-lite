@@ -67,7 +67,7 @@
     },
     "might": 4,
     "costG": 500,
-    "innateAttributes": [],
+    "innateAttributes": ["refine.wingclipping"],
     "attributes": [],
     "attributeRules": {
       "maxAttributes": 2,
@@ -257,7 +257,7 @@
     },
     "might": 0,
     "costG": 500,
-    "innateAttributes": [],
+    "innateAttributes": ["refine.poison"],
     "attributes": [],
     "attributeRules": {
       "maxAttributes": 2,
