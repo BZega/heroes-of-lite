@@ -119,11 +119,15 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         }
 
         const weaponGroup = this.document.system.attributes?.weaponGroup;
-        console.log('HoL | Dropped refine valid groups:', droppedItem.system?.appliesToWeaponGroups);
         const validGroups = droppedItem.system?.appliesToWeaponGroups || [];
-        console.log('HoL | Current weapon group:', weaponGroup);
         if (validGroups.length > 0 && !validGroups.includes(weaponGroup)) {
             ui.notifications.warn(`This refine cannot be applied to ${weaponGroup} weapons.`);
+            return;
+        }
+
+        const currentRefines = this.document.system.details.refines || [{}, {}];
+        if (currentRefines.some(r => r.name === droppedItem.name)) {
+            ui.notifications.warn('This refine is already applied to the weapon.');
             return;
         }
 
@@ -148,7 +152,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         let newMight = this.document.system.details.might + mightModifier;
         let newRangeMin = this.document.system.details.range.min + rangeMinModifier;
         let newRangeMax = this.document.system.details.range.max + rangeMaxModifier;
-        if (this.document.system.weaponGroup === 'staff') {
+        if (this.document.system.attributes.weaponGroup === 'staff') {
             newRangeMin = rangeMinModifier;
             newRangeMax = rangeMaxModifier;
         }
@@ -225,10 +229,24 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         }
 
         const slotIndex = parseInt(event.currentTarget.dataset.slot);
-        let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
+        const refineId = this.document.system.details.refines[slotIndex]?.id;
+
+        if (!refineId) {
+            ui.notifications.warn('No refine to remove in this slot.');
+            return;
+        }
         
-        const refineItem = game.items.get(refines[slotIndex]?.id);
-        console.log('HoL | Removing refine:', refines);
+        let refineItem = game.items.get(refineId);
+        
+        if (!refineItem) {
+            for (const pack of game.packs) {
+                if (pack.documentName === 'Item'){
+                    refineItem = await pack.getDocument(refineId);
+                    if (refineItem) break;
+                }
+            }
+        }
+        console.log('HoL | Removing refine:', refineId);
         console.log('HoL | Refine item data:', refineItem);
 
         const mightModifier = refineItem?.system?.statBonuses.might || 0;
@@ -239,8 +257,8 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         let newMight = this.document.system.details.might - mightModifier;
         let newRangeMin = this.document.system.details.range.min - rangeMinModifier;
         let newRangeMax = this.document.system.details.range.max - rangeMaxModifier;
-        if (this.document.system.weaponGroup === 'staff') {
-            if (newRangeMax > 1) {
+        if (this.document.system.attributes.weaponGroup === 'staff') {
+            if (rangeMaxModifier > 1) {
                 newRangeMin = 1;
                 newRangeMax = 1;
             }
@@ -252,6 +270,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             max: newRangeMax
         };
 
+        let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         refines[slotIndex] = {
             id: '',
             name: ''
