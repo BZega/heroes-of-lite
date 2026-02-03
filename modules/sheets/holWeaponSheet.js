@@ -57,7 +57,11 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             for (const refineId of context.system.details.innateAttributes) {
                 const refineItem = await this._getRefineById(refineId);
                 if (refineItem) {
-                    context.innateRefines.push(refineItem);
+                    context.innateRefines.push({
+                        id: refineItem.id,
+                        name: refineItem.name,
+                        _document: refineItem // Keep reference to full document
+                    });
                 }
             }
         }
@@ -68,9 +72,27 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
     _onRender(context, options) {
         super._onRender(context, options);
 
+        console.log('HoL | _onRender called');
+        console.log('HoL | this.element:', this.element);
+
+        const html = this.element;
+
+        // Make refine names clickable to open refine sheet (allow for both compendium and non-compendium)
+        const refineNames = html.querySelectorAll('.refine-name');
+        refineNames.forEach(nameEl => {
+            nameEl.addEventListener('click', this._onRefineNameClick.bind(this));
+        });
+
+        // Make innate attribute tags clickable to open refine sheet (allow for both compendium and non-compendium)
+        const innateAttributeTags = html.querySelectorAll('.innate-attribute-tag');
+        console.log('HoL | Found innate attribute tags:', innateAttributeTags.length);
+        innateAttributeTags.forEach((tag, index) => {
+            console.log(`HoL | Attaching click listener to tag ${index}:`, tag);
+            tag.addEventListener('click', this._onInnateAttributeClick.bind(this));
+        });
+
         // Don't allow editing of compendium items
         if (this.document.pack) {
-            const html = this.element;
             const inputs = html.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 input.disabled = true;
@@ -79,9 +101,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             return;
         }
 
-        // Handle drag and drop for refine slots
-        const html = this.element;
-        
+        // Handle drag and drop for refine slots (only for non-compendium items)
         const refineSlots = html.querySelectorAll('[data-dropzone="refine"]');
         refineSlots.forEach(slot => {
             slot.addEventListener('dragover', this._onDragOver.bind(this));
@@ -92,18 +112,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         removeButtons.forEach(btn => {
             btn.addEventListener('click', this._onRemoveRefine.bind(this));
         });
-
-        // Make refine names clickable to open refine sheet
-        const refineNames = html.querySelectorAll('.refine-name');
-        refineNames.forEach(nameEl => {
-            nameEl.addEventListener('click', this._onRefineNameClick.bind(this));
-        });
-
-        // Make innate attribute tags clickable to open refine sheet
-        const innateAttributeTags = html.querySelectorAll('.innate-attribute-tag');
-        innateAttributeTags.forEach(tag => {
-            tag.addEventListener('click', this._onInnateAttributeClick.bind(this));
-        });
     }
 
     async _onInnateAttributeClick(event) {
@@ -111,12 +119,21 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         event.stopPropagation();
 
         const refineId = event.currentTarget.dataset.refineId;
-        if (!refineId) return;
+        console.log('HoL | Innate attribute clicked, refineId:', refineId);
+        
+        if (!refineId) {
+            console.warn('HoL | No refineId found on clicked element');
+            return;
+        }
 
         // Find the refine item
         const refineItem = await this._getRefineById(refineId);
+        console.log('HoL | Found refine item:', refineItem);
+        
         if (refineItem) {
             refineItem.sheet.render(true);
+        } else {
+            console.warn('HoL | Could not find refine item with ID:', refineId);
         }
     }
 
@@ -411,8 +428,13 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
                 if (pack.documentName === 'Item') {
                     console.log('HoL | Searching pack for refine:', pack.collection);
                     const items = await pack.getDocuments();
-                    console.log('HoL | Pack items:', items);
-                    refineItem = items.find(i => i.flags?.['heroes-of-lite']?.sourceId === refineId);
+                    console.log('HoL | Pack items:', items.length, 'items');
+                    refineItem = items.find(i => {
+                        const matchesId = i.id === refineId;
+                        const matchesSourceId = i.flags?.['heroes-of-lite']?.sourceId === refineId;
+                        console.log(`HoL | Checking item ${i.name}: id=${i.id}, sourceId=${i.flags?.['heroes-of-lite']?.sourceId}, matchesId=${matchesId}, matchesSourceId=${matchesSourceId}`);
+                        return matchesId || matchesSourceId;
+                    });
                     console.log('HoL | Found refine in pack:', refineItem);
                     if (refineItem) break;
                 }
