@@ -210,21 +210,33 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             return;
         }
 
-        let alreadyHassAdvanced = false;
-        if (currentRefines[0]?.id) {
-            alreadyHassAdvanced = await this._checkIfAdvanced(currentRefines[0]);
-        } 
-        if (alreadyHassAdvanced) {
-            console.log('HoL | alreadyHassAdvanced:', alreadyHassAdvanced);
-            ui.notifications.warn('This advanced refine cannot be combined with existing refines.');
+        // Check if dropped refine is advanced
+        const isDroppedAdvanced = droppedItem.system?.category === 'advanced';
+        
+        // Check if any existing refines are advanced
+        const hasExistingRefines = currentRefines.some(r => r.id);
+        let hasAdvancedRefine = false;
+        
+        if (hasExistingRefines) {
+            for (const refine of currentRefines) {
+                if (refine.id) {
+                    const isAdvanced = await this._checkIfAdvanced(refine);
+                    if (isAdvanced) {
+                        hasAdvancedRefine = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Prevent combining advanced refines with any other refines
+        if (isDroppedAdvanced && hasExistingRefines) {
+            ui.notifications.warn('Advanced refines cannot be combined with other refines.');
             return;
         }
-        if (currentRefines[1]?.id) {
-            alreadyHassAdvanced = await this._checkIfAdvanced(currentRefines[1]);
-        }
-        if (alreadyHassAdvanced) {
-            console.log('HoL | alreadyHassAdvanced:', alreadyHassAdvanced);
-            ui.notifications.warn('This advanced refine cannot be combined with existing refines.');
+        
+        if (hasAdvancedRefine) {
+            ui.notifications.warn('This weapon already has an advanced refine and cannot accept more refines.');
             return;
         }
 
