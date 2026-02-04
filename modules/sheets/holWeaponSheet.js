@@ -210,39 +210,35 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             return;
         }
 
-        // Check if dropped refine is advanced
+        const slotIndex = parseInt(event.currentTarget.dataset?.slot);
         const isDroppedAdvanced = droppedItem.system?.category === 'advanced';
+        const isDroppedGMOnly = droppedItem.system?.category === 'gmOnly';
         
-        // Check if any existing refines are advanced
-        const hasExistingRefines = currentRefines.some(r => r.id);
-        let hasAdvancedRefine = false;
+        // gmOnly refines can only be placed by Game Masters
+        if (isDroppedGMOnly && !game.user.isGM) {
+            ui.notifications.warn('Only the Game Master can use GM-only refines.');
+            return;
+        }
         
-        if (hasExistingRefines) {
-            for (const refine of currentRefines) {
-                if (refine.id) {
-                    const isAdvanced = await this._checkIfAdvanced(refine);
-                    if (isAdvanced) {
-                        hasAdvancedRefine = true;
-                        break;
-                    }
-                }
+        // Slot 0 can only accept basic refines (unless gmOnly and user is GM)
+        if (slotIndex === 0 && isDroppedAdvanced && !isDroppedGMOnly) {
+            ui.notifications.warn('Slot 1 only accepts basic refines. Use Slot 2 for advanced refines.');
+            return;
+        }
+        
+        // Check if the other slot has an advanced refine
+        const otherSlotIndex = slotIndex === 0 ? 1 : 0;
+        const otherRefine = currentRefines[otherSlotIndex];
+        
+        if (isDroppedAdvanced && otherRefine?.id && !isDroppedGMOnly) {
+            const otherIsAdvanced = await this._checkIfAdvanced(otherRefine);
+            if (otherIsAdvanced) {
+                ui.notifications.warn('Only one advanced refine can be applied to a weapon.');
+                return;
             }
-        }
-        
-        // Prevent combining advanced refines with any other refines
-        if (isDroppedAdvanced && hasExistingRefines) {
-            ui.notifications.warn('Advanced refines cannot be combined with other refines.');
-            return;
-        }
-        
-        if (hasAdvancedRefine) {
-            ui.notifications.warn('This weapon already has an advanced refine and cannot accept more refines.');
-            return;
         }
 
         console.log('HoL | Dropped refine item:', event.currentTarget);
-
-        const slotIndex = parseInt(event.currentTarget.dataset?.slot);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         
         refines[slotIndex] = {
