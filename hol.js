@@ -1,5 +1,6 @@
 import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
 import HolRefineSheet from './modules/sheets/holRefineSheet.js';
+import HolConsumableSheet from './modules/sheets/holConsumableSheet.js';
 /**
  * Heroes of Lite - Main System File
  * Initializes the Heroes of Lite system for Foundry VTT
@@ -34,6 +35,12 @@ Hooks.once('init', async function() {
     label: "HoL Refine Sheet"
   });
   
+  Items.registerSheet('heroes-of-lite', HolConsumableSheet, {
+    types: ['consumable'],
+    makeDefault: true,
+    label: "HoL Consumable Sheet"
+  });
+  
   // Register system settings if needed
   // game.settings.register('heroes-of-lite', 'setting-name', { ... });
   
@@ -46,10 +53,11 @@ Hooks.once('init', async function() {
 Hooks.once('ready', async function() {
   console.log('Heroes of Lite | System ready!');
   
-  // Seed weapons and refines data into compendiums on first setup
+  // Seed weapons, refines, and consumables data into compendiums on first setup
   if (game.user.isGM) {
     await seedWeapons();
     await seedRefines();
+    await seedConsumables();
   }
 });
 
@@ -187,6 +195,76 @@ async function seedRefines() {
     if (wasLocked) {
       await pack.configure({ locked: true });
       console.log('HoL | Re-locked hol-refines pack');
+    }
+  }
+}
+
+/**
+ * Seed consumables from the seed data file into the hol-consumables compendium
+ */
+async function seedConsumables() {
+  const pack = game.packs.get('heroes-of-lite.hol-consumables');
+  if (!pack) {
+    console.warn('HoL | hol-consumables compendium pack not found');
+    return;
+  }
+
+  // Unlock the pack so we can add items
+  const wasLocked = pack.locked;
+  if (wasLocked) {
+    await pack.configure({ locked: false });
+    console.log('HoL | Unlocked hol-consumables pack');
+  }
+
+  // Fetch consumables from seed data
+  try {
+    const response = await fetch('systems/heroes-of-lite/data/seed/consumables.json');
+    const consumables = await response.json();
+    
+    console.log(`HoL | Found ${consumables.length} consumables to seed`);
+    
+    // Get existing items in pack
+    const existingItems = await pack.getDocuments();
+    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
+    
+    for (const consumableData of consumables) {
+      if (existingIds.has(consumableData.id)) {
+        continue;
+      }
+      
+      // Create proper Foundry item document
+      const itemData = {
+        name: consumableData.name,
+        type: 'consumable',
+        system: {
+          details: {
+            range: consumableData.range,
+            uses: consumableData.uses,
+            costG: consumableData.costG,
+            effect: consumableData.effect,
+            temporaryStatBonuses: consumableData.temporaryStatBonuses || {},
+            tags: consumableData.tags || []
+          }
+        },
+        flags: {
+          'heroes-of-lite': {
+            sourceId: consumableData.id
+          }
+        }
+      };
+      
+      // Create the document in the pack
+      await Item.create(itemData, {pack: pack.collection});
+    }
+    
+    console.log('HoL | Consumables seeding complete');
+  } catch (error) {
+    console.error('HoL | Error seeding consumables:', error);
+  } finally {
+    // Re-lock the pack if it was locked before
+    if (wasLocked) {
+      await pack.configure({ locked: true });
+      console.log('HoL | Re-locked hol-consumables pack');
     }
   }
 }

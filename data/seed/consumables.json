@@ -1,1 +1,200 @@
-[]
+[
+  {
+    "id": "consumable.herb",
+    "name": "Herb",
+    "range": "Self",
+    "uses": 6,
+    "costG": 400,
+    "effect": "User regains 10HP",
+    "tags": ["healing"]
+  },
+  {
+    "id": "consumable.vulnerary",
+    "name": "Vulnerary",
+    "range": "Self",
+    "uses": 5,
+    "costG": 800,
+    "effect": "User regains 20HP",
+    "tags": ["healing"]
+  },
+  {
+    "id": "consumable.concoction",
+    "name": "Concoction",
+    "range": "Self",
+    "uses": 4,
+    "costG": 1200,
+    "effect": "User regains 40HP",
+    "tags": ["healing"]
+  },
+  {
+    "id": "consumable.elixir",
+    "name": "Elixir",
+    "range": "Self",
+    "uses": 3,
+    "costG": 2000,
+    "effect": "User regains all missing HP",
+    "tags": ["healing"]
+  },
+  {
+    "id": "consumable.antitoxin",
+    "name": "Antitoxin",
+    "range": "Self",
+    "uses": 3,
+    "costG": 150,
+    "effect": "Removes poisoned status from user",
+    "tags": ["status-cure"]
+  },
+  {
+    "id": "consumable.panacea",
+    "name": "Panacea",
+    "range": "Self",
+    "uses": 3,
+    "costG": 1300,
+    "effect": "Removes all statuses from user",
+    "tags": ["status-cure"]
+  },
+  {
+    "id": "consumable.attacktonic",
+    "name": "Attack Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Attack until the end of the map",
+    "temporaryStatBonuses": {
+      "atk": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.speedtonic",
+    "name": "Speed Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Speed until the end of the map",
+    "temporaryStatBonuses": {
+      "spd": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.dexteritytonic",
+    "name": "Dexterity Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Dexterity until the end of the map",
+    "temporaryStatBonuses": {
+      "dex": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.lucktonic",
+    "name": "Luck Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Luck until the end of the map",
+    "temporaryStatBonuses": {
+      "luck": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.defensetonic",
+    "name": "Defense Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Defense until the end of the map",
+    "temporaryStatBonuses": {
+      "def": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.resistancetonic",
+    "name": "Resistance Tonic",
+    "range": "Self",
+    "uses": 3,
+    "costG": 700,
+    "effect": "User gains +2 Resistance until the end of the map",
+    "temporaryStatBonuses": {
+      "res": 2
+    },
+    "tags": ["stat-boost", "temporary"]
+  },
+  {
+    "id": "consumable.shinebarrier",
+    "name": "Shine Barrier",
+    "range": "1",
+    "uses": 5,
+    "costG": 500,
+    "effect": "Creates 1 impassable space adjacent to the user that lasts for three turns",
+    "tags": ["utility", "barrier"]
+  },
+  {
+    "id": "consumable.mine",
+    "name": "Mine",
+    "range": "1",
+    "uses": 3,
+    "costG": 600,
+    "effect": "Can be set on an adjacent space. When a unit ends their move action on that space, that unit takes 10 damage and the mine disappears",
+    "tags": ["utility", "trap"]
+  },
+  {
+    "id": "consumable.torch",
+    "name": "Torch",
+    "range": "Self",
+    "uses": 5,
+    "costG": 500,
+    "effect": "Increases sight in Fog of War, allowing party to see not only their current area, but all adjacent areas for 2 turns.",
+    "tags": ["utility", "vision"]
+  },
+  {
+    "id": "consumable.doorkey",
+    "name": "Door Key",
+    "range": "1",
+    "uses": 2,
+    "costG": 600,
+    "effect": "Opens an adjacent Door or Gate",
+    "tags": ["utility", "key"]
+  },
+  {
+    "id": "consumable.chestkey",
+    "name": "Chest Key",
+    "range": "1",
+    "uses": 2,
+    "costG": 200,
+    "effect": "Opens an adjacent Chest or Crate",
+    "tags": ["utility", "key"]
+  },
+  {
+    "id": "consumable.redgem",
+    "name": "Red Gem",
+    "range": "N/A",
+    "uses": 1,
+    "costG": 2500,
+    "effect": "Sells for 2500g",
+    "tags": ["valuable"]
+  },
+  {
+    "id": "consumable.bluegem",
+    "name": "Blue Gem",
+    "range": "N/A",
+    "uses": 1,
+    "costG": 5000,
+    "effect": "Sells for 5000g",
+    "tags": ["valuable"]
+  },
+  {
+    "id": "consumable.whitegem",
+    "name": "White Gem",
+    "range": "N/A",
+    "uses": 1,
+    "costG": 10000,
+    "effect": "Sells for 10000g",
+    "tags": ["valuable"]
+  }
+]

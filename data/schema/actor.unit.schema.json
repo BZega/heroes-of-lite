@@ -7,12 +7,18 @@
         "name",
         "class",
         "level",
-        "stats"
+        "combatStats"
     ],
     "properties": {
         "id": {
             "type": "string",
             "description": "Stable mechanical ID (e.g. actor.unit.hero)"
+        },
+
+        "type": {
+            "type": "string",
+            "enum": ["unit", "npc", "enemy"],
+            "description": "The type of actor"
         },
 
         "name": {
@@ -124,6 +130,15 @@
                     "type": "string",
                     "description": "ID of the currently equipped weapon"
                 }
+            }
+        },
+
+        "supports": {
+            "type": "object",
+            "description": "Support levels with other actors",
+            "additionalProperties": {
+                "type": "string",
+                "enum": ["C", "B", "A", "S"]
             }
         }
     }

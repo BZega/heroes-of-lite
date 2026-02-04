@@ -23,6 +23,7 @@
 
         "range": {
             "type": "string",
+            "enum": ["Self", "1", "N/A"],
             "description": "Can be Self, 1, or N/A"
         },
 
@@ -39,6 +40,27 @@
         "effect": {
             "type": "string",
             "description": "Description of the consumable's effect"
+        },
+
+        "temporaryStatBonuses": {
+            "type": "object",
+            "additionalProperties": false,
+            "default": {},
+            "properties": {
+                "hp": { "type": "number" },
+                "atk": { "type": "number" },
+                "def": { "type": "number" },
+                "luck": { "type": "number" },
+                "spd": { "type": "number" },
+                "dex": { "type": "number" },
+                "res": { "type": "number" }
+            }
+        },
+
+        "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
         }
     }
 }
