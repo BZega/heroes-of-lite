@@ -211,17 +211,26 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         }
 
         let alreadyHassAdvanced = false;
-        currentRefines.forEach(refine => {
-            if (droppedItem.system?.category === 'advanced') {
-                alreadyHassAdvanced = this._checkIfAdvanced(refine);
-            }
-        });
+        if (currentRefines[0]?.id) {
+            alreadyHassAdvanced = await this._checkIfAdvanced(currentRefines[0]);
+        } 
         if (alreadyHassAdvanced) {
+            console.log('HoL | alreadyHassAdvanced:', alreadyHassAdvanced);
+            ui.notifications.warn('This advanced refine cannot be combined with existing refines.');
+            return;
+        }
+        if (currentRefines[1]?.id) {
+            alreadyHassAdvanced = await this._checkIfAdvanced(currentRefines[1]);
+        }
+        if (alreadyHassAdvanced) {
+            console.log('HoL | alreadyHassAdvanced:', alreadyHassAdvanced);
             ui.notifications.warn('This advanced refine cannot be combined with existing refines.');
             return;
         }
 
-        const slotIndex = parseInt(event.currentTarget.dataset.slot);
+        console.log('HoL | Dropped refine item:', event.currentTarget);
+
+        const slotIndex = parseInt(event.currentTarget.dataset?.slot);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         
         refines[slotIndex] = {
@@ -269,17 +278,24 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
     }
 
     async _checkIfAdvanced(refine) {
-        if (!refine.id) return false;
+        console.log('HoL | Checking if existing refine is advanced:', refine);
+        if (!refine.id) {
+            console.log('HoL | Refine has no ID');
+            return false; 
+        }
         let refineItem = game.items.get(refine.id);
+        console.log('HoL | Existing refine item:', refineItem);
         if (!refineItem) {
             for (const pack of game.packs) {
                 if (pack.documentName === 'Item') {
                     refineItem = await pack.getDocument(refine.id);
+                    console.log('HoL | Fetched existing refine from pack:', refineItem);
                     if (refineItem) break;
                 }
             }
         }
         if (refineItem.system?.category === 'advanced') {
+            console.log('HoL | Existing refine is advanced:', refineItem);
             return true;
         }
         return false;
