@@ -132,20 +132,15 @@ async function seedWeapons() {
 }
 
 /**
- * Seed refines from the seed data file into the hol-refines compendium
+ * Seed refines from the seed data file into separate player and GM compendiums
  */
 async function seedRefines() {
-  const pack = game.packs.get('heroes-of-lite.hol-refines');
-  if (!pack) {
-    console.warn('HoL | hol-refines compendium pack not found');
+  const playerPack = game.packs.get('heroes-of-lite.hol-player-refines');
+  const gmPack = game.packs.get('heroes-of-lite.hol-gm-refines');
+  
+  if (!playerPack || !gmPack) {
+    console.warn('HoL | Player or GM refines compendium pack not found');
     return;
-  }
-
-  // Unlock the pack so we can add items
-  const wasLocked = pack.locked;
-  if (wasLocked) {
-    await pack.configure({ locked: false });
-    console.log('HoL | Unlocked hol-refines pack');
   }
 
   // Fetch refines from seed data
@@ -155,11 +150,25 @@ async function seedRefines() {
     
     console.log(`HoL | Found ${refines.length} refines to seed`);
     
-    // Get existing items in pack
-    const existingItems = await pack.getDocuments();
-    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
+    // Seed player refines
+    const playerWasLocked = playerPack.locked;
+    if (playerWasLocked) await playerPack.configure({ locked: false });
+    
+    const existingPlayerItems = await playerPack.getDocuments();
+    const existingPlayerIds = new Set(existingPlayerItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
+    
+    // Seed GM refines
+    const gmWasLocked = gmPack.locked;
+    if (gmWasLocked) await gmPack.configure({ locked: false });
+    
+    const existingGMItems = await gmPack.getDocuments();
+    const existingGMIds = new Set(existingGMItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
     
     for (const refineData of refines) {
+      const isGMOnly = refineData.category === 'gmOnly';
+      const targetPack = isGMOnly ? gmPack : playerPack;
+      const existingIds = isGMOnly ? existingGMIds : existingPlayerIds;
+      
       if (existingIds.has(refineData.id)) {
         continue;
       }
@@ -183,19 +192,17 @@ async function seedRefines() {
         }
       };
       
-      // Create the document in the pack
-      await Item.create(itemData, {pack: pack.collection});
+      // Create the document in the appropriate pack
+      await Item.create(itemData, {pack: targetPack.collection});
     }
+    
+    // Re-lock packs
+    if (playerWasLocked) await playerPack.configure({ locked: true });
+    if (gmWasLocked) await gmPack.configure({ locked: true });
     
     console.log('HoL | Refines seeding complete');
   } catch (error) {
     console.error('HoL | Error seeding refines:', error);
-  } finally {
-    // Re-lock the pack if it was locked before
-    if (wasLocked) {
-      await pack.configure({ locked: true });
-      console.log('HoL | Re-locked hol-refines pack');
-    }
   }
 }
 

@@ -28,50 +28,59 @@
   "packs": [
     {
       "name": "hol-templates-actors",
-      "label": "HoL - Templates - Actors",
+      "label": "Preset Units",
       "path": "packs/hol-templates-actors",
       "type": "Actor",
-      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
     },
     {
       "name": "hol-weapons",
-      "label": "HoL - Weapons",
+      "label": "Weapons",
       "path": "packs/hol-weapons",
       "type": "Item",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "hol-statuses",
-      "label": "HoL - Statuses",
+      "label": "Statuses",
       "path": "packs/hol-statuses",
       "type": "Item",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
 
     {
-      "name": "hol-key-items",
-      "label": "HoL - Key Items",
-      "path": "packs/hol-key-items",
+      "name": "hol-terrain",
+      "label": "Terrain",
+      "path": "packs/hol-terrain",
       "type": "Item",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
-      "name": "hol-refines",
-      "label": "HoL - Refines",
-      "path": "packs/hol-refines",
+      "name": "hol-player-refines",
+      "label": "Player Refines",
+      "path": "packs/hol-player-refines",
       "type": "Item",
+      "folder": "Refines",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
+    },
+    {
+      "name": "hol-gm-refines",
+      "label": "GM Refines",
+      "path": "packs/hol-gm-refines",
+      "type": "Item",
+      "folder": "Refines",
+      "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
     },
     {
       "name": "hol-consumables",
-      "label": "HoL - Consumables",
+      "label": "Consumables",
       "path": "packs/hol-consumables",
       "type": "Item",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
       "name": "hol-skills",
-      "label": "HoL - Skills",
+      "label": "Skills",
       "path": "packs/hol-skills",
       "type": "Item",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
