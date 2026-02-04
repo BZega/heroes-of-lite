@@ -8,7 +8,7 @@
                     <div class="inline-field">
                         <label>Range</label>
                         <select name="system.details.range">
-                            <option value="">-- Select --</option>
+                            <option value="">--</option>
                             <option value="Self" {{#if (eq system.details.range "Self")}}selected{{/if}}>Self</option>
                             <option value="1" {{#if (eq system.details.range "1")}}selected{{/if}}>1</option>
                             <option value="N/A" {{#if (eq system.details.range "N/A")}}selected{{/if}}>N/A</option>
@@ -16,11 +16,11 @@
                     </div>
                     <div class="inline-field">
                         <label>Uses</label>
-                        <input type="number" name="system.details.uses" value="{{system.details.uses}}" min="1" />
+                        <input type="number" name="system.details.uses" value="{{system.details.uses}}" min="1" style="width: 60px;" />
                     </div>
                     <div class="inline-field">
-                        <label>Cost (G)</label>
-                        <input type="number" name="system.details.costG" value="{{system.details.costG}}" min="0" />
+                        <label>Cost</label>
+                        <input type="number" name="system.details.costG" value="{{system.details.costG}}" min="0" style="width: 80px;" />
                     </div>
                 </div>
             </div>
