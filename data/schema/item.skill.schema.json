@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Consumable",
+    "title": "Skill",
     "type": "object",
     "required": [
         "id",
@@ -13,12 +13,12 @@
     "properties": {
         "id": {
             "type": "string",
-            "description": "Stable mechanical ID (e.g. consumable.base.herb)"
+            "description": "Stable mechanical ID (e.g. skill.action.drawback)"
         },
 
         "name": { 
             "type": "string",
-            "description": "The name of the consumable"
+            "description": "The name of the skill"
         },
 
         "type": {
@@ -44,12 +44,12 @@
 
         "requiredCharge": {
             "type": "string",
-            "description": "How many charges are required to acquire this skill. (Only Combat Arts need charges.)"
+            "description": "How many charges are required to activate this skill. (Only Combat Arts need charges.)"
         },
 
         "effect": {
             "type": "string",
-            "description": "Description of the consumable's effect"
+            "description": "Description of the skill's effect"
         }, 
 
         "statBonuses": {
@@ -66,13 +66,14 @@
                 "hit": { "type": "number" },
                 "mov": { "type": "number" },
                 "avoid": { "type": "number" },
-                "transformGuage": { "type": "number" }
+                "transformGauge": { "type": "number" }
             }        
         },
 
         "tags": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": { "type": "string" },
+            "default": []
         }
     }
 }
