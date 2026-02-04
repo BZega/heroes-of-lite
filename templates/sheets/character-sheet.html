@@ -1,0 +1,286 @@
+<form class="heroes-of-lite sheet actor character-sheet" autocomplete="off">
+    <header class="sheet-header">
+        <div class="header-content">
+            <div class="header-field">
+                <label>Name</label>
+                <input type="text" name="name" value="{{name}}" placeholder="Character Name"/>
+            </div>
+            <div class="header-field">
+                <label>Level</label>
+                <input type="number" name="system.level" value="{{system.level}}" min="1" max="20" />
+            </div>
+        </div>
+    </header>
+
+    <nav class="sheet-tabs tabs">
+        <a class="item" data-tab="character-info">Character Info</a>
+        <a class="item" data-tab="combat-stats">Combat Stats</a>
+        <a class="item" data-tab="non-combat-stats">Non-Combat Stats</a>
+        <a class="item" data-tab="inventory">Inventory</a>
+        <a class="item" data-tab="skills">Skills</a>
+        <a class="item" data-tab="supports">Supports</a>
+    </nav>
+
+    <section class="sheet-body">
+        <div class="main-layout">
+            <!-- Left Column (30%) -->
+            <div class="left-column">
+                <!-- HP Display -->
+                <div class="hp-display">
+                    <label>HP</label>
+                    <div class="hp-values">
+                        <input type="number" name="system.currentHP" value="{{system.currentHP}}" min="0" max="{{combatStatTotals.hp}}" />
+                        <span>/</span>
+                        <span class="max-hp">{{combatStatTotals.hp}}</span>
+                    </div>
+                </div>
+
+                <!-- Move, Con, Aid Row -->
+                <div class="derived-row">
+                    <div class="derived-stat">
+                        <label>Move</label>
+                        <span>{{system.derivedStats.move}}</span>
+                    </div>
+                    <div class="derived-stat">
+                        <label>Con</label>
+                        <span>{{system.derivedStats.con}}</span>
+                    </div>
+                    <div class="derived-stat">
+                        <label>Aid</label>
+                        <span>{{system.derivedStats.aid}}</span>
+                    </div>
+                </div>
+
+                <!-- Combat Preview Table -->
+                <div class="combat-preview">
+                    <div class="preview-header">
+                        <span></span>
+                        <span>Bonus</span>
+                        <span>Total</span>
+                    </div>
+                    <div class="preview-row">
+                        <label>Power</label>
+                        <input type="number" name="system.bonuses.power" value="{{system.bonuses.power}}" placeholder="0" />
+                        <span class="total">{{system.derivedStats.power}}</span>
+                    </div>
+                    <div class="preview-row">
+                        <label>Tri</label>
+                        <input type="number" name="system.bonuses.tri" value="{{system.bonuses.tri}}" placeholder="0" />
+                        <span class="total">{{system.derivedStats.tri}}</span>
+                    </div>
+                    <div class="preview-row">
+                        <label>Hit</label>
+                        <input type="number" name="system.bonuses.hit" value="{{system.bonuses.hit}}" placeholder="0" />
+                        <span class="total">{{system.derivedStats.hit}}</span>
+                    </div>
+                    <div class="preview-row">
+                        <label>Avoid</label>
+                        <input type="number" name="system.bonuses.avoid" value="{{system.bonuses.avoid}}" placeholder="0" />
+                        <span class="total">{{system.derivedStats.avoid}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (70%) -->
+            <div class="right-column">
+                <!-- Character Info Tab -->
+                <div class="tab-content" data-tab="character-info">
+                    <div class="character-info-grid">
+                        <div class="info-field">
+                            <label>Race</label>
+                            <input type="text" name="system.race" value="{{system.race}}" placeholder="Human" />
+                        </div>
+                        <div class="info-field">
+                            <label>Money (G)</label>
+                            <input type="number" name="system.money" value="{{system.money}}" min="0" />
+                        </div>
+                        <div class="info-field">
+                            <label>Movement Type</label>
+                            <select name="system.movementType">
+                                <option value="">--</option>
+                                <option value="infantry" {{#if (eq system.movementType "infantry")}}selected{{/if}}>Infantry</option>
+                                <option value="cavalry" {{#if (eq system.movementType "cavalry")}}selected{{/if}}>Cavalry</option>
+                                <option value="flier" {{#if (eq system.movementType "flier")}}selected{{/if}}>Flier</option>
+                                <option value="armor" {{#if (eq system.movementType "armor")}}selected{{/if}}>Armor</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <label>Size</label>
+                            <select name="system.size">
+                                <option value="">--</option>
+                                <option value="small" {{#if (eq system.size "small")}}selected{{/if}}>Small</option>
+                                <option value="medium" {{#if (eq system.size "medium")}}selected{{/if}}>Medium</option>
+                                <option value="large" {{#if (eq system.size "large")}}selected{{/if}}>Large</option>
+                                <option value="extraLarge" {{#if (eq system.size "extraLarge")}}selected{{/if}}>Extra Large</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <label>Status</label>
+                            <select name="system.status">
+                                <option value="healthy" {{#if (eq system.status "healthy")}}selected{{/if}}>Healthy</option>
+                                <option value="poisoned" {{#if (eq system.status "poisoned")}}selected{{/if}}>Poisoned</option>
+                                <option value="asleep" {{#if (eq system.status "asleep")}}selected{{/if}}>Asleep</option>
+                                <option value="stunned" {{#if (eq system.status "stunned")}}selected{{/if}}>Stunned</option>
+                                <option value="burned" {{#if (eq system.status "burned")}}selected{{/if}}>Burned</option>
+                                <option value="frozen" {{#if (eq system.status "frozen")}}selected{{/if}}>Frozen</option>
+                                <option value="paralyzed" {{#if (eq system.status "paralyzed")}}selected{{/if}}>Paralyzed</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
+                            <label>Charge</label>
+                            <div class="charge-counter">
+                                <button type="button" data-action="decrementCharge">-</button>
+                                <span class="charge-value">{{system.derivedStats.charge}}</span>
+                                <button type="button" data-action="incrementCharge">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combat Stats Tab -->
+                <div class="tab-content" data-tab="combat-stats">
+                    <div class="stat-table">
+                        <div class="stat-header">
+                            <span>Stat</span>
+                            <span>Total</span>
+                            <span>Temp</span>
+                            <span>Bonus</span>
+                            <span>Base</span>
+                        </div>
+                        {{#each combatStatTotals as |value key|}}
+                        <div class="stat-row">
+                            <label>{{key}}</label>
+                            <span class="total">{{value}}</span>
+                            <input type="number" name="system.tempStats.{{key}}" value="{{lookup ../system.tempStats key}}" placeholder="0" />
+                            <input type="number" name="system.bonusStats.{{key}}" value="{{lookup ../system.bonusStats key}}" placeholder="0" />
+                            <input type="number" name="system.combatStats.{{key}}" value="{{lookup ../system.combatStats key}}" min="3" />
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <!-- Non-Combat Stats Tab -->
+                <div class="tab-content" data-tab="non-combat-stats">
+                    <div class="non-combat-header">
+                        <h3>Non-Combat Stats</h3>
+                        <div class="unallocated">
+                            <label>Unallocated:</label>
+                            <span>{{unallocatedPoints}}</span>
+                        </div>
+                    </div>
+                    <div class="non-combat-grid">
+                        <div class="stat-field">
+                            <label>Strength</label>
+                            <input type="number" name="system.nonCombatStats.strength" value="{{system.nonCombatStats.strength}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Intellect</label>
+                            <input type="number" name="system.nonCombatStats.intellect" value="{{system.nonCombatStats.intellect}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Perception</label>
+                            <input type="number" name="system.nonCombatStats.perception" value="{{system.nonCombatStats.perception}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Charisma</label>
+                            <input type="number" name="system.nonCombatStats.charisma" value="{{system.nonCombatStats.charisma}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Fate</label>
+                            <input type="number" name="system.nonCombatStats.fate" value="{{system.nonCombatStats.fate}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Finesse</label>
+                            <input type="number" name="system.nonCombatStats.finesse" value="{{system.nonCombatStats.finesse}}" min="0" max="3" />
+                        </div>
+                        <div class="stat-field">
+                            <label>Acrobatics</label>
+                            <input type="number" name="system.nonCombatStats.acrobatics" value="{{system.nonCombatStats.acrobatics}}" min="0" max="3" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Tab -->
+                <div class="tab-content" data-tab="inventory">
+                    <div class="inventory-section">
+                        <h3>Weapons</h3>
+                        <div class="weapon-list">
+                            {{#each weaponSlots}}
+                            <div class="weapon-slot" data-slot-type="weapon" data-slot-index="{{@index}}">
+                                {{#if this.item}}
+                                    <div class="item-content">
+                                        {{#if this.equipped}}<span class="equipped-badge">E</span>{{/if}}
+                                        <span class="item-name">{{this.item.name}}</span>
+                                        {{#unless this.equipped}}
+                                        <button type="button" data-action="equipWeapon" data-weapon-id="{{this.item.id}}">Equip</button>
+                                        {{/unless}}
+                                        <button type="button" data-action="removeItem" data-item-id="{{this.item.id}}" data-item-type="weapon">×</button>
+                                    </div>
+                                {{else}}
+                                    <span class="empty-slot">Drop weapon here</span>
+                                {{/if}}
+                            </div>
+                            {{/each}}
+                        </div>
+
+                        <h3>Items</h3>
+                        <div class="item-list">
+                            {{#each itemSlots}}
+                            <div class="item-slot" data-slot-type="item" data-slot-index="{{@index}}">
+                                {{#if this.item}}
+                                    <div class="item-content">
+                                        <span class="item-name">{{this.item.name}}</span>
+                                        <button type="button" data-action="removeItem" data-item-id="{{this.item.id}}" data-item-type="item">×</button>
+                                    </div>
+                                {{else}}
+                                    <span class="empty-slot">Drop item here</span>
+                                {{/if}}
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Tab -->
+                <div class="tab-content" data-tab="skills">
+                    <div class="skills-grid">
+                        {{#each skillSlots}}
+                        <div class="skill-slot" data-slot-type="skill" data-slot-index="{{@index}}">
+                            {{#if this.item}}
+                                <div class="skill-content">
+                                    <span class="skill-name">{{this.item.name}}</span>
+                                </div>
+                            {{else}}
+                                <span class="empty-slot">Drop skill here</span>
+                            {{/if}}
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <!-- Supports Tab -->
+                <div class="tab-content" data-tab="supports">
+                    <div class="supports-section">
+                        <h3>Support Partners</h3>
+                        <div class="support-list">
+                            {{#each supports as |level actorId|}}
+                            <div class="support-entry">
+                                <span class="support-name">{{actorId}}</span>
+                                <select name="system.supports.{{actorId}}">
+                                    <option value="C" {{#if (eq level "C")}}selected{{/if}}>C</option>
+                                    <option value="B" {{#if (eq level "B")}}selected{{/if}}>B</option>
+                                    <option value="A" {{#if (eq level "A")}}selected{{/if}}>A</option>
+                                    <option value="S" {{#if (eq level "S")}}selected{{/if}}>S</option>
+                                </select>
+                            </div>
+                            {{/each}}
+                        </div>
+                        <div class="support-slot">
+                            <span class="empty-slot">Drop actor here to add support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

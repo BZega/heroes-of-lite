@@ -517,3 +517,600 @@
   width: 500px;
   height: 500px;
 }
+
+/* Character Sheet Styles */
+.heroes-of-lite.actor-sheet.character-sheet {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.heroes-of-lite.actor-sheet .sheet-header {
+  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.heroes-of-lite.actor-sheet .header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.heroes-of-lite.actor-sheet .header-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.heroes-of-lite.actor-sheet .header-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.heroes-of-lite.actor-sheet .header-field input {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+.heroes-of-lite.actor-sheet .header-field input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.heroes-of-lite.actor-sheet .sheet-tabs {
+  display: flex;
+  border-bottom: 2px solid #e74c3c;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+}
+
+.heroes-of-lite.actor-sheet .sheet-tabs .item {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #2c3e50;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .sheet-tabs .item:hover {
+  background: #e8e8e8;
+  color: #e74c3c;
+}
+
+.heroes-of-lite.actor-sheet .sheet-tabs .item.active {
+  background: white;
+  color: #e74c3c;
+  border-bottom: 3px solid #e74c3c;
+}
+
+.heroes-of-lite.actor-sheet .sheet-body {
+  flex: 1;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.heroes-of-lite.actor-sheet .main-layout {
+  display: flex;
+  height: 100%;
+  gap: 0;
+}
+
+/* Left Column (30%) */
+.heroes-of-lite.actor-sheet .left-column {
+  width: 30%;
+  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
+  color: white;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.heroes-of-lite.actor-sheet .hp-display {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.heroes-of-lite.actor-sheet .hp-display label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.heroes-of-lite.actor-sheet .hp-values {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.heroes-of-lite.actor-sheet .hp-values input {
+  width: 60px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.25rem;
+  color: #1a1a1a;
+}
+
+.heroes-of-lite.actor-sheet .hp-values .max-hp {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.heroes-of-lite.actor-sheet .derived-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .derived-stat {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.heroes-of-lite.actor-sheet .derived-stat label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.heroes-of-lite.actor-sheet .derived-stat span {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.heroes-of-lite.actor-sheet .combat-preview {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.heroes-of-lite.actor-sheet .preview-header {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.heroes-of-lite.actor-sheet .preview-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .preview-row label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.heroes-of-lite.actor-sheet .preview-row input {
+  width: 100%;
+  text-align: center;
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+}
+
+.heroes-of-lite.actor-sheet .preview-row .total {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Right Column (70%) */
+.heroes-of-lite.actor-sheet .right-column {
+  width: 70%;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.heroes-of-lite.actor-sheet .tab-content {
+  display: none;
+}
+
+.heroes-of-lite.actor-sheet .tab-content.active {
+  display: block;
+}
+
+/* Character Info Tab */
+.heroes-of-lite.actor-sheet .character-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.heroes-of-lite.actor-sheet .info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.heroes-of-lite.actor-sheet .info-field label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.heroes-of-lite.actor-sheet .info-field input,
+.heroes-of-lite.actor-sheet .info-field select {
+  padding: 0.5rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  background: white;
+  font-size: 1rem;
+}
+
+.heroes-of-lite.actor-sheet .charge-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .charge-counter button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #3498db;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .charge-counter button:hover {
+  background: #2980b9;
+}
+
+.heroes-of-lite.actor-sheet .charge-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Combat Stats Tab */
+.heroes-of-lite.actor-sheet .stat-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .stat-header,
+.heroes-of-lite.actor-sheet .stat-row {
+  display: grid;
+  grid-template-columns: 100px 80px 80px 80px 80px;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .stat-header {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  background: #ecf0f1;
+  border-radius: 4px;
+}
+
+.heroes-of-lite.actor-sheet .stat-row {
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+}
+
+.heroes-of-lite.actor-sheet .stat-row label {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #1a3a52;
+}
+
+.heroes-of-lite.actor-sheet .stat-row input {
+  text-align: center;
+  padding: 0.4rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .stat-row .total {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+/* Non-Combat Stats Tab */
+.heroes-of-lite.actor-sheet .non-combat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e74c3c;
+}
+
+.heroes-of-lite.actor-sheet .non-combat-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.heroes-of-lite.actor-sheet .unallocated {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.heroes-of-lite.actor-sheet .unallocated span {
+  background: #3498db;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+}
+
+.heroes-of-lite.actor-sheet .non-combat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.heroes-of-lite.actor-sheet .stat-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.heroes-of-lite.actor-sheet .stat-field label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.heroes-of-lite.actor-sheet .stat-field input {
+  padding: 0.5rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Inventory Tab */
+.heroes-of-lite.actor-sheet .inventory-section h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .weapon-list,
+.heroes-of-lite.actor-sheet .item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.heroes-of-lite.actor-sheet .weapon-slot,
+.heroes-of-lite.actor-sheet .item-slot {
+  padding: 0.75rem;
+  border: 2px dashed #bdc3c7;
+  border-radius: 4px;
+  background: white;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .weapon-slot.drag-over,
+.heroes-of-lite.actor-sheet .item-slot.drag-over {
+  border-color: #3498db;
+  background: #ecf8ff;
+}
+
+.heroes-of-lite.actor-sheet .weapon-slot .empty-slot,
+.heroes-of-lite.actor-sheet .item-slot .empty-slot {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.heroes-of-lite.actor-sheet .item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.heroes-of-lite.actor-sheet .equipped-badge {
+  background: #27ae60;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .item-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.heroes-of-lite.actor-sheet .item-content button {
+  padding: 0.25rem 0.75rem;
+  border: none;
+  background: #3498db;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .item-content button:hover {
+  background: #2980b9;
+}
+
+.heroes-of-lite.actor-sheet .item-content button[data-action="removeItem"] {
+  background: #e74c3c;
+  font-size: 1.2rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  line-height: 1;
+}
+
+.heroes-of-lite.actor-sheet .item-content button[data-action="removeItem"]:hover {
+  background: #c0392b;
+}
+
+/* Skills Tab */
+.heroes-of-lite.actor-sheet .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.heroes-of-lite.actor-sheet .skill-slot {
+  padding: 1rem;
+  border: 2px dashed #bdc3c7;
+  border-radius: 4px;
+  background: white;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .skill-slot.drag-over {
+  border-color: #3498db;
+  background: #ecf8ff;
+}
+
+.heroes-of-lite.actor-sheet .skill-slot .empty-slot {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.heroes-of-lite.actor-sheet .skill-content {
+  text-align: center;
+}
+
+.heroes-of-lite.actor-sheet .skill-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Supports Tab */
+.heroes-of-lite.actor-sheet .supports-section h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .support-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.heroes-of-lite.actor-sheet .support-entry {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+}
+
+.heroes-of-lite.actor-sheet .support-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.heroes-of-lite.actor-sheet .support-entry select {
+  padding: 0.4rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .support-slot {
+  padding: 1rem;
+  border: 2px dashed #bdc3c7;
+  border-radius: 4px;
+  background: white;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .support-slot.drag-over {
+  border-color: #3498db;
+  background: #ecf8ff;
+}
+
+.heroes-of-lite.actor-sheet .support-slot .empty-slot {
+  color: #95a5a6;
+  font-style: italic;
+}

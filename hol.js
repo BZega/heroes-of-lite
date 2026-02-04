@@ -1,6 +1,7 @@
 import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
 import HolRefineSheet from './modules/sheets/holRefineSheet.js';
 import HolConsumableSheet from './modules/sheets/holConsumableSheet.js';
+import HolActorSheet from './modules/sheets/holActorSheet.js';
 /**
  * Heroes of Lite - Main System File
  * Initializes the Heroes of Lite system for Foundry VTT
@@ -20,6 +21,17 @@ Hooks.once('init', async function() {
   
   Handlebars.registerHelper('join', function(array, separator) {
     return Array.isArray(array) ? array.join(separator) : '';
+  });
+
+  Handlebars.registerHelper('eq', function(a, b) {
+    return a === b;
+  });
+  
+  // Register actor sheets by type
+  Actors.registerSheet('heroes-of-lite', HolActorSheet, {
+    types: ['unit'],
+    makeDefault: true,
+    label: "HoL Character Sheet"
   });
   
   // Register item sheets by type

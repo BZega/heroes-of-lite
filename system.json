@@ -60,7 +60,6 @@
       "label": "Player Refines",
       "path": "packs/hol-player-refines",
       "type": "Item",
-      "folder": "Refines",
       "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" }
     },
     {
@@ -68,7 +67,6 @@
       "label": "GM Refines",
       "path": "packs/hol-gm-refines",
       "type": "Item",
-      "folder": "Refines",
       "ownership": { "PLAYER": "NONE", "ASSISTANT": "OWNER" }
     },
     {

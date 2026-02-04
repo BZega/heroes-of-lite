@@ -26,6 +26,30 @@
             "description": "The name of the actor"
         },
 
+        "race": {
+            "type": "string",
+            "description": "The characters race"
+        },
+
+        "money": {
+            "type": "number",
+            "description": "The amount of money (G) the actor has"
+        },
+
+        "size": {
+            "type": "string",
+            "enum": ["small", "medium", "large", "extraLarge"],
+            "description": "The size category of the actor"
+        },
+
+        "status": {
+            "type": "string",
+            "enum": ["healthy", "poisoned", "asleep", "stunned", "burned", "frozen", "paralyzed"],
+            "description": "The current status condition of the actor"
+        },
+
+        
+
         "weaponProficiency": {
             "type": "string",
             "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone", "curse"],
@@ -77,6 +101,8 @@
             }
         },
 
+        
+
         "derivedStats": {
             "type": "object",
             "description": "Derived stats of the actor",
@@ -88,7 +114,10 @@
                 "tri": { "type": "number" },
                 "size": { "type": "number" },
                 "con": { "type": "number" },
-                "aid": { "type": "number" }
+                "aid": { "type": "number" },
+                "charge": { "type": "number" },
+                "move": { "type": "number" }
+
             }
         },
 
