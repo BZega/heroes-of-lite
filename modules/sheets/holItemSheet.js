@@ -22,23 +22,6 @@ export default class HolItemSheet extends foundry.applications.api.HandlebarsApp
         }
     };
 
-    _initializeParts() {
-        const parts = super._initializeParts();
-        
-        // Override the template based on item type
-        const itemType = this.document?.type || 'weapon';
-        const templatePath = `systems/heroes-of-lite/templates/sheets/${itemType}-sheet.html`;
-        
-        console.log(`HolItemSheet | Initializing parts for type: ${itemType}, template: ${templatePath}`);
-        
-        // Return new parts object with dynamic template
-        return {
-            form: {
-                template: templatePath
-            }
-        };
-    }
-
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
         const item = this.document;

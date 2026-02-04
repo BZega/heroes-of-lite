@@ -25,7 +25,7 @@
 
         "weaponGroup": {
             "type": "string",
-            "enum": ["sword", "lance", "axe", "bow", "anima", "light", "staff", "dagger", "dark", "strike", "talons", "breath", "shiftingStone", "curse"]
+            "enum": ["sword", "lance", "axe", "bow", "anima", "light", "staff", "dagger", "dark", "strike", "talons", "breath", "shiftingStone", "curse", "siege"]
         },
 
         "damageType": {

@@ -50,6 +50,29 @@
         "effect": {
             "type": "string",
             "description": "Description of the consumable's effect"
+        }, 
+
+        "statBonuses": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "hp": { "type": "number" },
+                "atk": { "type": "number" },
+                "def": { "type": "number" },
+                "luck": { "type": "number" },
+                "spd": { "type": "number" },
+                "dex": { "type": "number" },
+                "res": { "type": "number" },
+                "hit": { "type": "number" },
+                "mov": { "type": "number" },
+                "avoid": { "type": "number" },
+                "transformGuage": { "type": "number" }
+            }        
+        },
+
+        "tags": {
+            "type": "array",
+            "items": { "type": "string" }
         }
     }
 }

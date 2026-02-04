@@ -1,1 +1,21 @@
-[]
+[
+    {
+        "id": "skill.action.drawBack",
+        "name": "Draw Back",
+        "type": "action",
+        "typeGroup": "all-access",
+        "prereq": "None",
+        "effect": "The user moves themself and an adjacent ally back 1 space."
+    },
+    {
+        "id": "skill.passive.HP+3",
+        "name": "HP +3",
+        "type": "passive",
+        "typeGroup": "all-access",
+        "prereq": "None",
+        "effect": "Permanently raise the user's HP stat by 3.",
+        "statBonuses": {
+            "hp": 3
+        }
+    }
+]

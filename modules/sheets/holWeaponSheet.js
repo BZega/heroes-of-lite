@@ -72,9 +72,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
     _onRender(context, options) {
         super._onRender(context, options);
 
-        console.log('HoL | _onRender called');
-        console.log('HoL | this.element:', this.element);
-
         const html = this.element;
 
         // Make refine names clickable to open refine sheet (allow for both compendium and non-compendium)
@@ -85,9 +82,7 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
         // Make innate attribute tags clickable to open refine sheet (allow for both compendium and non-compendium)
         const innateAttributeTags = html.querySelectorAll('.innate-attribute-tag');
-        console.log('HoL | Found innate attribute tags:', innateAttributeTags.length);
-        innateAttributeTags.forEach((tag, index) => {
-            console.log(`HoL | Attaching click listener to tag ${index}:`, tag);
+        innateAttributeTags.forEach(tag => {
             tag.addEventListener('click', this._onInnateAttributeClick.bind(this));
         });
 
@@ -119,7 +114,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         event.stopPropagation();
 
         const refineId = event.currentTarget.dataset.refineId;
-        console.log('HoL | Innate attribute clicked, refineId:', refineId);
         
         if (!refineId) {
             console.warn('HoL | No refineId found on clicked element');
@@ -128,7 +122,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
         // Find the refine item
         const refineItem = await this._getRefineById(refineId);
-        console.log('HoL | Found refine item:', refineItem);
         
         if (refineItem) {
             refineItem.sheet.render(true);
@@ -210,7 +203,8 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             return;
         }
 
-        const slotIndex = parseInt(event.currentTarget.dataset?.slot);
+        const slotElement = event.currentTarget.closest('.data-slot') || event.currentTarget;
+        const slotIndex = parseInt(slotElement.dataset?.slot);
         const isDroppedAdvanced = droppedItem.system?.category === 'advanced';
         const isDroppedGMOnly = droppedItem.system?.category === 'gmOnly';
         
@@ -238,7 +232,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             }
         }
 
-        console.log('HoL | Dropped refine item:', event.currentTarget);
         let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
         
         refines[slotIndex] = {
@@ -247,9 +240,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         };
 
         const newName = this._generateWeaponName(refines);
-
-        console.log('HoL | Dropped refine stat bonuses:', droppedItem);
-        console.log('Hol | Current weapon stats:', this.document);
 
         const mightModifier = droppedItem.system?.statBonuses.might || 0;
         const rangeMinModifier = droppedItem.system?.statBonuses.minRange || 0;
@@ -286,24 +276,19 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
     }
 
     async _checkIfAdvanced(refine) {
-        console.log('HoL | Checking if existing refine is advanced:', refine);
         if (!refine.id) {
-            console.log('HoL | Refine has no ID');
             return false; 
         }
         let refineItem = game.items.get(refine.id);
-        console.log('HoL | Existing refine item:', refineItem);
         if (!refineItem) {
             for (const pack of game.packs) {
                 if (pack.documentName === 'Item') {
                     refineItem = await pack.getDocument(refine.id);
-                    console.log('HoL | Fetched existing refine from pack:', refineItem);
                     if (refineItem) break;
                 }
             }
         }
         if (refineItem.system?.category === 'advanced') {
-            console.log('HoL | Existing refine is advanced:', refineItem);
             return true;
         }
         return false;
@@ -385,10 +370,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
         if (refines[1]?.name) {
             parts.push(refines[1].name);
         }
-        
-        console.log('HoL | Generating weapon name with refines:', refines);
-        console.log('HoL | Weapon group:', weaponGroup);
-
 
         if ((weaponGroup !== 'staff' || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'staff')) || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'dark')) {
             parts.push(weaponType);
@@ -423,8 +404,6 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
                 }
             }
         }
-        console.log('HoL | Removing refine:', refineId);
-        console.log('HoL | Refine item data:', refineItem);
 
         const mightModifier = refineItem?.system?.statBonuses.might || 0;
         const rangeMinModifier = refineItem?.system?.statBonuses.minRange || 0;
@@ -473,21 +452,15 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
 
     async _getRefineById(refineId) {
         let refineItem = game.items.get(refineId);
-        console.log('HoL | Looking up refine by ID:', refineId);
-        console.log('HoL | Found refine in world items:', refineItem);
         if (!refineItem) {
             for (const pack of game.packs) {
                 if (pack.documentName === 'Item') {
-                    console.log('HoL | Searching pack for refine:', pack.collection);
                     const items = await pack.getDocuments();
-                    console.log('HoL | Pack items:', items.length, 'items');
                     refineItem = items.find(i => {
                         const matchesId = i.id === refineId;
                         const matchesSourceId = i.flags?.['heroes-of-lite']?.sourceId === refineId;
-                        console.log(`HoL | Checking item ${i.name}: id=${i.id}, sourceId=${i.flags?.['heroes-of-lite']?.sourceId}, matchesId=${matchesId}, matchesSourceId=${matchesSourceId}`);
                         return matchesId || matchesSourceId;
                     });
-                    console.log('HoL | Found refine in pack:', refineItem);
                     if (refineItem) break;
                 }
             }

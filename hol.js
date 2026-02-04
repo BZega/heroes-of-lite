@@ -83,7 +83,6 @@ async function seedWeapons() {
     
     for (const weaponData of weapons) {
       if (existingNames.has(weaponData.name)) {
-        console.log(`HoL | Weapon already exists: ${weaponData.name}`);
         continue;
       }
       
@@ -110,7 +109,6 @@ async function seedWeapons() {
       
       // Create the document in the pack
       await Item.create(itemData, {pack: pack.collection});
-      console.log(`HoL | Created weapon: ${weaponData.name}`);
     }
     
     console.log('HoL | Weapons seeding complete');
@@ -155,7 +153,6 @@ async function seedRefines() {
     
     for (const refineData of refines) {
       if (existingIds.has(refineData.id)) {
-        console.log(`HoL | Refine already exists: ${refineData.name}`);
         continue;
       }
       
@@ -180,7 +177,6 @@ async function seedRefines() {
       
       // Create the document in the pack
       await Item.create(itemData, {pack: pack.collection});
-      console.log(`HoL | Created refine: ${refineData.name}`);
     }
     
     console.log('HoL | Refines seeding complete');

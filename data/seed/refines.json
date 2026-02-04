@@ -57,7 +57,7 @@
     "name": "Scalerending",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "anima", "shiftingStone"],
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "anima", "shiftingStone", "siege"],
     "description": "Deals effective damage against units with the Scaled trait.",
     "tags": ["effective:scaled"]
   },
@@ -66,7 +66,7 @@
     "name": "Furflaying",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "shiftingStone"],
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "shiftingStone", "siege"],
     "description": "Deals effective damage against units with the Furred trait.",
     "tags": ["effective:furred"]
   },
@@ -75,7 +75,7 @@
     "name": "Wingclipping",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponGroups": ["bow", "anima"],
+    "appliesToWeaponGroups": ["bow", "anima", "siege"],
     "description": "Deals effective damage against units with the Winged trait.",
     "tags": ["effective:winged"]
   },
@@ -84,7 +84,7 @@
     "name": "Fiendslaying",
     "category": "basic",
     "costG": 400,
-    "appliesToWeaponGroups": ["sword", "lance", "axe", "bow", "light"],
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "bow", "light", "siege"],
     "description": "Deals effective damage against units with the Fiendish trait.",
     "tags": ["effective:fiendish"]
   },
@@ -549,7 +549,7 @@
     "name": "Cheap",
     "category": "gmOnly",
     "costG": -200,
-    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone"],
+    "appliesToWeaponGroups": ["sword", "lance", "axe", "dagger", "bow", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone", "siege"],
     "description": "Subtracts -2 from the Weapon's Might. Cannot be removed or changed.",
     "statBonuses": {
       "might": -2
@@ -586,5 +586,16 @@
       "might": 6
     },
     "tags": ["accuracyCheckBetween:1-6", "selfDamagerequires:hit"]
+  },
+  {
+    "id": "refine.heavy",
+    "name": "Heavy",
+    "category": "basic",
+    "costG": 0,
+    "appliesToWeaponGroups": ["siege"],
+    "description": "Adds +3 to the Weapon's Might.",
+    "statBonuses": {
+      "might": 3
+    }
   }
 ]

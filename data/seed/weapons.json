@@ -264,5 +264,43 @@
       "maxAdvanced": 1,
       "noDuplicates": true
     }
+  },
+  {
+    "id": "weapon.siege.stonehoist",
+    "name": "Stone Hoist",
+    "weaponGroup": "siege",
+    "damageType": "physical",
+    "range": {
+      "min": 3,
+      "max": 10
+    },
+    "might": 10,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
+  },
+  {
+    "id": "weapon.siege.magicorb",
+    "name": "Magic Orb",
+    "weaponGroup": "siege",
+    "damageType": "magical",
+    "range": {
+      "min": 2,
+      "max": 10
+    },
+    "might": 10,
+    "costG": 500,
+    "innateAttributes": [],
+    "attributes": [],
+    "attributeRules": {
+      "maxAttributes": 2,
+      "maxAdvanced": 1,
+      "noDuplicates": true
+    }
   }
 ]
