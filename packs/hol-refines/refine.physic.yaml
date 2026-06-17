@@ -1,0 +1,23 @@
+_id: 'refine.physic'
+name: 'Physic'
+type: 'loot'
+system:
+  description:
+    value: 'Gives all staff Effects 1-7 Range.'
+  cost:
+    value: 1000
+  customData:
+    category: 'advanced'
+    appliesToWeaponGroups:
+      - staff
+    statBonuses:
+      minRange: 1
+      maxRange: 7
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.physic'

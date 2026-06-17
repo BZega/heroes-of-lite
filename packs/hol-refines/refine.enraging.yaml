@@ -1,0 +1,24 @@
+_id: 'refine.enraging'
+name: 'Enraging'
+type: 'loot'
+system:
+  description:
+    value: 'If the user initiates combat and their attack hits, the foe becomes Berserk after combat.'
+  cost:
+    value: 200
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - curse
+    tags:
+      - requires:initiator
+      - requires:hit
+      - status:berserk
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.enraging'

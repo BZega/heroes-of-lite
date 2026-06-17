@@ -1,0 +1,26 @@
+_id: 'refine.half'
+name: 'Half'
+type: 'loot'
+system:
+  description:
+    value: 'If the attack hits, instead of dealing damage, the opponent''s remaining HP is halved. Cannot Critical, Follow-Up Attack, or bring their HP to 0.'
+  cost:
+    value: 1000
+  customData:
+    category: 'gmOnly'
+    appliesToWeaponGroups:
+      - curse
+    tags:
+      - requires:hit
+      - effect:replaceDamage:halveRemainingHP
+      - limit:noCrit
+      - limit:noFollowUp
+      - limit:noLethal
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.half'
