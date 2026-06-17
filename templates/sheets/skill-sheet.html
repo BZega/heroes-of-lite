@@ -1,0 +1,45 @@
+<form class="heroes-of-lite sheet item skill-sheet" autocomplete="off">
+    <header class="sheet-header">
+        <div class="header-content">
+            <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
+            <div class="header-info" style="flex: 1;">
+                <h1><input type="text" name="name" value="{{name}}" placeholder="Skill Name"/></h1>
+                <div class="header-details">
+                    <div class="inline-field">
+                        <label>Type</label>
+                        <select name="system.attributes.type">
+                            <option value="">--</option>
+                            <option value="technique" {{#if (eq system.attributes.type "technique")}}selected{{/if}}>Technique</option>
+                            <option value="action"    {{#if (eq system.attributes.type "action")}}selected{{/if}}>Action</option>
+                            <option value="strategy"  {{#if (eq system.attributes.type "strategy")}}selected{{/if}}>Strategy</option>
+                            <option value="reflex"    {{#if (eq system.attributes.type "reflex")}}selected{{/if}}>Reflex</option>
+                            <option value="passive"   {{#if (eq system.attributes.type "passive")}}selected{{/if}}>Passive</option>
+                        </select>
+                    </div>
+                    <div class="inline-field">
+                        <label>Group</label>
+                        <input type="text" name="system.details.typeGroup" value="{{system.details.typeGroup}}" placeholder="all-access" />
+                    </div>
+                    <div class="inline-field">
+                        <label>Charge</label>
+                        <input type="text" name="system.details.requiredCharge" value="{{system.details.requiredCharge}}" placeholder="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="sheet-body">
+        <div class="form-group">
+            <label>Prerequisites</label>
+            <input type="text" name="system.details.prerequisite" value="{{join system.details.prerequisite ', '}}" placeholder="level:5, weapon:sword|lance|axe" />
+        </div>
+        <div class="form-group">
+            <label>Effect</label>
+            <textarea name="system.details.effect" rows="10">{{system.details.effect}}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Tags</label>
+            <input type="text" name="system.details.tags" value="{{join system.details.tags ', '}}" placeholder="combatArt, exclusive" />
+        </div>
+    </section>
+</form>

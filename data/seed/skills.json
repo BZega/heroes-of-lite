@@ -1,21 +1,1490 @@
 [
-    {
-        "id": "skill.action.drawBack",
-        "name": "Draw Back",
-        "type": "action",
-        "typeGroup": "all-access",
-        "prereq": "None",
-        "effect": "The user moves themself and an adjacent ally back 1 space."
-    },
-    {
-        "id": "skill.passive.HP+3",
-        "name": "HP +3",
-        "type": "passive",
-        "typeGroup": "all-access",
-        "prereq": "None",
-        "effect": "Permanently raise the user's HP stat by 3.",
-        "statBonuses": {
-            "hp": 3
-        }
-    }
+  {
+    "id": "skill.draw-back",
+    "name": "Draw Back",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user moves themself and an adjacent ally back 1 space.",
+    "tags": ["movement:self", "movement:ally", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.obstruct",
+    "name": "Obstruct",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "When user has 1/2 or more HP, any opponent that moves onto a space adjacent to the user immediately ends their movement.",
+    "tags": ["condition:hp>=50%", "effect:endMovement", "target:enemyAdjacent"]
+  },
+  {
+    "id": "skill.pass",
+    "name": "Pass",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user can move through enemies. Ignores Obstruct.",
+    "tags": ["effect:moveThroughEnemies", "override:obstruct"]
+  },
+  {
+    "id": "skill.pivot",
+    "name": "Pivot",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user moves themself to the other side of an ally.",
+    "tags": ["movement:self", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.reposition",
+    "name": "Reposition",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user moves an ally to the other side of them.",
+    "tags": ["movement:ally", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.swap",
+    "name": "Swap",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user swaps places with an adjacent ally.",
+    "tags": ["movement:self", "movement:ally", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.guard",
+    "name": "Guard",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "Opponents do not gain Charge through combat with the user.",
+    "tags": ["effect:denyChargeToFoe"]
+  },
+  {
+    "id": "skill.solidarity",
+    "name": "Solidarity",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Hit+1 and Avoid+1 to all adjacent allies.",
+    "tags": ["aura:adjacent", "target:ally"],
+    "statBonuses": { "hit": 1, "avoid": 1 }
+  },
+  {
+    "id": "skill.celerity",
+    "name": "Celerity",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise user's Movement stat by 1.",
+    "tags": ["permanent", "stat:movement"],
+    "statBonuses": { "mov": 1 }
+  },
+  {
+    "id": "skill.hp-3",
+    "name": "HP +3",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's HP stat by 3.",
+    "tags": ["permanent", "stat:hp"],
+    "statBonuses": { "hp": 3 }
+  },
+  {
+    "id": "skill.attack-2",
+    "name": "Attack +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Attack stat by 2.",
+    "tags": ["permanent", "stat:atk"],
+    "statBonuses": { "atk": 2 }
+  },
+  {
+    "id": "skill.defense-2",
+    "name": "Defense +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Defense stat by 2.",
+    "tags": ["permanent", "stat:def"],
+    "statBonuses": { "def": 2 }
+  },
+  {
+    "id": "skill.luck-2",
+    "name": "Luck +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Luck stat by 2.",
+    "tags": ["permanent", "stat:luck"],
+    "statBonuses": { "luck": 2 }
+  },
+  {
+    "id": "skill.speed-2",
+    "name": "Speed +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Speed stat by 2.",
+    "tags": ["permanent", "stat:spd"],
+    "statBonuses": { "spd": 2 }
+  },
+  {
+    "id": "skill.dexterity-2",
+    "name": "Dexterity +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Dexterity stat by 2.",
+    "tags": ["permanent", "stat:dex"],
+    "statBonuses": { "dex": 2 }
+  },
+  {
+    "id": "skill.resistance-2",
+    "name": "Resistance +2",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:5"],
+    "effect": "Permanently raise the user's Resistance stat by 2.",
+    "tags": ["permanent", "stat:res"],
+    "statBonuses": { "res": 2 }
+  },
+  {
+    "id": "skill.escape-route",
+    "name": "Escape Route",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "If the user is at 1/2 HP or less, they may move adjacent to any ally (user spends all of their Movement doing this). User can perform their action after moving.",
+    "tags": ["condition:hp<=50%", "effect:warpToAlly", "target:anyAlly"]
+  },
+  {
+    "id": "skill.wings-of-mercy",
+    "name": "Wings of Mercy",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "If an ally is at 1/2 HP or less, the user may move adjacent to that ally (user spends all of their Movement doing this). User can perform their action after moving.",
+    "tags": ["condition:allyHp<=50%", "effect:warpToAlly", "target:woundedAlly"]
+  },
+  {
+    "id": "skill.cancel-affinity",
+    "name": "Cancel Affinity",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "Both the user and the opponent ignore Weapon Triangle bonuses and penalties during combat.",
+    "tags": ["override:weaponTriangle"]
+  },
+  {
+    "id": "skill.triangle-adept",
+    "name": "Triangle Adept",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "When the user has WTA, they gain Advantage on all of their attacks; when they have WTD, they take Disadvantage on all of their attacks.",
+    "tags": ["amplify:weaponTriangle"]
+  },
+  {
+    "id": "skill.rally-offenses",
+    "name": "Rally Offenses",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "The user gives an adjacent ally +3 Attack and +1 Hit until the start of the user's next phase. If this skill is activated, all other Rally skills that the user has may be activated on that same ally simultaneously.",
+    "tags": ["rally", "target:adjacentAlly", "duration:userNextPhase"],
+    "statBonuses": { "atk": 3, "hit": 1 }
+  },
+  {
+    "id": "skill.rally-reflexes",
+    "name": "Rally Reflexes",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "The user gives an adjacent ally +3 Speed and +1 Avoid until the start of the user's next phase. If this skill is activated, all other Rally skills that the user has may be activated on that same ally simultaneously.",
+    "tags": ["rally", "target:adjacentAlly", "duration:userNextPhase"],
+    "statBonuses": { "spd": 3, "avoid": 1 }
+  },
+  {
+    "id": "skill.rally-defenses",
+    "name": "Rally Defenses",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["level:10"],
+    "effect": "The user gives an adjacent ally +2 Defense and +2 Resistance until the start of the user's next phase. If this skill is activated, all other Rally skills that the user has may be activated on that same ally simultaneously.",
+    "tags": ["rally", "target:adjacentAlly", "duration:userNextPhase"],
+    "statBonuses": { "def": 2, "res": 2 }
+  },
+  {
+    "id": "skill.rally-movement",
+    "name": "Rally Movement",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["level:15"],
+    "effect": "The user gives an adjacent ally +1 Movement until the start of the user's next phase. If this skill is activated, all other Rally skills that the user has may be activated on that same ally simultaneously.",
+    "tags": ["rally", "target:adjacentAlly", "duration:userNextPhase"],
+    "statBonuses": { "mov": 1 }
+  },
+  {
+    "id": "skill.dual-wield",
+    "name": "Dual Wield",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:expertise", "exclusive:master-of-arms"],
+    "effect": "The user gains another Weapon Proficiency.",
+    "tags": ["grant:weaponProficiency:+1"]
+  },
+  {
+    "id": "skill.hardy-bearing",
+    "name": "Hardy Bearing",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15"],
+    "effect": "Both user and foe cannot use skills that effect priority (such as Vantage, Desperation, and Quick Riposte) or frequency (such as Wary Fighter) of attack.",
+    "tags": ["disable:prioritySkills", "disable:frequencySkills"]
+  },
+  {
+    "id": "skill.vantage",
+    "name": "Vantage",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:brash-assault", "exclusive:desperation", "exclusive:quick-riposte"],
+    "effect": "If user has 1/2 or under HP, they can attack first regardless of who initiates combat.",
+    "tags": ["condition:hp<=50%", "priority:attackFirst"]
+  },
+  {
+    "id": "skill.brash-assault",
+    "name": "Brash Assault",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:desperation", "exclusive:quick-riposte", "exclusive:vantage"],
+    "effect": "If user has 1/2 or less HP and initiates combat against an opponent that can counterattack, the user performs a Follow-Up Attack regardless of Speed.",
+    "tags": ["condition:hp<=50%", "requires:initiator", "effect:guaranteedFollowup"]
+  },
+  {
+    "id": "skill.quick-riposte",
+    "name": "Quick Riposte",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:brash-assault", "exclusive:desperation", "exclusive:vantage"],
+    "effect": "If user has 3/4 or more HP, the user can make a Follow-Up Attack if foe initiates combat.",
+    "tags": ["condition:hp>=75%", "requires:defender", "effect:guaranteedFollowup"]
+  },
+  {
+    "id": "skill.desperation",
+    "name": "Desperation",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:brash-assault", "exclusive:quick-riposte", "exclusive:vantage"],
+    "effect": "If the user attacks at 1/2 or less HP, they can perform their Follow-Up Attack (if viable) before the opponent does a Counterattack.",
+    "tags": ["condition:hp<=50%", "requires:initiator", "priority:followupBeforeCounter"]
+  },
+  {
+    "id": "skill.poison-body",
+    "name": "Poison Body",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15"],
+    "effect": "If an opponent attacking the user would recover HP from their attack through a Skill (i.e. Sol or Aether) or Refine (i.e. Resire), that opponent loses that HP instead of recovering it.",
+    "tags": ["override:enemyLifesteal:reverse"]
+  },
+  {
+    "id": "skill.wrath",
+    "name": "Wrath",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15"],
+    "effect": "While the user is at 1/2 HP or less, the opponent's Critical Avoid is treated as though it is 5 lower.",
+    "tags": ["condition:hp<=50%", "mod:enemyCritAvoid:-5"]
+  },
+  {
+    "id": "skill.flashing-blade",
+    "name": "Flashing Blade",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:heavy-blade"],
+    "effect": "If the user's Speed is greater than the opponent's Speed and the user initiates combat, the user gains an additional +1 Charge after combat.",
+    "tags": ["requires:initiator", "condition:spd>foeSpd", "effect:bonusCharge:+1"]
+  },
+  {
+    "id": "skill.heavy-blade",
+    "name": "Heavy Blade",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "exclusive:flashing-blade"],
+    "effect": "If the user's Attack is greater than the opponent's Attack and the user initiates combat, the user gains an additional +1 Charge after combat.",
+    "tags": ["requires:initiator", "condition:atk>foeAtk", "effect:bonusCharge:+1"]
+  },
+  {
+    "id": "skill.expertise",
+    "name": "Expertise",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:20", "exclusive:dual-wield", "exclusive:master-of-arms"],
+    "effect": "Attack+3 and Hit+1.",
+    "tags": ["stat:atk", "stat:hit"],
+    "statBonuses": { "atk": 3, "hit": 1 }
+  },
+  {
+    "id": "skill.fortune",
+    "name": "Fortune",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:25"],
+    "effect": "User does not take double nor triple damage from Critical Hits.",
+    "tags": ["immune:critMultiplier"]
+  },
+  {
+    "id": "skill.quickened-pulse",
+    "name": "Quickened Pulse",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:25", "requires:combatArt"],
+    "effect": "All Combat Arts requiring 3 or more base charge to use require one less charge to activate.",
+    "tags": ["mod:combatArtCost:-1", "condition:baseCharge>=3"]
+  },
+  {
+    "id": "skill.steal",
+    "name": "Steal",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "The user can use their action to do the following: unlock doors, chests, and anything else locked; steal an unequipped item if their speed is higher than the opponent's; or choose to steal money instead of an item equal to opponent's level times 10.",
+    "tags": ["effect:unlock", "effect:steal"]
+  },
+  {
+    "id": "skill.keen-vision",
+    "name": "Keen Vision",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "User can see into areas up to 4 spaces away in Fog of War.",
+    "tags": ["effect:fogOfWar:vision:4"]
+  },
+  {
+    "id": "skill.perform",
+    "name": "Perform",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": [],
+    "effect": "User refreshes an adjacent non-performing ally's movement and actions. User takes -3 to HP, and -2 to four additional combat stats of their choice.",
+    "tags": ["effect:refreshAlly", "target:adjacentAlly", "cost:selfStats"]
+  },
+  {
+    "id": "skill.performance-of-the-focused",
+    "name": "Performance of the Focused",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "skill:perform"],
+    "effect": "When Perform is used, the target takes Advantage on their next attack. Wears off at the start of the user's next phase.",
+    "tags": ["triggers:perform", "buff:advantage", "duration:userNextPhase"]
+  },
+  {
+    "id": "skill.performance-of-the-fortunate",
+    "name": "Performance of the Fortunate",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "skill:perform"],
+    "effect": "When Perform is used, during the target's next combat, their opponent takes disadvantage on their first attack. Wears off at the start of the user's next phase.",
+    "tags": ["triggers:perform", "debuff:disadvantage", "duration:userNextPhase"]
+  },
+  {
+    "id": "skill.performance-of-the-stalwart",
+    "name": "Performance of the Stalwart",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:15", "skill:perform"],
+    "effect": "When Perform is used, during the target's next combat, their opponent may not Follow-Up. Wears off at the start of the user's next phase.",
+    "tags": ["triggers:perform", "deny:foeFollowup", "duration:userNextPhase"]
+  },
+  {
+    "id": "skill.inspiring-performance",
+    "name": "Inspiring Performance",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["level:20", "skill:perform"],
+    "effect": "When Perform is used, target is also granted Attack, Speed, Defense, and Resistance+2 until the start of the user's phase.",
+    "tags": ["triggers:perform", "buff:allyStats", "duration:userNextPhase"],
+    "statBonuses": { "atk": 2, "spd": 2, "def": 2, "res": 2 }
+  },
+
+  {
+    "id": "skill.drag-back",
+    "name": "Drag Back",
+    "type": "strategy",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["weapon:sword|lance|axe|shiftingStone|strike|talons|breath"],
+    "effect": "After combat, the user moves back 1 space with their opponent. If there is no room for the user to move back, this skill fails.",
+    "tags": ["timing:afterCombat", "movement:self", "movement:foe"]
+  },
+  {
+    "id": "skill.quixotic",
+    "name": "Quixotic",
+    "type": "passive",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["level:5", "weapon:sword|lance|axe"],
+    "effect": "Hit+3 and Avoid-3 for the User.",
+    "tags": ["stat:hit", "stat:avoid"],
+    "statBonuses": { "hit": 3, "avoid": -3 }
+  },
+  {
+    "id": "skill.parity",
+    "name": "Parity",
+    "type": "passive",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["level:10", "weapon:sword|lance|axe"],
+    "effect": "Neither the user nor their opponent can activate any Strategy, Reflex, or Technique skills.",
+    "tags": ["disable:strategySkills", "disable:reflexSkills", "disable:techniqueSkills"]
+  },
+  {
+    "id": "skill.swordbreaker",
+    "name": "Swordbreaker",
+    "type": "passive",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["level:10", "weapon:lance"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with a Sword.",
+    "tags": ["condition:foeWeapon:sword"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.lancebreaker",
+    "name": "Lancebreaker",
+    "type": "passive",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["level:10", "weapon:axe"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with a Lance.",
+    "tags": ["condition:foeWeapon:lance"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.axebreaker",
+    "name": "Axebreaker",
+    "type": "passive",
+    "typeGroup": "sword, lance, and axe",
+    "prereq": ["level:10", "weapon:sword"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with an Axe.",
+    "tags": ["condition:foeWeapon:axe"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+
+  {
+    "id": "skill.focus",
+    "name": "Focus",
+    "type": "passive",
+    "typeGroup": "dagger and bow",
+    "prereq": ["level:5", "weapon:dagger|bow"],
+    "effect": "Hit+2 when there are no allies within a 2-tile radius.",
+    "tags": ["condition:noAllyWithin:2"],
+    "statBonuses": { "hit": 2 }
+  },
+  {
+    "id": "skill.physical-specialist",
+    "name": "Physical Specialist",
+    "type": "passive",
+    "typeGroup": "dagger and bow",
+    "prereq": ["level:5", "weapon:dagger|bow"],
+    "effect": "Hit+1 against opponents equipped with weapons that deal Physical damage. Avoid-1 against opponents equipped with weapons that deal Magical damage.",
+    "tags": ["condition:foeDamageType:physical:hit+1", "condition:foeDamageType:magical:avoid-1"]
+  },
+  {
+    "id": "skill.bowbreaker",
+    "name": "Bowbreaker",
+    "type": "passive",
+    "typeGroup": "dagger and bow",
+    "prereq": ["level:10", "weapon:dagger"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with a Bow.",
+    "tags": ["condition:foeWeapon:bow"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.daggerbreaker",
+    "name": "Daggerbreaker",
+    "type": "passive",
+    "typeGroup": "dagger and bow",
+    "prereq": ["level:10", "weapon:bow"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with a Dagger.",
+    "tags": ["condition:foeWeapon:dagger"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+
+  {
+    "id": "skill.heartseeker",
+    "name": "Heartseeker",
+    "type": "passive",
+    "typeGroup": "anima, light, and dark",
+    "prereq": ["level:5", "weapon:anima|light|dark"],
+    "effect": "Avoid-2 to enemies adjacent to the user during combat.",
+    "tags": ["aura:adjacentEnemies", "debuff:avoid"]
+  },
+  {
+    "id": "skill.magical-specialist",
+    "name": "Magical Specialist",
+    "type": "passive",
+    "typeGroup": "anima, light, and dark",
+    "prereq": ["level:5", "weapon:anima|light|dark"],
+    "effect": "Hit+1 against opponents equipped with weapons that deal Magical damage. Avoid-1 against opponents equipped with weapons that deal Physical damage.",
+    "tags": ["condition:foeDamageType:magical:hit+1", "condition:foeDamageType:physical:avoid-1"]
+  },
+  {
+    "id": "skill.animabreaker",
+    "name": "Animabreaker",
+    "type": "passive",
+    "typeGroup": "anima, light, and dark",
+    "prereq": ["level:10", "weapon:dark"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with Anima Magic.",
+    "tags": ["condition:foeWeapon:anima"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.lightbreaker",
+    "name": "Lightbreaker",
+    "type": "passive",
+    "typeGroup": "anima, light, and dark",
+    "prereq": ["level:10", "weapon:anima"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with Light Magic.",
+    "tags": ["condition:foeWeapon:light"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.darkbreaker",
+    "name": "Darkbreaker",
+    "type": "passive",
+    "typeGroup": "anima, light, and dark",
+    "prereq": ["level:10", "weapon:light"],
+    "effect": "Hit+3 and Avoid+3 when in combat with an opponent equipped with Dark Magic.",
+    "tags": ["condition:foeWeapon:dark"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+
+  {
+    "id": "skill.even-rhythm",
+    "name": "Even Rhythm",
+    "type": "passive",
+    "typeGroup": "shifting stone",
+    "prereq": ["level:5", "weapon:shiftingStone", "exclusive:odd-rhythm"],
+    "effect": "On even turns, the opponent's Critical Avoid is treated as though it is 2 lower.",
+    "tags": ["condition:turnParity:even", "mod:enemyCritAvoid:-2"]
+  },
+  {
+    "id": "skill.odd-rhythm",
+    "name": "Odd Rhythm",
+    "type": "passive",
+    "typeGroup": "shifting stone",
+    "prereq": ["level:5", "weapon:shiftingStone", "exclusive:even-rhythm"],
+    "effect": "On odd turns, the opponent's Critical Avoid is treated as though it is 2 lower.",
+    "tags": ["condition:turnParity:odd", "mod:enemyCritAvoid:-2"]
+  },
+  {
+    "id": "skill.blessed-strike",
+    "name": "Blessed Strike",
+    "type": "passive",
+    "typeGroup": "shifting stone",
+    "prereq": ["level:10", "weapon:shiftingStone"],
+    "effect": "Attacks made with a Shifting Stone calculate damage using the lower of the foe's Defense or Resistance. User gains the Furred Trait.",
+    "tags": ["damage:useLower:def|res", "grant:trait:furred"]
+  },
+  {
+    "id": "skill.distant-shot",
+    "name": "Distant Shot",
+    "type": "passive",
+    "typeGroup": "shifting stone",
+    "prereq": ["level:15", "weapon:shiftingStone"],
+    "effect": "User's Max Range is increased by 1 when equipped with a Shifting Stone. User gains the Scaled Trait.",
+    "tags": ["grant:trait:scaled"],
+    "statBonuses": { "maxRange": 1 }
+  },
+  {
+    "id": "skill.grisly-wound",
+    "name": "Grisly Wound",
+    "type": "passive",
+    "typeGroup": "shifting stone",
+    "prereq": ["level:15", "weapon:shiftingStone"],
+    "effect": "The opponent takes 5 Post-Combat damage after any combat with the user.",
+    "tags": ["timing:postCombat", "effect:postCombatDamage:5", "target:foe"]
+  },
+
+  {
+    "id": "skill.boon",
+    "name": "Boon",
+    "type": "passive",
+    "typeGroup": "strike, talons, and breath",
+    "prereq": ["level:5", "weapon:strike|talons|breath"],
+    "effect": "Heals the status conditions of allies adjacent to the user at the beginning of each turn.",
+    "tags": ["timing:turnStart", "effect:statusCure", "target:adjacentAllies"]
+  },
+  {
+    "id": "skill.vigor",
+    "name": "Vigor",
+    "type": "passive",
+    "typeGroup": "strike, talons, and breath",
+    "prereq": ["level:10", "weapon:strike|talons|breath"],
+    "effect": "At the start of their turn, all adjacent transformed allies gain +1 to their Gauge.",
+    "tags": ["timing:turnStart", "effect:gauge:+1", "target:transformedAdjacentAllies"]
+  },
+  {
+    "id": "skill.blood-tide",
+    "name": "Blood Tide",
+    "type": "passive",
+    "typeGroup": "strike, talons, and breath",
+    "prereq": ["level:20", "weapon:strike|talons|breath"],
+    "effect": "Attack+3 and Hit+1 to all adjacent allies.",
+    "tags": ["aura:adjacent", "target:ally"],
+    "statBonuses": { "atk": 3, "hit": 1 }
+  },
+  {
+    "id": "skill.white-tide",
+    "name": "White Tide",
+    "type": "passive",
+    "typeGroup": "strike, talons, and breath",
+    "prereq": ["level:20", "weapon:strike|talons|breath"],
+    "effect": "Avoid+1 and Speed+3 to all adjacent allies.",
+    "tags": ["aura:adjacent", "target:ally"],
+    "statBonuses": { "avoid": 1, "spd": 3 }
+  },
+  {
+    "id": "skill.night-tide",
+    "name": "Night Tide",
+    "type": "passive",
+    "typeGroup": "strike, talons, and breath",
+    "prereq": ["level:20", "weapon:strike|talons|breath"],
+    "effect": "Defense+3 and Resistance+3 to all adjacent allies.",
+    "tags": ["aura:adjacent", "target:ally"],
+    "statBonuses": { "def": 3, "res": 3 }
+  },
+
+  {
+    "id": "skill.charm",
+    "name": "Charm",
+    "type": "passive",
+    "typeGroup": "staff",
+    "prereq": ["level:5", "weapon:staff"],
+    "effect": "Avoid+1 to all allies within a 3-tile radius.",
+    "tags": ["aura:radius:3", "target:ally"],
+    "statBonuses": { "avoid": 1 }
+  },
+  {
+    "id": "skill.wrathful-staff",
+    "name": "Wrathful Staff",
+    "type": "passive",
+    "typeGroup": "staff",
+    "prereq": ["level:10", "weapon:staff"],
+    "effect": "User can now initiate combat with Staves. When attacking with a Staff, the user calculates the attack's Power as one would with any other physical weapon (factoring in the Staff's Might accordingly).",
+    "tags": ["enable:staffInitiate", "damage:asPhysicalWeapon"]
+  },
+  {
+    "id": "skill.live-to-serve",
+    "name": "Live to Serve",
+    "type": "passive",
+    "typeGroup": "staff",
+    "prereq": ["level:10", "weapon:staff"],
+    "effect": "When healing allies with a staff, user also recovers the same amount.",
+    "tags": ["triggers:healAlly", "effect:selfHeal:matchAmount"]
+  },
+  {
+    "id": "skill.dazzling-staff",
+    "name": "Dazzling Staff",
+    "type": "passive",
+    "typeGroup": "staff",
+    "prereq": ["level:25", "weapon:staff"],
+    "effect": "User cannot counterattack. User's opponent cannot counterattack.",
+    "tags": ["disable:counter:self", "disable:counter:foe"]
+  },
+
+  {
+    "id": "skill.monstrous",
+    "name": "Monstrous",
+    "type": "passive",
+    "typeGroup": "fiend",
+    "prereq": [],
+    "effect": "The user gains the Fiendish trait. If targeted by a status-inflicting staff, weapon, or combat art the opponent must roll twice for accuracy and use the lower result to determine if the user is inflicted with a status (for weapons, the first roll is still used to determine whether or not the attack hits and deals damage).",
+    "tags": ["grant:trait:fiendish", "defense:statusInfliction:rollLower"]
+  },
+  {
+    "id": "skill.vengeful-cry",
+    "name": "Vengeful Cry",
+    "type": "passive",
+    "typeGroup": "fiend",
+    "prereq": ["level:10", "skill:monstrous|weapon:curse"],
+    "effect": "User gains +2 Attack and +2 Hit when in combat with an opponent they have already been in combat with.",
+    "tags": ["condition:rematch"],
+    "statBonuses": { "atk": 2, "hit": 2 }
+  },
+  {
+    "id": "skill.coral-cover",
+    "name": "Coral Cover",
+    "type": "passive",
+    "typeGroup": "fiend",
+    "prereq": ["level:15", "skill:monstrous|weapon:curse"],
+    "effect": "User doubles all terrain Effects and Movement penalties, both beneficial and not.",
+    "tags": ["mod:terrainEffect:x2"]
+  },
+  {
+    "id": "skill.shadow-gambit",
+    "name": "Shadow Gambit",
+    "type": "passive",
+    "typeGroup": "fiend",
+    "prereq": ["level:15", "skill:monstrous|weapon:curse"],
+    "effect": "User ignores all terrain Effects and Movement penalties, both beneficial and not.",
+    "tags": ["override:terrainEffect:ignore"]
+  },
+  {
+    "id": "skill.anathema",
+    "name": "Anathema",
+    "type": "passive",
+    "typeGroup": "fiend",
+    "prereq": ["level:20", "skill:monstrous|weapon:curse"],
+    "effect": "User takes 1/2 Damage from Anima and Dark Magic, and takes double Damage from Light magic.",
+    "tags": ["resist:anima:0.5", "resist:dark:0.5", "weak:light:2.0"]
+  },
+
+  {
+    "id": "skill.shove",
+    "name": "Shove",
+    "type": "action",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry|armor"],
+    "effect": "User pushes an ally 1 space away from the user.",
+    "tags": ["movement:ally", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.hit-and-run",
+    "name": "Hit and Run",
+    "type": "strategy",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry"],
+    "effect": "After combat, the user moves 1 space back, regardless of remaining Movement. (Fails if user would move into a space it cannot land on).",
+    "tags": ["timing:afterCombat", "movement:self"]
+  },
+  {
+    "id": "skill.lunge",
+    "name": "Lunge",
+    "type": "strategy",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry"],
+    "effect": "After combat, user can move forward 1 space (user can swap with the opponent in this way).",
+    "tags": ["timing:afterCombat", "movement:self"]
+  },
+  {
+    "id": "skill.knock-back",
+    "name": "Knock Back",
+    "type": "strategy",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry"],
+    "effect": "After combat, the opponent is pushed 1 space away from the user. If there is no room for the opponent to move into that space, this skill fails.",
+    "tags": ["timing:afterCombat", "movement:foe"]
+  },
+  {
+    "id": "skill.mountain-climber",
+    "name": "Mountain Climber",
+    "type": "passive",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry|armor"],
+    "effect": "Mountains and Sandbags become Rough Terrain for the user.",
+    "tags": ["terrain:mountain:rough", "terrain:sandbag:rough"]
+  },
+  {
+    "id": "skill.seafarer",
+    "name": "Seafarer",
+    "type": "passive",
+    "typeGroup": "infantry",
+    "prereq": ["movement:infantry"],
+    "effect": "Water becomes Rough Terrain to the user.",
+    "tags": ["terrain:water:rough"]
+  },
+  {
+    "id": "skill.acrobat",
+    "name": "Acrobat",
+    "type": "passive",
+    "typeGroup": "infantry",
+    "prereq": ["level:10", "movement:infantry"],
+    "effect": "All Rough Terrain becomes Standard Terrain to the user.",
+    "tags": ["terrain:rough:standard"]
+  },
+  {
+    "id": "skill.master-of-arms",
+    "name": "Master of Arms",
+    "type": "passive",
+    "typeGroup": "infantry",
+    "prereq": ["level:20", "movement:infantry", "exclusive:dual-wield", "exclusive:expertise"],
+    "effect": "The user gains two more Weapon Proficiencies.",
+    "tags": ["grant:weaponProficiency:+2"]
+  },
+
+  {
+    "id": "skill.smite",
+    "name": "Smite",
+    "type": "action",
+    "typeGroup": "armor",
+    "prereq": ["movement:armor"],
+    "effect": "User pushes an ally 2 spaces away from the user.",
+    "tags": ["movement:ally", "target:adjacentAlly"]
+  },
+  {
+    "id": "skill.natural-cover",
+    "name": "Natural Cover",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:10", "movement:armor"],
+    "effect": "When user fights in terrain with terrain effects, all damage taken -3 (down to a minimum of 1).",
+    "tags": ["condition:terrainEffectActive", "mod:damageTaken:-3", "min:1"]
+  },
+  {
+    "id": "skill.defender",
+    "name": "Defender",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:10", "movement:armor"],
+    "effect": "When rescuing, user gains Defense+2 and Resistance+2.",
+    "tags": ["condition:rescuing"],
+    "statBonuses": { "def": 2, "res": 2 }
+  },
+  {
+    "id": "skill.steady-stance",
+    "name": "Steady Stance",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:15", "movement:armor"],
+    "effect": "If the user has 1/2 or more HP, when the opponent initiates the battle, -3 to physical damage received (down to a minimum of 1).",
+    "tags": ["condition:hp>=50%", "requires:defender", "mod:physicalDamageTaken:-3", "min:1"]
+  },
+  {
+    "id": "skill.warding-stance",
+    "name": "Warding Stance",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:15", "movement:armor"],
+    "effect": "If the user has 1/2 or more HP, when the opponent initiates the battle, -3 to magical damage received (down to a minimum of 1).",
+    "tags": ["condition:hp>=50%", "requires:defender", "mod:magicalDamageTaken:-3", "min:1"]
+  },
+  {
+    "id": "skill.vengeful-fighter",
+    "name": "Vengeful Fighter",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:15", "movement:armor", "exclusive:wary-fighter"],
+    "effect": "If the user has 1/2 or above HP and the foe initiates combat, user makes a guaranteed Follow-up Attack.",
+    "tags": ["condition:hp>=50%", "requires:defender", "effect:guaranteedFollowup"]
+  },
+  {
+    "id": "skill.wary-fighter",
+    "name": "Wary Fighter",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:15", "movement:armor", "exclusive:vengeful-fighter"],
+    "effect": "If the user has 1/2 or above HP, neither combatant can perform a Follow-up Attack.",
+    "tags": ["condition:hp>=50%", "deny:followup:both"]
+  },
+  {
+    "id": "skill.svalinn-shield",
+    "name": "Svalinn Shield",
+    "type": "passive",
+    "typeGroup": "armor",
+    "prereq": ["level:25", "movement:armor", "gmApproval"],
+    "effect": "The user does not take effective damage from Scalerending weapons.",
+    "tags": ["immune:effective:scalerending"]
+  },
+
+  {
+    "id": "skill.canter",
+    "name": "Canter",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["movement:cavalry|flier"],
+    "effect": "After performing all actions, the user may move again up to 2 spaces.",
+    "tags": ["timing:afterAction", "effect:postMove:2"]
+  },
+  {
+    "id": "skill.savior",
+    "name": "Savior",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["level:10", "movement:cavalry"],
+    "effect": "When rescuing, the user does not take any penalties.",
+    "tags": ["condition:rescuing", "override:rescuePenalty:none"]
+  },
+  {
+    "id": "skill.elbow-room",
+    "name": "Elbow Room",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["level:10", "movement:cavalry"],
+    "effect": "When user fights in terrain with no terrain effects, +2 Damage during combat.",
+    "tags": ["condition:terrainEffect:none", "effect:bonusDamage:+2"]
+  },
+  {
+    "id": "skill.death-blow",
+    "name": "Death Blow",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["level:15", "movement:cavalry"],
+    "effect": "If the user has 1/2 or more HP, when user initiates the battle, +3 Damage dealt.",
+    "tags": ["condition:hp>=50%", "requires:initiator", "effect:bonusDamage:+3"]
+  },
+  {
+    "id": "skill.certain-blow",
+    "name": "Certain Blow",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["level:15", "movement:cavalry"],
+    "effect": "If the user has 1/2 or more HP, when user initiates the battle, +1 to Hit.",
+    "tags": ["condition:hp>=50%", "requires:initiator"],
+    "statBonuses": { "hit": 1 }
+  },
+  {
+    "id": "skill.granis-shield",
+    "name": "Grani's Shield",
+    "type": "passive",
+    "typeGroup": "cavalry",
+    "prereq": ["level:25", "movement:cavalry", "gmApproval"],
+    "effect": "The user does not take effective damage from Furflaying weapons.",
+    "tags": ["immune:effective:furflaying"]
+  },
+
+  {
+    "id": "skill.camaraderie",
+    "name": "Camaraderie",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:10", "movement:flier"],
+    "effect": "Recover 5 HP at the beginning of the user's turn if there is at least 1 ally within 2 spaces.",
+    "tags": ["timing:turnStart", "condition:allyWithin:2", "effect:heal:5"]
+  },
+  {
+    "id": "skill.deliverer",
+    "name": "Deliverer",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:10", "movement:flier"],
+    "effect": "When rescuing, user gains Movement+2.",
+    "tags": ["condition:rescuing"],
+    "statBonuses": { "mov": 2 }
+  },
+  {
+    "id": "skill.air-superiority",
+    "name": "Air Superiority",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:10", "movement:flier"],
+    "effect": "Hit+3 and Avoid+3 when in combat with other Fliers.",
+    "tags": ["condition:foeMovement:flier"],
+    "statBonuses": { "hit": 3, "avoid": 3 }
+  },
+  {
+    "id": "skill.trample",
+    "name": "Trample",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:15", "movement:flier"],
+    "effect": "If the opponent is not a Cavalry or Flier, the user does +3 damage.",
+    "tags": ["condition:foeMovement:notCavalry|flier", "effect:bonusDamage:+3"]
+  },
+  {
+    "id": "skill.duelists-stance",
+    "name": "Duelist's Stance",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:15", "movement:flier"],
+    "effect": "If the user has 1/2 or more HP, when the opponent initiates the battle, +1 to Avoid.",
+    "tags": ["condition:hp>=50%", "requires:defender"],
+    "statBonuses": { "avoid": 1 }
+  },
+  {
+    "id": "skill.darting-blow",
+    "name": "Darting Blow",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:15", "movement:flier"],
+    "effect": "If the user has 1/2 or more HP, when user initiates the battle, +3 to Speed.",
+    "tags": ["condition:hp>=50%", "requires:initiator"],
+    "statBonuses": { "spd": 3 }
+  },
+  {
+    "id": "skill.guidance",
+    "name": "Guidance",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:20", "movement:flier"],
+    "effect": "Infantry and Armor allies within the user's Movement Range can move to a space adjacent to the user (the moving ally spends all of their Movement doing this). The moving ally can perform their action after moving.",
+    "tags": ["effect:warpAlly", "target:infantryOrArmorAlly"]
+  },
+  {
+    "id": "skill.iotes-shield",
+    "name": "Iote's Shield",
+    "type": "passive",
+    "typeGroup": "flier",
+    "prereq": ["level:25", "movement:flier", "gmApproval"],
+    "effect": "The user does not take effective damage from Wingclipping weapons.",
+    "tags": ["immune:effective:wingclipping"]
+  },
+
+  {
+    "id": "skill.beastly-ward",
+    "name": "Beastly Ward",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["weapon:shiftingStone"],
+    "requiredCharge": "1",
+    "effect": "When an adjacent ally is hit by an attack, the user may activate this skill to reduce the damage of that attack by 1/2.",
+    "tags": ["combatArt", "triggers:adjacentAllyHit", "effect:reduceDamage:0.5"]
+  },
+  {
+    "id": "skill.pickpocket",
+    "name": "Pickpocket",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": [],
+    "requiredCharge": "3",
+    "effect": "After combat, the user can obtain one unequipped item from the opponent's inventory, or gold equal to half the value of the opponent's equipped weapon. Can only be used if the user is adjacent to their opponent.",
+    "tags": ["combatArt", "timing:afterCombat", "requires:adjacentFoe", "effect:steal"]
+  },
+  {
+    "id": "skill.bliss",
+    "name": "Bliss",
+    "type": "action",
+    "typeGroup": "combat",
+    "prereq": ["weapon:strike|talons|breath"],
+    "requiredCharge": "1",
+    "effect": "The user transfers all Charge (minus the Charge spent activating this skill) to an adjacent ally.",
+    "tags": ["combatArt", "target:adjacentAlly", "effect:transferCharge"]
+  },
+  {
+    "id": "skill.guardian",
+    "name": "Guardian",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": [],
+    "requiredCharge": "1",
+    "effect": "When an adjacent ally is hit, the user can take the Damage that ally would have taken—after factoring in that ally's Defense or Resistance—instead.",
+    "tags": ["combatArt", "triggers:adjacentAllyHit", "effect:redirectDamage:self"]
+  },
+  {
+    "id": "skill.curved-shot",
+    "name": "Curved Shot",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:5", "weapon:bow"],
+    "requiredCharge": "1+X",
+    "effect": "The Max Range of the user's equipped Bow is increased by 1 per X charge spent, up to a maximum of 5 additional Range. If the user can Attack multiple times (i.e. due to Follow-Up Attacks or a Brave refine) and wants to, the user must spend the required Charge per attack before combat starts.",
+    "tags": ["combatArt", "variable:X", "max:+5range"]
+  },
+  {
+    "id": "skill.bane",
+    "name": "Bane",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:5", "weapon:dagger"],
+    "requiredCharge": "1+X",
+    "effect": "The user's Dagger attacks gain an additional +1 Hit per X Charge spent for this combat, up to a maximum of 5 extra Hit.",
+    "tags": ["combatArt", "variable:X", "max:+5hit"]
+  },
+  {
+    "id": "skill.gamble",
+    "name": "Gamble",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:5"],
+    "requiredCharge": "1",
+    "effect": "The user gains +5 Hit. However, all attacks made by the user that are not Critical Hits are treated as misses.",
+    "tags": ["combatArt"],
+    "statBonuses": { "hit": 5 }
+  },
+  {
+    "id": "skill.imbue",
+    "name": "Imbue",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:10", "weapon:staff"],
+    "requiredCharge": "2",
+    "effect": "Increase the amount of HP restored by a healing Staff Effect by 5.",
+    "tags": ["combatArt", "effect:healBonus:+5"]
+  },
+  {
+    "id": "skill.multitask",
+    "name": "Multitask",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:10", "weapon:staff"],
+    "requiredCharge": "2",
+    "effect": "After using a non-healing staff Effect on an ally, that ally also recovers 5 HP.",
+    "tags": ["combatArt", "triggers:nonHealStaffEffect", "effect:heal:5"]
+  },
+  {
+    "id": "skill.sorcery-blade",
+    "name": "Sorcery Blade",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10", "weapon:sword|lance|axe"],
+    "requiredCharge": "2",
+    "effect": "The user's attack targets Resistance instead of Defense.",
+    "tags": ["combatArt", "damage:vsRes"]
+  },
+  {
+    "id": "skill.cease-conflict",
+    "name": "Cease Conflict",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10", "weapon:staff"],
+    "requiredCharge": "2",
+    "effect": "The opponent's weapon immediately becomes unequipped and combat immediately ends. Only works on opponents whose level is equal to or lower than the user's.",
+    "tags": ["combatArt", "condition:foeLevel<=userLevel", "effect:foeUnequip", "effect:endCombat"]
+  },
+  {
+    "id": "skill.knightkneeler",
+    "name": "Knightkneeler",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10"],
+    "requiredCharge": "3",
+    "effect": "The user's attack gains the Furflaying attribute.",
+    "tags": ["combatArt", "grant:attribute:furflaying"]
+  },
+  {
+    "id": "skill.helmsplitter",
+    "name": "Helmsplitter",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10"],
+    "requiredCharge": "3",
+    "effect": "The user's attack gains the Scalerending attribute.",
+    "tags": ["combatArt", "grant:attribute:scalerending"]
+  },
+  {
+    "id": "skill.grounder",
+    "name": "Grounder",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10"],
+    "requiredCharge": "3",
+    "effect": "The user's attack gains the Wingclipping attribute.",
+    "tags": ["combatArt", "grant:attribute:wingclipping"]
+  },
+  {
+    "id": "skill.bane-of-monsters",
+    "name": "Bane of Monsters",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:10"],
+    "requiredCharge": "3",
+    "effect": "The user's attack gains the Fiendslaying attribute.",
+    "tags": ["combatArt", "grant:attribute:fiendslaying"]
+  },
+  {
+    "id": "skill.pavise",
+    "name": "Pavise",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["level:15"],
+    "requiredCharge": "2",
+    "effect": "When the user is attacked from 1 space away, reduce Damage by 1/2.",
+    "tags": ["combatArt", "condition:foeRange:1", "effect:reduceDamage:0.5"]
+  },
+  {
+    "id": "skill.aegis",
+    "name": "Aegis",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["level:15"],
+    "requiredCharge": "2",
+    "effect": "When the user is attacked from 2 or more spaces away, reduce Damage by 1/2.",
+    "tags": ["combatArt", "condition:foeRange:>=2", "effect:reduceDamage:0.5"]
+  },
+  {
+    "id": "skill.counter",
+    "name": "Counter",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["level:15"],
+    "requiredCharge": "2",
+    "effect": "When the user is attacked from 1 space away, the opponent also takes Damage equal to the amount of Damage the user took.",
+    "tags": ["combatArt", "condition:foeRange:1", "effect:reflectDamage:full"]
+  },
+  {
+    "id": "skill.countermagic",
+    "name": "Countermagic",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["level:15"],
+    "requiredCharge": "2",
+    "effect": "When the user is attacked from 2 or more spaces away, the opponent also takes Damage equal to the amount of Damage the user took.",
+    "tags": ["combatArt", "condition:foeRange:>=2", "effect:reflectDamage:full"]
+  },
+  {
+    "id": "skill.miracle",
+    "name": "Miracle",
+    "type": "reflex",
+    "typeGroup": "combat",
+    "prereq": ["level:15"],
+    "requiredCharge": "4",
+    "effect": "Allows the user to survive an otherwise lethal blow, instead being left with 1HP.",
+    "tags": ["combatArt", "effect:surviveAt:1hp"]
+  },
+  {
+    "id": "skill.astra",
+    "name": "Astra",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20", "weapon:sword|talons"],
+    "requiredCharge": "3",
+    "effect": "Doubles the total Damage dealt to an opponent.",
+    "tags": ["combatArt", "effect:damageMultiplier:2.0"]
+  },
+  {
+    "id": "skill.sol",
+    "name": "Sol",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20", "weapon:axe|breath"],
+    "requiredCharge": "3",
+    "effect": "After attacking, the user heals themself 1/2 of the Damage they just dealt to the opponent.",
+    "tags": ["combatArt", "effect:lifesteal:0.5"]
+  },
+  {
+    "id": "skill.luna",
+    "name": "Luna",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20", "weapon:lance|strike"],
+    "requiredCharge": "3",
+    "effect": "When dealing Damage to an opponent, calculate as if they had 1/2 less Defense or Resistance.",
+    "tags": ["combatArt", "effect:foeDefOrRes:-0.5"]
+  },
+  {
+    "id": "skill.deep-bite",
+    "name": "Deep Bite",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:20", "weapon:shiftingStone"],
+    "requiredCharge": "2",
+    "effect": "The user doubles all Post-Combat damage they would deal to the opponent after this combat.",
+    "tags": ["combatArt", "effect:postCombatDamage:x2"]
+  },
+  {
+    "id": "skill.subdue",
+    "name": "Subdue",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "The user automatically hits and does a Critical Hit. However, the user cannot Follow-Up Attack, and if the attack would bring the opponent's HP to 0, they are left with 1 HP instead.",
+    "tags": ["combatArt", "effect:autoHit", "effect:autoCrit", "deny:followup:self", "limit:noLethal"]
+  },
+  {
+    "id": "skill.dragon-fang",
+    "name": "Dragon Fang",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Add 1/2 of the user's Attack to the total Damage dealt.",
+    "tags": ["combatArt", "effect:bonusDamage:0.5*atk"]
+  },
+  {
+    "id": "skill.finesse-blade",
+    "name": "Finesse Blade",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Add 1/2 of the user's Dexterity to the total Damage dealt.",
+    "tags": ["combatArt", "effect:bonusDamage:0.5*dex"]
+  },
+  {
+    "id": "skill.ignis",
+    "name": "Ignis",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Add 1/2 of the user's Defense to the total Damage dealt.",
+    "tags": ["combatArt", "effect:bonusDamage:0.5*def"]
+  },
+  {
+    "id": "skill.glacies",
+    "name": "Glacies",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Add 1/2 of the user's Resistance to the total Damage dealt.",
+    "tags": ["combatArt", "effect:bonusDamage:0.5*res"]
+  },
+  {
+    "id": "skill.vengeance",
+    "name": "Vengeance",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Add Damage equal to 1/2 of the HP the user is missing to the total Damage dealt.",
+    "tags": ["combatArt", "effect:bonusDamage:0.5*missingHp"]
+  },
+  {
+    "id": "skill.revitalize",
+    "name": "Revitalize",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "When the user heals an ally's status, all other allies recover status as well.",
+    "tags": ["combatArt", "triggers:healAllyStatus", "effect:statusCure:allAllies"]
+  },
+  {
+    "id": "skill.alert-stance",
+    "name": "Alert Stance",
+    "type": "action",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "3",
+    "effect": "Until the beginning of the user's next turn, the user is treated as though they have 5 higher avoid.",
+    "tags": ["combatArt", "duration:userNextTurn"],
+    "statBonuses": { "avoid": 5 }
+  },
+  {
+    "id": "skill.triangle-attack",
+    "name": "Triangle Attack",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:20"],
+    "requiredCharge": "0",
+    "effect": "The user's next attack automatically hits and Critical hits, but cannot perform a Follow-Up Attack. This skill can only be used when two other allies with Triangle Attack are each in a Cardinal Direction of the target, are all of equal distance from the target, and are all no further than 2 spaces away from the target.",
+    "tags": ["combatArt", "requires:2alliesWithTriangleAttack", "effect:autoHit", "effect:autoCrit", "deny:followup:self"]
+  },
+  {
+    "id": "skill.dark-spikes",
+    "name": "Dark Spikes",
+    "type": "action",
+    "typeGroup": "combat",
+    "prereq": ["level:25", "skill:monstrous|weapon:curse"],
+    "requiredCharge": "4",
+    "effect": "Each opponent within 2 spaces takes 10 damage.",
+    "tags": ["combatArt", "aoe:radius:2", "effect:damage:10"]
+  },
+  {
+    "id": "skill.heavenly-light",
+    "name": "Heavenly Light",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:25"],
+    "requiredCharge": "3",
+    "effect": "When healing an ally with a staff, all other allies recover 10HP.",
+    "tags": ["combatArt", "triggers:healAlly", "effect:heal:10:otherAllies"]
+  },
+  {
+    "id": "skill.galeforce",
+    "name": "Galeforce",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:25"],
+    "requiredCharge": "4",
+    "effect": "After the user attacks, refresh the user's Movement and Actions (once per phase).",
+    "tags": ["combatArt", "effect:refreshSelf", "limit:oncePerPhase"]
+  },
+  {
+    "id": "skill.eclipse",
+    "name": "Eclipse",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:25"],
+    "requiredCharge": "4",
+    "effect": "When dealing damage to an opponent, treat it as if they have no Defense or Resistance.",
+    "tags": ["combatArt", "effect:ignoreFoeDefRes"]
+  },
+  {
+    "id": "skill.aether",
+    "name": "Aether",
+    "type": "technique",
+    "typeGroup": "combat",
+    "prereq": ["level:25"],
+    "requiredCharge": "4",
+    "effect": "When dealing damage to an opponent, treat it as if they had 1/2 less Defense or Resistance. Then, the user heals themself 1/2 of the damage they just dealt.",
+    "tags": ["combatArt", "effect:foeDefOrRes:-0.5", "effect:lifesteal:0.5"]
+  },
+  {
+    "id": "skill.fire-emblem",
+    "name": "Fire Emblem",
+    "type": "strategy",
+    "typeGroup": "combat",
+    "prereq": ["level:25"],
+    "requiredCharge": "4",
+    "effect": "After combat, this character and all allies gain +2 to all stats until the start of the user's phase.",
+    "tags": ["combatArt", "timing:afterCombat", "buff:allyStats:all", "duration:userNextPhase"],
+    "statBonuses": { "atk": 2, "def": 2, "spd": 2, "dex": 2, "res": 2, "luck": 2 }
+  },
+
+  {
+    "id": "skill.gm.distant-counter",
+    "name": "Distant Counter",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "The user may counterattack at any range.",
+    "tags": ["gmOnly", "enable:counterAtAnyRange"]
+  },
+  {
+    "id": "skill.gm.stalwart-guard",
+    "name": "Stalwart Guard",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "The user cannot be moved out of their position by an opponent's Skill (such as Lunge).",
+    "tags": ["gmOnly", "immune:forcedMovement"]
+  },
+  {
+    "id": "skill.gm.steady-heart",
+    "name": "Steady Heart",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "This unit recovers from Status Effects quickly, taking only 1 turn to recover instead of the usual duration.",
+    "tags": ["gmOnly", "mod:statusDuration:1"]
+  },
+  {
+    "id": "skill.gm.fortified-heart",
+    "name": "Fortified Heart",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "This unit cannot be inflicted with Status Effects.",
+    "tags": ["gmOnly", "immune:statusEffects"]
+  },
+  {
+    "id": "skill.gm.self-destruct",
+    "name": "Self-Destruct",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "The user deals damage equal to their Attack stat to everyone within 2 spaces (Ignoring Defense and Resistance). User is removed from the Map.",
+    "tags": ["gmOnly", "aoe:radius:2", "effect:damage:atk", "effect:ignoreFoeDefRes", "effect:removeSelf"]
+  },
+  {
+    "id": "skill.gm.divide",
+    "name": "Divide",
+    "type": "action",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "User spends half their current HP to create a copy of themself; the copy's Stats, Weapons, Traits, and current HP (after halving) are equal to that of the original. Copies do not inherit the Skills of their user. Neither the user nor their copies can be healed while copies are on the field.",
+    "tags": ["gmOnly", "effect:summonCopy", "cost:hp:0.5"]
+  },
+  {
+    "id": "skill.gm.upheaval",
+    "name": "Upheaval",
+    "type": "action",
+    "typeGroup": "combat",
+    "prereq": ["gmOnly"],
+    "requiredCharge": "4",
+    "effect": "Each opponent on the map takes 5 damage.",
+    "tags": ["gmOnly", "combatArt", "aoe:map", "effect:damage:5"]
+  },
+  {
+    "id": "skill.gm.magic-seal",
+    "name": "Magic Seal",
+    "type": "passive",
+    "typeGroup": "all-access",
+    "prereq": ["gmOnly"],
+    "effect": "Anima, Light, Dark and Staves of all units (user included) do not work within 10 spaces of the user.",
+    "tags": ["gmOnly", "aura:radius:10", "disable:weaponGroup:anima|light|dark|staff"]
+  }
 ]

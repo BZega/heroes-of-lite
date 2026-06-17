@@ -23,13 +23,13 @@
 
         "type": {
             "type": "string",
-            "enum": ["Technique", "Action", "Strategy", "Reflex", "Passive"],
-            "description": "The type of skill (e.g. 'Technique', 'Action', etc.)"
+            "enum": ["technique", "action", "strategy", "reflex", "passive"],
+            "description": "The type of skill (e.g. 'technique', 'action', etc.)"
         },
 
         "typeGroup": {
             "type": "string",
-            "enum": ["sword, lance, and axe", "dagger and bow", "anima, light, and dark", "staff", "strike, talons, and breath", "shifting stone", "fiend", "all-access", "infantry", "cavalry", "flyier", "combat"],
+            "enum": ["sword, lance, and axe", "dagger and bow", "anima, light, and dark", "staff", "strike, talons, and breath", "shifting stone", "fiend", "all-access", "infantry", "cavalry", "flier", "armor", "combat"],
             "description": "The weapon type group this skill is associated with, or 'none' if not applicable"
         },
 

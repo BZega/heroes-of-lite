@@ -133,7 +133,7 @@
     }
   },
   {
-    "id": "weapon.dark.fluc",
+    "id": "weapon.dark.flux",
     "name": "Flux",
     "weaponGroup": "dark",
     "damageType": "magical",
@@ -162,7 +162,7 @@
     },
     "might": 5,
     "costG": 500,
-    "innateAttributes": [],
+    "innateAttributes": ["refine.heal"],
     "attributes": [],
     "attributeRules": {
       "maxAttributes": 2,
@@ -209,7 +209,7 @@
     }
   },
   {
-    "id": "weapon.breat.breath",
+    "id": "weapon.breath.breath",
     "name": "Breath",
     "weaponGroup": "breath",
     "damageType": "physical",

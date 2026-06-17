@@ -1,1 +1,130 @@
-[]
+[
+  {
+    "id": "actor.unit.template.infantry",
+    "type": "unit",
+    "name": "Generic Infantry",
+    "system": {
+      "level": 1,
+      "race": "human",
+      "money": 1000,
+      "size": "medium",
+      "status": "healthy",
+      "weaponProficiency": "sword",
+      "trait": "",
+      "movementType": "infantry",
+      "terrain": "plain",
+      "currentHP": 15,
+      "combatStats": { "hp": 15, "atk": 3, "spd": 3, "dex": 3, "def": 3, "res": 3, "luck": 3 },
+      "tempStats":  { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonusStats": { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonuses":    { "power": 0, "tri": 0, "hit": 0, "avoid": 0 },
+      "nonCombatStats": { "strength": 1, "intellect": 1, "perception": 1, "charisma": 1, "fate": 0, "finesse": 0, "acrobatics": 0 },
+      "derivedStats":   { "hit": 0, "avoid": 4, "crit": 0, "power": 0, "tri": 0, "size": 2, "con": 2, "aid": 3, "move": 5, "charge": 0, "gauge": 0 },
+      "personalSkill": "",
+      "supports": {}
+    },
+    "_seedRefs": {
+      "skills": ["skill.draw-back"],
+      "weapons": ["weapon.sword.iron"],
+      "items": ["consumable.herb"],
+      "equipped": "weapon.sword.iron"
+    },
+    "_notes": "Lv1 generic Infantry template. Bonus skill chosen from {shove, reposition, swap, draw-back, pivot}; GM may swap weapon proficiency and Lv1 skill."
+  },
+  {
+    "id": "actor.unit.template.cavalry",
+    "type": "unit",
+    "name": "Generic Cavalry",
+    "system": {
+      "level": 1,
+      "race": "human",
+      "money": 1000,
+      "size": "medium",
+      "status": "healthy",
+      "weaponProficiency": "lance",
+      "trait": "furred",
+      "movementType": "cavalry",
+      "terrain": "plain",
+      "currentHP": 15,
+      "combatStats": { "hp": 15, "atk": 3, "spd": 3, "dex": 3, "def": 3, "res": 3, "luck": 3 },
+      "tempStats":  { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonusStats": { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonuses":    { "power": 0, "tri": 0, "hit": 0, "avoid": 0 },
+      "nonCombatStats": { "strength": 1, "intellect": 1, "perception": 1, "charisma": 1, "fate": 0, "finesse": 0, "acrobatics": 0 },
+      "derivedStats":   { "hit": 0, "avoid": 4, "crit": 0, "power": 0, "tri": 0, "size": 2, "con": 2, "aid": 5, "move": 7, "charge": 0, "gauge": 0 },
+      "personalSkill": "",
+      "supports": {}
+    },
+    "_seedRefs": {
+      "skills": ["skill.canter"],
+      "weapons": ["weapon.lance.iron"],
+      "items": ["consumable.herb"],
+      "equipped": "weapon.lance.iron"
+    },
+    "_notes": "Lv1 generic Cavalry template. Canter is mandatory. Trait: Furred."
+  },
+  {
+    "id": "actor.unit.template.flier",
+    "type": "unit",
+    "name": "Generic Flier",
+    "system": {
+      "level": 1,
+      "race": "human",
+      "money": 1000,
+      "size": "medium",
+      "status": "healthy",
+      "weaponProficiency": "lance",
+      "trait": "winged",
+      "movementType": "flier",
+      "terrain": "plain",
+      "currentHP": 15,
+      "combatStats": { "hp": 15, "atk": 3, "spd": 3, "dex": 3, "def": 3, "res": 3, "luck": 3 },
+      "tempStats":  { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonusStats": { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonuses":    { "power": 0, "tri": 0, "hit": 0, "avoid": 0 },
+      "nonCombatStats": { "strength": 1, "intellect": 1, "perception": 1, "charisma": 1, "fate": 0, "finesse": 0, "acrobatics": 0 },
+      "derivedStats":   { "hit": 0, "avoid": 4, "crit": 0, "power": 0, "tri": 0, "size": 2, "con": 2, "aid": 5, "move": 6, "charge": 0, "gauge": 0 },
+      "personalSkill": "",
+      "supports": {}
+    },
+    "_seedRefs": {
+      "skills": ["skill.canter"],
+      "weapons": ["weapon.lance.iron"],
+      "items": ["consumable.herb"],
+      "equipped": "weapon.lance.iron"
+    },
+    "_notes": "Lv1 generic Flier template. Canter is mandatory. Trait: Winged."
+  },
+  {
+    "id": "actor.unit.template.armor",
+    "type": "unit",
+    "name": "Generic Armor",
+    "system": {
+      "level": 1,
+      "race": "human",
+      "money": 1000,
+      "size": "large",
+      "status": "healthy",
+      "weaponProficiency": "axe",
+      "trait": "scaled",
+      "movementType": "armor",
+      "terrain": "plain",
+      "currentHP": 15,
+      "combatStats": { "hp": 15, "atk": 3, "spd": 3, "dex": 3, "def": 3, "res": 3, "luck": 3 },
+      "tempStats":  { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonusStats": { "hp": 0, "atk": 0, "spd": 0, "dex": 0, "def": 0, "res": 0, "luck": 0 },
+      "bonuses":    { "power": 0, "tri": 0, "hit": 0, "avoid": 0 },
+      "nonCombatStats": { "strength": 1, "intellect": 1, "perception": 1, "charisma": 1, "fate": 0, "finesse": 0, "acrobatics": 0 },
+      "derivedStats":   { "hit": 0, "avoid": 4, "crit": 0, "power": 0, "tri": 0, "size": 3, "con": 5, "aid": 3, "move": 4, "charge": 0, "gauge": 0 },
+      "personalSkill": "",
+      "supports": {}
+    },
+    "_seedRefs": {
+      "skills": ["skill.shove"],
+      "weapons": ["weapon.axe.iron"],
+      "items": ["consumable.herb"],
+      "equipped": "weapon.axe.iron"
+    },
+    "_notes": "Lv1 generic Armor template. Bonus skill chosen from {shove, smite}. Trait: Scaled."
+  }
+]

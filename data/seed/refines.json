@@ -597,5 +597,14 @@
     "statBonuses": {
       "might": 3
     }
+  },
+  {
+    "id": "refine.heal",
+    "name": "Heal",
+    "category": "basic",
+    "costG": 0,
+    "appliesToWeaponGroups": ["staff"],
+    "description": "Action Effect: Restores an adjacent ally's HP by the user's Power (Attack + Might). All staves come with this Effect innately, and it can be modified by other staff Attributes.",
+    "tags": ["innate", "effect:heal", "target:adjacentAlly", "actionEffect"]
   }
 ]

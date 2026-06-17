@@ -1,6 +1,7 @@
 import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
 import HolRefineSheet from './modules/sheets/holRefineSheet.js';
 import HolConsumableSheet from './modules/sheets/holConsumableSheet.js';
+import HolSkillSheet from './modules/sheets/holSkillSheet.js';
 import HolActorSheet from './modules/sheets/holActorSheet.js';
 /**
  * Heroes of Lite - Main System File
@@ -52,6 +53,12 @@ Hooks.once('init', async function() {
     makeDefault: true,
     label: "HoL Consumable Sheet"
   });
+
+  Items.registerSheet('heroes-of-lite', HolSkillSheet, {
+    types: ['skill'],
+    makeDefault: true,
+    label: "HoL Skill Sheet"
+  });
   
   // Register system settings if needed
   // game.settings.register('heroes-of-lite', 'setting-name', { ... });
@@ -65,11 +72,13 @@ Hooks.once('init', async function() {
 Hooks.once('ready', async function() {
   console.log('Heroes of Lite | System ready!');
   
-  // Seed weapons, refines, and consumables data into compendiums on first setup
+  // Seed weapons, refines, consumables, skills, and actor templates into compendiums on first setup
   if (game.user.isGM) {
     await seedWeapons();
     await seedRefines();
     await seedConsumables();
+    await seedSkills();
+    await seedActorTemplates();
   }
 });
 
@@ -99,10 +108,10 @@ async function seedWeapons() {
     
     // Get existing items in pack
     const existingItems = await pack.getDocuments();
-    const existingNames = new Set(existingItems.map(item => item.name));
+    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
     
     for (const weaponData of weapons) {
-      if (existingNames.has(weaponData.name)) {
+      if (existingIds.has(weaponData.id)) {
         continue;
       }
       
@@ -123,6 +132,11 @@ async function seedWeapons() {
             attributes: weaponData.attributes || [],
             attributeRules: weaponData.attributeRules,
             refines: [{id: '', name: ''}, {id: '', name: ''}]
+          }
+        },
+        flags: {
+          'heroes-of-lite': {
+            sourceId: weaponData.id
           }
         }
       };
@@ -292,3 +306,191 @@ async function seedConsumables() {
 Hooks.on('renderActorSheet', (sheet, html, data) => {
   // Custom actor sheet rendering logic
 });
+
+/**
+ * Seed skills from the seed data file into the hol-skills compendium
+ */
+async function seedSkills() {
+  const pack = game.packs.get('heroes-of-lite.hol-skills');
+  if (!pack) {
+    console.warn('HoL | hol-skills compendium pack not found');
+    return;
+  }
+
+  const wasLocked = pack.locked;
+  if (wasLocked) {
+    await pack.configure({ locked: false });
+    console.log('HoL | Unlocked hol-skills pack');
+  }
+
+  try {
+    const response = await fetch('systems/heroes-of-lite/data/seed/skills.json');
+    const skills = await response.json();
+
+    console.log(`HoL | Found ${skills.length} skills to seed`);
+
+    const existingItems = await pack.getDocuments();
+    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
+
+    for (const skillData of skills) {
+      if (existingIds.has(skillData.id)) {
+        continue;
+      }
+
+      const itemData = {
+        name: skillData.name,
+        type: 'skill',
+        system: {
+          attributes: {
+            id: skillData.id,
+            name: skillData.name,
+            type: skillData.type
+          },
+          details: {
+            typeGroup: skillData.typeGroup,
+            prerequisite: skillData.prereq || [],
+            requiredCharge: skillData.requiredCharge || '',
+            effect: skillData.effect,
+            statBonuses: skillData.statBonuses || {},
+            tags: skillData.tags || []
+          }
+        },
+        flags: {
+          'heroes-of-lite': {
+            sourceId: skillData.id
+          }
+        }
+      };
+
+      await Item.create(itemData, {pack: pack.collection});
+    }
+
+    console.log('HoL | Skills seeding complete');
+  } catch (error) {
+    console.error('HoL | Error seeding skills:', error);
+  } finally {
+    if (wasLocked) {
+      await pack.configure({ locked: true });
+      console.log('HoL | Re-locked hol-skills pack');
+    }
+  }
+}
+
+/**
+ * Look up an item by source-id flag across the world and all compendium item packs.
+ */
+async function findItemBySourceId(sourceId) {
+  if (!sourceId) return null;
+  const worldHit = game.items.find(i => i.flags?.['heroes-of-lite']?.sourceId === sourceId);
+  if (worldHit) return worldHit;
+  for (const pack of game.packs) {
+    if (pack.documentName !== 'Item') continue;
+    const docs = await pack.getDocuments();
+    const hit = docs.find(d => d.flags?.['heroes-of-lite']?.sourceId === sourceId);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+/**
+ * Seed actor templates from the seed data file into the hol-templates-actors compendium.
+ * Resolves compendium-id references in _seedRefs into embedded items and rewrites the
+ * actor's inventory/skills arrays to point at the embedded item ids.
+ */
+async function seedActorTemplates() {
+  const pack = game.packs.get('heroes-of-lite.hol-templates-actors');
+  if (!pack) {
+    console.warn('HoL | hol-templates-actors compendium pack not found');
+    return;
+  }
+
+  const wasLocked = pack.locked;
+  if (wasLocked) {
+    await pack.configure({ locked: false });
+    console.log('HoL | Unlocked hol-templates-actors pack');
+  }
+
+  try {
+    const response = await fetch('systems/heroes-of-lite/data/seed/actor-templates.json');
+    const templates = await response.json();
+
+    console.log(`HoL | Found ${templates.length} actor templates to seed`);
+
+    const existingActors = await pack.getDocuments();
+    const existingIds = new Set(existingActors.map(a => a.flags?.['heroes-of-lite']?.sourceId));
+
+    for (const t of templates) {
+      if (existingIds.has(t.id)) continue;
+
+      // Resolve compendium-id references into embedded item documents
+      const refs = t._seedRefs || { skills: [], weapons: [], items: [], equipped: '' };
+      const itemsToEmbed = [];
+      const refToSlot = []; // [{sourceId, slot}]
+
+      for (const skillId of refs.skills || []) {
+        const src = await findItemBySourceId(skillId);
+        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: skillId, slot: 'skills' }); }
+        else console.warn(`HoL | Actor template ${t.id}: skill not found ${skillId}`);
+      }
+      for (const weaponId of refs.weapons || []) {
+        const src = await findItemBySourceId(weaponId);
+        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: weaponId, slot: 'weapons' }); }
+        else console.warn(`HoL | Actor template ${t.id}: weapon not found ${weaponId}`);
+      }
+      for (const itemId of refs.items || []) {
+        const src = await findItemBySourceId(itemId);
+        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: itemId, slot: 'items' }); }
+        else console.warn(`HoL | Actor template ${t.id}: item not found ${itemId}`);
+      }
+
+      const actorData = {
+        name: t.name,
+        type: t.type || 'unit',
+        system: t.system,
+        items: itemsToEmbed,
+        flags: {
+          'heroes-of-lite': {
+            sourceId: t.id,
+            notes: t._notes || ''
+          }
+        }
+      };
+
+      const created = await Actor.create(actorData, { pack: pack.collection });
+
+      // After creation, map embedded items back to the seed refs and update inventory/skills
+      const skills = [];
+      const weapons = [];
+      const itemsList = [];
+      let equipped = '';
+      const equippedSourceId = refs.equipped || '';
+
+      const embedded = Array.from(created.items);
+      for (let i = 0; i < refToSlot.length; i++) {
+        const ref = refToSlot[i];
+        const emb = embedded[i];
+        if (!emb) continue;
+        if (ref.slot === 'skills')  skills.push(emb.id);
+        if (ref.slot === 'weapons') weapons.push(emb.id);
+        if (ref.slot === 'items')   itemsList.push(emb.id);
+        if (ref.sourceId === equippedSourceId) equipped = emb.id;
+      }
+
+      await created.update({
+        'system.skills': skills,
+        'system.inventory.weapons': weapons,
+        'system.inventory.items': itemsList,
+        'system.inventory.equipped': equipped
+      });
+    }
+
+    console.log('HoL | Actor templates seeding complete');
+  } catch (error) {
+    console.error('HoL | Error seeding actor templates:', error);
+  } finally {
+    if (wasLocked) {
+      await pack.configure({ locked: true });
+      console.log('HoL | Re-locked hol-templates-actors pack');
+    }
+  }
+}

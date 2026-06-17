@@ -2,98 +2,87 @@
   "Actor": {
     "types": ["unit"],
     "unit": {
-      "attributes": {
-        "id": {
-          "type": "string",
-          "description": "Stable mechanical ID (e.g. actor.unit.hero)"
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the actor"
-        },
-        "weaponProficiency": {
-          "type": "string",
-          "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shifting stone", "curse"],
-          "description": "The weapon proficiency of the actor"
-        },
-        "trait": {
-          "type": "string",
-          "enum": ["furred", "winged", "scaled", "fiendish"],
-          "description": "The trait of the actor"
-        },
-        "movementType": {
-          "type": "string",
-          "enum": ["infantry", "cavalry", "flier", "armor"],
-          "description": "The movement type of the actor"
-        },
-        "level": {
-          "type": "number",
-          "description": "The level of the actor"
-        }
+      "level": 1,
+      "race": "",
+      "money": 0,
+      "size": "medium",
+      "status": "healthy",
+      "weaponProficiency": "",
+      "trait": "",
+      "movementType": "infantry",
+      "terrain": "",
+      "currentHP": 15,
+      "combatStats": {
+        "hp": 15,
+        "atk": 3,
+        "spd": 3,
+        "dex": 3,
+        "def": 3,
+        "res": 3,
+        "luck": 3
       },
-      "details": {
-        "combatStats": {
-          "hp": 15,
-          "atk": 3,
-          "spd": 3,
-          "dex": 3,
-          "def": 3,
-          "res": 3,
-          "luck": 3
-        },
-        "nonCombatStats": {
-          "strength": 0,
-          "intellect": 0,
-          "perception": 0,
-          "charisma": 0,
-          "fate": 0,
-          "finesse": 0,
-          "acrobatics": 0
-        },
-        "derivedStats": {
-          "hit": 0,
-          "avoid": 0,
-          "crit": 0,
-          "power": 0,
-          "tri": 0,
-          "size": 0,
-          "con": 0,
-          "aid": 0,
-          "move": 0,
-          "charge": 0,
-          "gauge": 0
-        },
-        "terrain": "",
-        "skills": [],
-        "personalSkill": "",
-        "inventory": {
-          "weapons": [],
-          "items": [],
-          "equipped": ""
-        }
-      }
+      "tempStats": {
+        "hp": 0,
+        "atk": 0,
+        "spd": 0,
+        "dex": 0,
+        "def": 0,
+        "res": 0,
+        "luck": 0
+      },
+      "bonusStats": {
+        "hp": 0,
+        "atk": 0,
+        "spd": 0,
+        "dex": 0,
+        "def": 0,
+        "res": 0,
+        "luck": 0
+      },
+      "bonuses": {
+        "power": 0,
+        "tri": 0,
+        "hit": 0,
+        "avoid": 0
+      },
+      "nonCombatStats": {
+        "strength": 0,
+        "intellect": 0,
+        "perception": 0,
+        "charisma": 0,
+        "fate": 0,
+        "finesse": 0,
+        "acrobatics": 0
+      },
+      "derivedStats": {
+        "hit": 0,
+        "avoid": 0,
+        "crit": 0,
+        "power": 0,
+        "tri": 0,
+        "size": 0,
+        "con": 0,
+        "aid": 0,
+        "move": 0,
+        "charge": 0,
+        "gauge": 0
+      },
+      "skills": [],
+      "personalSkill": "",
+      "inventory": {
+        "weapons": [],
+        "items": [],
+        "equipped": ""
+      },
+      "supports": {}
     }
   },
   "Item": {
     "types": ["weapon", "skill", "refine", "consumable"],
     "weapon": {
       "attributes": {
-        "id": {
-          "type": "string",
-          "description": "Stable mechanical ID (e.g. weapon.base.sword)"
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the weapon"
-        },
-        "weaponGroup": {
-          "type": "string",
-          "enum": ["sword", "lance", "axe", "bow", "anima", "light", "staff"]
-        },
-        "damageType": {
-          "type": "string",
-          "enum": ["physical", "magical"]
-        }
+        "weaponGroup": "",
+        "damageType": "physical"
       },
       "details": {
         "range": {
@@ -123,24 +112,15 @@
     },
     "skill": {
       "attributes": {
-        "id": {
-          "type": "string",
-          "description": "Stable mechanical ID (e.g. skill.combat.swordmastery)"
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the skill"
-        },
-        "type": {
-          "type": "string",
-          "enum": ["Technique", "Action", "Strategy", "Reflex", "Passive"]
-        }
+        "type": "passive"
       },
       "details": {
         "typeGroup": "",
         "prerequisite": [],
         "requiredCharge": "",
-        "effect": ""
+        "effect": "",
+        "statBonuses": {},
+        "tags": []
       }
     },
     "refine": {
@@ -166,21 +146,26 @@
       "tags": []
     },
     "consumable": {
-      "attributes": {
-        "id": {
-          "type": "string",
-          "description": "Stable mechanical ID (e.g. consumable.base.herb)"
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the consumable"
-        }
-      },
+      "attributes": {},
       "details": {
         "range": "",
         "uses": 1,
         "costG": 0,
-        "effect": ""
+        "effect": "",
+        "temporaryStatBonuses": {
+          "hp": 0,
+          "atk": 0,
+          "spd": 0,
+          "dex": 0,
+          "def": 0,
+          "res": 0,
+          "luck": 0,
+          "hit": 0,
+          "avoid": 0,
+          "crit": 0,
+          "mov": 0
+        },
+        "tags": []
       }
     }
   }

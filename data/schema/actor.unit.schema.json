@@ -5,9 +5,7 @@
     "required": [
         "id",
         "name",
-        "class",
-        "level",
-        "combatStats"
+        "system"
     ],
     "properties": {
         "id": {
@@ -26,154 +24,148 @@
             "description": "The name of the actor"
         },
 
-        "race": {
-            "type": "string",
-            "description": "The characters race"
-        },
-
-        "money": {
-            "type": "number",
-            "description": "The amount of money (G) the actor has"
-        },
-
-        "size": {
-            "type": "string",
-            "enum": ["small", "medium", "large", "extraLarge"],
-            "description": "The size category of the actor"
-        },
-
-        "status": {
-            "type": "string",
-            "enum": ["healthy", "poisoned", "asleep", "stunned", "burned", "frozen", "paralyzed"],
-            "description": "The current status condition of the actor"
-        },
-
-        
-
-        "weaponProficiency": {
-            "type": "string",
-            "enum": ["sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone", "curse"],
-            "description": "The weapon proficiency of the actor"
-        },
-
-        "trait": {
-            "type": "string",
-            "enum": ["furred", "winged", "scaled", "fiendish"],
-            "description": "The trait of the actor"
-        },
-
-        "movementType": {
-            "type": "string",
-            "enum": ["infantry", "cavalry", "flier", "armor"],
-            "description": "The movement type of the actor"
-        },
-
-        "level": {
-            "type": "number",
-            "description": "The level of the actor"
-        },
-
-        "combatStats": {
+        "_seedRefs": {
             "type": "object",
-            "description": "Base stats of the actor",
+            "description": "Source IDs the seeder resolves into embedded items at insertion time",
             "properties": {
-                "hp": { "type": "number", "minimum": 15 },
-                "atk": { "type": "number", "minimum": 3 },
-                "spd": { "type": "number", "minimum": 3 },
-                "dex": { "type": "number", "minimum": 3 },
-                "def": { "type": "number", "minimum": 3 },
-                "res": { "type": "number", "minimum": 3 },
-                "luck": { "type": "number", "minimum": 3 }
+                "skills":   { "type": "array", "items": { "type": "string" }, "default": [] },
+                "weapons":  { "type": "array", "items": { "type": "string" }, "default": [] },
+                "items":    { "type": "array", "items": { "type": "string" }, "default": [] },
+                "equipped": { "type": "string", "default": "" }
             }
         },
 
-        "nonCombatStats": {
+        "_notes": {
+            "type": "string"
+        },
+
+        "system": {
             "type": "object",
-            "description": "Non-combat stats of the actor",
+            "description": "Actor system data (matches template.json)",
+            "required": [
+                "level",
+                "movementType",
+                "combatStats"
+            ],
             "properties": {
-                "strength": { "type": "number", "minimum": 0, "maximum": 3 },
-                "intellect": { "type": "number", "minimum": 0, "maximum": 3 },
-                "perception": { "type": "number", "minimum": 0, "maximum": 3 },
-                "charisma": { "type": "number", "minimum": 0, "maximum": 3 },
-                "fate": { "type": "number", "minimum": 0, "maximum": 3 },
-                "finesse": { "type": "number", "minimum": 0, "maximum": 3 },
-                "acrobatics": { "type": "number", "minimum": 0, "maximum": 3 }
-            }
-        },
-
-        
-
-        "derivedStats": {
-            "type": "object",
-            "description": "Derived stats of the actor",
-            "properties": {
-                "hit": { "type": "number" },
-                "avoid": { "type": "number" },
-                "crit": { "type": "number" },
-                "power": { "type": "number" },
-                "tri": { "type": "number" },
-                "size": { "type": "number" },
-                "con": { "type": "number" },
-                "aid": { "type": "number" },
-                "charge": { "type": "number" },
-                "move": { "type": "number" },
-                "gauge": { "type": "number" }
-            }
-        },
-
-        "terrain": {
-            "type": "string",
-            "enum": ["plain", "forest", "mountain", "fort", "desert", "water", "bridge", "throne"],
-            "description": "The current terrain the actor is standing on"
-        },
-
-        "skills": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "default": [],
-            "description": "List of skill IDs the actor possesses"
-        },
-
-        "personalSkill": {
-            "type": "string",
-            "description": "ID of the actor's personal skill"
-        },
-
-        "inventory": {
-            "type": "object",
-            "description": "Actor's inventory containing weapons and items (one weapon in the inventory can be equipped)",
-            "properties": {
-                "weapons": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "default": [],
-                    "description": "List of weapon IDs in the actor's inventory"
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "default": [],
-                    "description": "List of item IDs (consumables, key items) in the actor's inventory"
-                },
-                "equipped": {
+                "level": { "type": "number", "minimum": 1 },
+                "race": { "type": "string" },
+                "money": { "type": "number", "minimum": 0 },
+                "size": {
                     "type": "string",
-                    "description": "ID of the currently equipped weapon"
+                    "enum": ["small", "medium", "large", "extraLarge"]
+                },
+                "status": {
+                    "type": "string",
+                    "enum": ["healthy", "poisoned", "asleep", "stunned", "burned", "frozen", "paralyzed"]
+                },
+                "weaponProficiency": {
+                    "type": "string",
+                    "enum": ["", "sword", "lance", "axe", "bow", "dagger", "anima", "light", "dark", "staff", "strike", "talons", "breath", "shiftingStone", "curse"]
+                },
+                "trait": {
+                    "type": "string",
+                    "enum": ["", "furred", "winged", "scaled", "fiendish"]
+                },
+                "movementType": {
+                    "type": "string",
+                    "enum": ["infantry", "cavalry", "flier", "armor"]
+                },
+                "terrain": {
+                    "type": "string",
+                    "enum": ["", "plain", "forest", "mountain", "fort", "desert", "water", "bridge", "throne"]
+                },
+                "currentHP": { "type": "number", "minimum": 0 },
+                "combatStats": {
+                    "type": "object",
+                    "properties": {
+                        "hp":   { "type": "number", "minimum": 15 },
+                        "atk":  { "type": "number", "minimum": 3 },
+                        "spd":  { "type": "number", "minimum": 3 },
+                        "dex":  { "type": "number", "minimum": 3 },
+                        "def":  { "type": "number", "minimum": 3 },
+                        "res":  { "type": "number", "minimum": 3 },
+                        "luck": { "type": "number", "minimum": 3 }
+                    }
+                },
+                "tempStats": {
+                    "type": "object",
+                    "properties": {
+                        "hp": { "type": "number" }, "atk": { "type": "number" }, "spd": { "type": "number" },
+                        "dex": { "type": "number" }, "def": { "type": "number" }, "res": { "type": "number" },
+                        "luck": { "type": "number" }
+                    }
+                },
+                "bonusStats": {
+                    "type": "object",
+                    "properties": {
+                        "hp": { "type": "number" }, "atk": { "type": "number" }, "spd": { "type": "number" },
+                        "dex": { "type": "number" }, "def": { "type": "number" }, "res": { "type": "number" },
+                        "luck": { "type": "number" }
+                    }
+                },
+                "bonuses": {
+                    "type": "object",
+                    "properties": {
+                        "power": { "type": "number" },
+                        "tri":   { "type": "number" },
+                        "hit":   { "type": "number" },
+                        "avoid": { "type": "number" }
+                    }
+                },
+                "nonCombatStats": {
+                    "type": "object",
+                    "properties": {
+                        "strength":   { "type": "number", "minimum": 0, "maximum": 3 },
+                        "intellect":  { "type": "number", "minimum": 0, "maximum": 3 },
+                        "perception": { "type": "number", "minimum": 0, "maximum": 3 },
+                        "charisma":   { "type": "number", "minimum": 0, "maximum": 3 },
+                        "fate":       { "type": "number", "minimum": 0, "maximum": 3 },
+                        "finesse":    { "type": "number", "minimum": 0, "maximum": 3 },
+                        "acrobatics": { "type": "number", "minimum": 0, "maximum": 3 }
+                    }
+                },
+                "derivedStats": {
+                    "type": "object",
+                    "properties": {
+                        "hit":    { "type": "number" },
+                        "avoid":  { "type": "number" },
+                        "crit":   { "type": "number" },
+                        "power":  { "type": "number" },
+                        "tri":    { "type": "number" },
+                        "size":   { "type": "number" },
+                        "con":    { "type": "number" },
+                        "aid":    { "type": "number" },
+                        "charge": { "type": "number" },
+                        "move":   { "type": "number" },
+                        "gauge":  { "type": "number" }
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "default": [],
+                    "description": "Embedded skill item ids (populated by seeder from _seedRefs.skills)"
+                },
+                "personalSkill": {
+                    "type": "string",
+                    "description": "ID of the actor's personal skill"
+                },
+                "inventory": {
+                    "type": "object",
+                    "properties": {
+                        "weapons":  { "type": "array", "items": { "type": "string" }, "default": [] },
+                        "items":    { "type": "array", "items": { "type": "string" }, "default": [] },
+                        "equipped": { "type": "string" }
+                    }
+                },
+                "supports": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "enum": ["C", "B", "A", "S"]
+                    }
                 }
-            }
-        },
-
-        "supports": {
-            "type": "object",
-            "description": "Support levels with other actors",
-            "additionalProperties": {
-                "type": "string",
-                "enum": ["C", "B", "A", "S"]
             }
         }
     }
