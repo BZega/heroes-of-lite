@@ -9,6 +9,10 @@ export default class HolRefineSheet extends foundry.applications.api.HandlebarsA
         position: {
             width: 740,
             height: 660
+        },
+        form: {
+            submitOnChange: true,
+            closeOnSubmit: false
         }
     };
 

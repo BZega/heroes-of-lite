@@ -7,15 +7,20 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             contentClasses: ["standard-form"]
         },
         position: {
-            width: 800,
-            height: 700
+            width: 900,
+            height: 720
+        },
+        form: {
+            submitOnChange: true,
+            closeOnSubmit: false
         },
         actions: {
             incrementCharge: this._onIncrementCharge,
             decrementCharge: this._onDecrementCharge,
             equipWeapon: this._onEquipWeapon,
             removeItem: this._onRemoveItem,
-            toggleBattleMode: this._onToggleBattleMode
+            toggleBattleMode: this._onToggleBattleMode,
+            openEmbeddedItem: this._onOpenEmbeddedItem
         }
     };
 
@@ -47,14 +52,22 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         }
 
         // Calculate combat stat totals (Base + Bonus + Temp)
+        const bonusStats = context.system.bonusStats || {};
+        const tempStats = context.system.tempStats || {};
+        const sumStat = (key, baseDefault) => {
+            const base = Number(combatStats[key] ?? baseDefault) || 0;
+            const bonus = Number(bonusStats[key] ?? 0) || 0;
+            const temp = Number(tempStats[key] ?? 0) || 0;
+            return base + bonus + temp;
+        };
         context.combatStatTotals = {
-            hp: (combatStats.hp || 15),
-            atk: (combatStats.atk || 3),
-            spd: (combatStats.spd || 3),
-            dex: (combatStats.dex || 3),
-            def: (combatStats.def || 3),
-            res: (combatStats.res || 3),
-            luck: (combatStats.luck || 3)
+            hp: sumStat('hp', 15),
+            atk: sumStat('atk', 3),
+            spd: sumStat('spd', 3),
+            dex: sumStat('dex', 3),
+            def: sumStat('def', 3),
+            res: sumStat('res', 3),
+            luck: sumStat('luck', 3)
         };
 
         // Calculate unallocated non-combat stat points
@@ -310,6 +323,18 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const actor = this.document;
         const weaponId = target.dataset.weaponId;
         await actor.update({ 'system.inventory.equipped': weaponId });
+    }
+
+    /**
+     * Open the sheet for an embedded item (weapon, consumable, skill) on this actor.
+     */
+    static _onOpenEmbeddedItem(event, target) {
+        event.preventDefault();
+        event.stopPropagation();
+        const itemId = target.dataset.itemId;
+        if (!itemId) return;
+        const item = this.document.items.get(itemId);
+        if (item) item.sheet.render(true);
     }
 
     static async _onRemoveItem(event, target) {

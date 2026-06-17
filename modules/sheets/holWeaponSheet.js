@@ -10,6 +10,10 @@ export default class HolWeaponSheet extends foundry.applications.api.HandlebarsA
             width: 800,
             height: 560
         },
+        form: {
+            submitOnChange: true,
+            closeOnSubmit: false
+        },
         actions: {
             removeRefine: HolWeaponSheet.onRemoveRefine,
             dropRefine: HolWeaponSheet.onDropRefine

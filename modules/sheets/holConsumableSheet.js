@@ -9,6 +9,10 @@ export default class HolConsumableSheet extends foundry.applications.api.Handleb
         position: {
             width: 600,
             height: 500
+        },
+        form: {
+            submitOnChange: true,
+            closeOnSubmit: false
         }
     };
 

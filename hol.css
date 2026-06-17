@@ -1534,3 +1534,175 @@
   font-weight: 600;
   font-size: 0.85rem;
 }
+
+
+/* ============================================================
+   v0.1.1 SHEET FIXES: readability, sizing, save-on-change UX
+   ============================================================ */
+
+
+/* Foundry's app root <form> for our sheets: let our inner layout breathe */
+.application.heroes-of-lite.actor-sheet,
+form.heroes-of-lite.actor-sheet,
+.heroes-of-lite.actor-sheet {
+  min-width: 0;
+}
+.application.heroes-of-lite.actor-sheet .window-content,
+.heroes-of-lite.actor-sheet .window-content {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The outermost wrapper rendered by our template should fill the window */
+.heroes-of-lite.actor-sheet.character-sheet {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make the main split fill remaining space and allow each column to scroll */
+.heroes-of-lite.actor-sheet .sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.heroes-of-lite.actor-sheet .normal-mode-wrapper {
+  flex: 1;
+  min-height: 0;
+}
+.heroes-of-lite.actor-sheet .main-layout {
+  height: 100%;
+  min-height: 0;
+}
+.heroes-of-lite.actor-sheet .left-column,
+.heroes-of-lite.actor-sheet .right-column {
+  min-height: 0;
+  height: 100%;
+}
+
+/* Bigger, fully visible select fields (Movement, Size, Status, Terrain) */
+.heroes-of-lite.actor-sheet select,
+.heroes-of-lite.actor-sheet .info-field select,
+.heroes-of-lite.actor-sheet .header-content select {
+  height: auto;
+  min-height: 36px;
+  line-height: 1.4;
+  padding: 6px 28px 6px 10px;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #6b3a2c 50%),
+    linear-gradient(135deg, #6b3a2c 50%, transparent 50%);
+  background-position:
+    right 14px top 50%,
+    right 9px top 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid #c0a060;
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
+}
+.heroes-of-lite.actor-sheet select option {
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+/* All text/number inputs inside the actor sheet: readable + consistent */
+.heroes-of-lite.actor-sheet input[type="text"],
+.heroes-of-lite.actor-sheet input[type="number"],
+.heroes-of-lite.actor-sheet textarea {
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #c0a060;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+.heroes-of-lite.actor-sheet input:focus,
+.heroes-of-lite.actor-sheet select:focus,
+.heroes-of-lite.actor-sheet textarea:focus {
+  outline: none;
+  border-color: #c9a227;
+  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.25);
+}
+
+/* Header inputs: keep light text on the dark gradient but keep them readable */
+.heroes-of-lite.actor-sheet .sheet-header input[type="text"],
+.heroes-of-lite.actor-sheet .sheet-header input[type="number"] {
+  background: rgba(255,255,255,0.95);
+  color: #1a1a1a;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Inventory/skill item names: clickable link-style */
+.heroes-of-lite.actor-sheet a.item-name,
+.heroes-of-lite.actor-sheet a.skill-name {
+  color: #1a3a52;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  cursor: pointer;
+  font-weight: 600;
+  flex: 1;
+}
+.heroes-of-lite.actor-sheet a.item-name:hover,
+.heroes-of-lite.actor-sheet a.skill-name:hover {
+  color: #c9a227;
+  border-bottom-color: #c9a227;
+}
+
+/* Character info grid: 3 columns on wide sheets, 2 otherwise */
+.heroes-of-lite.actor-sheet .character-info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+@media (min-width: 950px) {
+  .heroes-of-lite.actor-sheet .character-info-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Combat Stats table: shrink to fit so the input columns dont overflow */
+.heroes-of-lite.actor-sheet .stat-header,
+.heroes-of-lite.actor-sheet .stat-row {
+  grid-template-columns: 60px 60px 1fr 1fr 1fr;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+}
+.heroes-of-lite.actor-sheet .stat-row input,
+.heroes-of-lite.actor-sheet .stat-row .total {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Item / skill containers: do not let names get squashed when buttons appear */
+.heroes-of-lite.actor-sheet .item-content {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+/* Item sheets (weapon, refine, consumable, skill): readable text everywhere */
+.heroes-of-lite.sheet.item input[type="text"],
+.heroes-of-lite.sheet.item input[type="number"],
+.heroes-of-lite.sheet.item textarea,
+.heroes-of-lite.sheet.item select {
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #c0a060;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.heroes-of-lite.sheet.item select {
+  min-height: 34px;
+}

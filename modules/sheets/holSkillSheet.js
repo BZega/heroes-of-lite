@@ -9,6 +9,10 @@ export default class HolSkillSheet extends foundry.applications.api.HandlebarsAp
         position: {
             width: 600,
             height: 500
+        },
+        form: {
+            submitOnChange: true,
+            closeOnSubmit: false
         }
     };
 

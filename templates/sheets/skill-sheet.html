@@ -1,4 +1,4 @@
-<form class="heroes-of-lite sheet item skill-sheet" autocomplete="off">
+<div class="heroes-of-lite sheet item skill-sheet" autocomplete="off">
     <header class="sheet-header">
         <div class="header-content">
             <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
@@ -37,9 +37,5 @@
             <label>Effect</label>
             <textarea name="system.details.effect" rows="10">{{system.details.effect}}</textarea>
         </div>
-        <div class="form-group">
-            <label>Tags</label>
-            <input type="text" name="system.details.tags" value="{{join system.details.tags ', '}}" placeholder="combatArt, exclusive" />
-        </div>
     </section>
-</form>
+</div>

@@ -1,4 +1,4 @@
-<form class="heroes-of-lite sheet actor character-sheet" autocomplete="off">
+<div class="heroes-of-lite sheet actor character-sheet" autocomplete="off">
     <header class="sheet-header">
         <div class="header-content">
             <div class="header-field">
@@ -235,7 +235,7 @@
                                 {{#if this.item}}
                                     <div class="item-content">
                                         {{#if this.equipped}}<span class="equipped-badge">E</span>{{/if}}
-                                        <span class="item-name">{{this.item.name}}</span>
+                                        <a class="item-name" data-action="openEmbeddedItem" data-item-id="{{this.item.id}}" title="Open weapon">{{this.item.name}}</a>
                                         {{#unless this.equipped}}
                                         <button type="button" data-action="equipWeapon" data-weapon-id="{{this.item.id}}">Equip</button>
                                         {{/unless}}
@@ -254,7 +254,7 @@
                             <div class="item-slot" data-slot-type="item" data-slot-index="{{@index}}">
                                 {{#if this.item}}
                                     <div class="item-content">
-                                        <span class="item-name">{{this.item.name}}</span>
+                                        <a class="item-name" data-action="openEmbeddedItem" data-item-id="{{this.item.id}}" title="Open item">{{this.item.name}}</a>
                                         <button type="button" data-action="removeItem" data-item-id="{{this.item.id}}" data-item-type="item">×</button>
                                     </div>
                                 {{else}}
@@ -273,7 +273,7 @@
                         <div class="skill-slot" data-slot-type="skill" data-slot-index="{{@index}}">
                             {{#if this.item}}
                                 <div class="skill-content">
-                                    <span class="skill-name">{{this.item.name}}</span>
+                                    <a class="skill-name" data-action="openEmbeddedItem" data-item-id="{{this.item.id}}" title="Open skill">{{this.item.name}}</a>
                                 </div>
                             {{else}}
                                 <span class="empty-slot">Drop skill here</span>
@@ -423,4 +423,4 @@
             </div>
         </div>
     </div>
-</form>
+</div>
