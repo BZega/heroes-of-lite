@@ -1,0 +1,25 @@
+_id: 'refine.eerie'
+name: 'Eerie'
+type: 'loot'
+system:
+  description:
+    value: 'If the user initiates combat and their attack hits, the foe becomes Silenced after combat.'
+  cost:
+    value: 600
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - dark
+      - curse
+    tags:
+      - requires:initiator
+      - requires:hit
+      - status:silenced
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.eerie'

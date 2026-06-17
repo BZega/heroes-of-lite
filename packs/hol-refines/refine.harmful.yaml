@@ -1,0 +1,23 @@
+_id: 'refine.harmful'
+name: 'Harmful'
+type: 'loot'
+system:
+  description:
+    value: 'Causes the target to lose 5 HP when an Effect is used on them.'
+  cost:
+    value: -200
+  customData:
+    category: 'gmOnly'
+    appliesToWeaponGroups:
+      - staff
+    tags:
+      - damage:5
+      - target:any
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.harmful'

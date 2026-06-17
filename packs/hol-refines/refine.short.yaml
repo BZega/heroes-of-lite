@@ -1,0 +1,22 @@
+_id: 'refine.short'
+name: 'Short'
+type: 'loot'
+system:
+  description:
+    value: 'This Weapon''s Min Range is reduced by 1 (down to a Minimum of 1)'
+  cost:
+    value: 1000
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - bow
+    statBonuses:
+      minRange: -1
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.short'

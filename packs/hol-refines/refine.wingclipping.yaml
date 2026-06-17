@@ -1,0 +1,23 @@
+_id: 'refine.wingclipping'
+name: 'Wingclipping'
+type: 'loot'
+system:
+  description:
+    value: 'Deals effective damage against units with the Winged trait.'
+  cost:
+    value: 400
+  customData:
+    category: 'basic'
+    appliesToWeaponGroups:
+      - bow
+      - anima
+    tags:
+      - effective:winged
+img: 'icons/svg/item-bag.svg'
+effects: []
+sort: 0
+permission:
+  default: 0
+flags:
+  heroes-of-lite:
+    refineKey: 'refine.wingclipping'
