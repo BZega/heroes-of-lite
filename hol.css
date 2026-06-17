@@ -522,12 +522,12 @@
 .heroes-of-lite.actor-sheet.character-sheet {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  color: #1a1a1a;
+  background: #fdf8ef;
+  color: #3d2b1f;
 }
 
 .heroes-of-lite.actor-sheet .sheet-header {
-  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
+  background: linear-gradient(135deg, #4a2c17 0%, #8b6914 100%);
   color: white;
   padding: 1rem 1.5rem;
   display: flex;
@@ -574,10 +574,10 @@
 
 .heroes-of-lite.actor-sheet .sheet-tabs {
   display: flex;
-  border-bottom: 2px solid #e74c3c;
+  border-bottom: 2px solid #c9a227;
   margin: 0;
   padding: 0;
-  background: #f5f5f5;
+  background: #f5e6c8;
 }
 
 .heroes-of-lite.actor-sheet .sheet-tabs .item {
@@ -587,27 +587,27 @@
   cursor: pointer;
   border: none;
   background: transparent;
-  color: #2c3e50;
+  color: #4a2c17;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s;
 }
 
 .heroes-of-lite.actor-sheet .sheet-tabs .item:hover {
-  background: #e8e8e8;
-  color: #e74c3c;
+  background: #edd9b0;
+  color: #4a2c17;
 }
 
 .heroes-of-lite.actor-sheet .sheet-tabs .item.active {
-  background: white;
-  color: #e74c3c;
-  border-bottom: 3px solid #e74c3c;
+  background: #fdf8ef;
+  color: #4a2c17;
+  border-bottom: 3px solid #c9a227;
 }
 
 .heroes-of-lite.actor-sheet .sheet-body {
   flex: 1;
   overflow: hidden;
-  background: #fafafa;
+  background: #fdf8ef;
 }
 
 .heroes-of-lite.actor-sheet .main-layout {
@@ -619,7 +619,7 @@
 /* Left Column (30%) */
 .heroes-of-lite.actor-sheet .left-column {
   width: 30%;
-  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
+  background: linear-gradient(180deg, #4a2c17 0%, #6b3a2c 100%);
   color: white;
   padding: 1.5rem;
   display: flex;
@@ -775,7 +775,7 @@
 
 .heroes-of-lite.actor-sheet .info-field label {
   font-weight: 600;
-  color: #2c3e50;
+  color: #6b3a2c;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -800,7 +800,7 @@
   width: 32px;
   height: 32px;
   border: none;
-  background: #3498db;
+  background: #c9a227;
   color: white;
   font-size: 1.2rem;
   font-weight: bold;
@@ -810,7 +810,7 @@
 }
 
 .heroes-of-lite.actor-sheet .charge-counter button:hover {
-  background: #2980b9;
+  background: #a8861e;
 }
 
 .heroes-of-lite.actor-sheet .charge-value {
@@ -838,10 +838,10 @@
 
 .heroes-of-lite.actor-sheet .stat-header {
   font-weight: 700;
-  color: #2c3e50;
+  color: #6b3a2c;
   font-size: 0.85rem;
   text-transform: uppercase;
-  background: #ecf0f1;
+  background: #f5e6c8;
   border-radius: 4px;
 }
 
@@ -854,7 +854,7 @@
 .heroes-of-lite.actor-sheet .stat-row label {
   font-weight: 600;
   text-transform: uppercase;
-  color: #1a3a52;
+  color: #6b3a2c;
 }
 
 .heroes-of-lite.actor-sheet .stat-row input {
@@ -868,7 +868,7 @@
   text-align: center;
   font-weight: bold;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #4a2c17;
 }
 
 /* Non-Combat Stats Tab */
@@ -878,12 +878,12 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e74c3c;
+  border-bottom: 2px solid #c9a227;
 }
 
 .heroes-of-lite.actor-sheet .non-combat-header h3 {
   margin: 0;
-  color: #2c3e50;
+  color: #4a2c17;
 }
 
 .heroes-of-lite.actor-sheet .unallocated {
@@ -895,7 +895,7 @@
 }
 
 .heroes-of-lite.actor-sheet .unallocated span {
-  background: #3498db;
+  background: #c9a227;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
@@ -916,7 +916,7 @@
 
 .heroes-of-lite.actor-sheet .stat-field label {
   font-weight: 600;
-  color: #2c3e50;
+  color: #6b3a2c;
   font-size: 0.9rem;
   text-transform: uppercase;
 }
@@ -933,8 +933,8 @@
 /* Inventory Tab */
 .heroes-of-lite.actor-sheet .inventory-section h3 {
   margin: 0 0 1rem 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #e74c3c;
+  color: #4a2c17;
+  border-bottom: 2px solid #c9a227;
   padding-bottom: 0.5rem;
 }
 
@@ -960,8 +960,8 @@
 
 .heroes-of-lite.actor-sheet .weapon-slot.drag-over,
 .heroes-of-lite.actor-sheet .item-slot.drag-over {
-  border-color: #3498db;
-  background: #ecf8ff;
+  border-color: #c9a227;
+  background: #fdf8ef;
 }
 
 .heroes-of-lite.actor-sheet .weapon-slot .empty-slot,
@@ -978,7 +978,7 @@
 }
 
 .heroes-of-lite.actor-sheet .equipped-badge {
-  background: #27ae60;
+  background: #c9a227;
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 3px;
@@ -994,7 +994,7 @@
 .heroes-of-lite.actor-sheet .item-content button {
   padding: 0.25rem 0.75rem;
   border: none;
-  background: #3498db;
+  background: #c9a227;
   color: white;
   border-radius: 3px;
   cursor: pointer;
@@ -1003,7 +1003,7 @@
 }
 
 .heroes-of-lite.actor-sheet .item-content button:hover {
-  background: #2980b9;
+  background: #a8861e;
 }
 
 .heroes-of-lite.actor-sheet .item-content button[data-action="removeItem"] {
@@ -1039,8 +1039,8 @@
 }
 
 .heroes-of-lite.actor-sheet .skill-slot.drag-over {
-  border-color: #3498db;
-  background: #ecf8ff;
+  border-color: #c9a227;
+  background: #fdf8ef;
 }
 
 .heroes-of-lite.actor-sheet .skill-slot .empty-slot {
@@ -1054,14 +1054,14 @@
 
 .heroes-of-lite.actor-sheet .skill-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: #4a2c17;
 }
 
 /* Supports Tab */
 .heroes-of-lite.actor-sheet .supports-section h3 {
   margin: 0 0 1rem 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #e74c3c;
+  color: #4a2c17;
+  border-bottom: 2px solid #c9a227;
   padding-bottom: 0.5rem;
 }
 
@@ -1106,11 +1106,431 @@
 }
 
 .heroes-of-lite.actor-sheet .support-slot.drag-over {
-  border-color: #3498db;
-  background: #ecf8ff;
+  border-color: #c9a227;
+  background: #fdf8ef;
 }
 
 .heroes-of-lite.actor-sheet .support-slot .empty-slot {
   color: #95a5a6;
   font-style: italic;
+}
+
+/* =====================================================
+   BATTLE TOGGLE BUTTON
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-toggle {
+  margin-left: auto;
+  padding: 0.5rem 1.2rem;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.heroes-of-lite.actor-sheet .battle-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.heroes-of-lite.actor-sheet .battle-toggle i {
+  margin-right: 0.4rem;
+}
+
+/* =====================================================
+   NORMAL / BATTLE MODE VISIBILITY
+   ===================================================== */
+.heroes-of-lite.actor-sheet .normal-mode-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.heroes-of-lite.actor-sheet .battle-mode-wrapper {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+}
+
+.heroes-of-lite.actor-sheet.battle-active .normal-mode-wrapper {
+  display: none;
+}
+
+.heroes-of-lite.actor-sheet.battle-active .battle-mode-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.heroes-of-lite.actor-sheet.battle-active .sheet-header {
+  background: linear-gradient(135deg, #3d2210 0%, #7a5a0f 100%);
+}
+
+/* =====================================================
+   BATTLE MODE - GRID LAYOUT (4 QUADRANTS)
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+  background: #8b6914;
+}
+
+/* Shared quadrant styles */
+.heroes-of-lite.actor-sheet .battle-quadrant {
+  background: #f5e6c8;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.heroes-of-lite.actor-sheet .battle-quadrant h4 {
+  margin: 0 0 0.5rem 0;
+  color: #4a2c17;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #c9a227;
+  padding-bottom: 0.25rem;
+}
+
+/* =====================================================
+   BATTLE MODE - TOP LEFT (Character + Stats)
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-tl {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-char-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 140px;
+}
+
+.heroes-of-lite.actor-sheet .battle-portrait {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  border: 3px solid #c9a227;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.heroes-of-lite.actor-sheet .battle-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #4a2c17;
+  text-align: center;
+}
+
+.heroes-of-lite.actor-sheet .battle-level {
+  font-size: 0.8rem;
+  color: #6b3a2c;
+  font-weight: 600;
+}
+
+/* HP Bar */
+.heroes-of-lite.actor-sheet .battle-hp-section {
+  width: 100%;
+  text-align: center;
+}
+
+.heroes-of-lite.actor-sheet .battle-hp-section label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b3a2c;
+  text-transform: uppercase;
+}
+
+.heroes-of-lite.actor-sheet .battle-hp-bar {
+  width: 100%;
+  height: 14px;
+  background: #d4c4a0;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid #a89060;
+  margin: 0.15rem 0;
+}
+
+.heroes-of-lite.actor-sheet .battle-hp-fill {
+  height: 100%;
+  border-radius: 7px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+  background-color: #27ae60;
+}
+
+.heroes-of-lite.actor-sheet .battle-hp-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4a2c17;
+}
+
+/* Mini stats (Charge, Gauge, Aid, Con) */
+.heroes-of-lite.actor-sheet .battle-derived-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-mini-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(74, 44, 23, 0.08);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .battle-mini-stat label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b3a2c;
+  text-transform: uppercase;
+}
+
+.heroes-of-lite.actor-sheet .battle-mini-stat span {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #4a2c17;
+}
+
+/* Combat stats column */
+.heroes-of-lite.actor-sheet .battle-stats-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.heroes-of-lite.actor-sheet .battle-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  background: rgba(74, 44, 23, 0.06);
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .battle-stat-row label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6b3a2c;
+  text-transform: uppercase;
+  min-width: 30px;
+}
+
+.heroes-of-lite.actor-sheet .battle-stat-row span {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .battle-stat-divider {
+  height: 1px;
+  background: #c9a227;
+  margin: 0.15rem 0;
+}
+
+/* =====================================================
+   BATTLE MODE - TOP RIGHT (Inventory + Non-combat)
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-tr {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-row {
+  padding: 0.3rem 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #d4c4a0;
+  border-radius: 3px;
+  margin-bottom: 0.2rem;
+  font-size: 0.8rem;
+  color: #3d2b1f;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-row.equipped {
+  font-weight: 800;
+  background: rgba(201, 162, 39, 0.2);
+  border-color: #c9a227;
+  color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-row .empty-text {
+  color: #a89060;
+  font-style: italic;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-col h4 {
+  margin-top: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-inv-col h4:first-child {
+  margin-top: 0;
+}
+
+/* Non-combat stats column */
+.heroes-of-lite.actor-sheet .battle-noncombat-col {
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-nc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2rem 0.4rem;
+  background: rgba(74, 44, 23, 0.06);
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .battle-nc-row label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b3a2c;
+  text-transform: uppercase;
+}
+
+.heroes-of-lite.actor-sheet .battle-nc-row span {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .battle-gold {
+  margin-top: 0.4rem;
+  background: rgba(201, 162, 39, 0.15);
+  border: 1px solid #c9a227;
+}
+
+.heroes-of-lite.actor-sheet .battle-gold span {
+  color: #8b6914;
+}
+
+/* =====================================================
+   BATTLE MODE - BOTTOM LEFT (Skills)
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-skills-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #d4c4a0;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-entry.has-skill {
+  background: rgba(201, 162, 39, 0.12);
+  border-color: #c9a227;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-icon {
+  color: #c9a227;
+  font-size: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-icon.empty {
+  color: #a89060;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-name {
+  font-weight: 600;
+  color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .battle-skill-name.empty {
+  color: #a89060;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* =====================================================
+   BATTLE MODE - BOTTOM RIGHT (Supports + Terrain)
+   ===================================================== */
+.heroes-of-lite.actor-sheet .battle-supports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-support-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #d4c4a0;
+  border-radius: 3px;
+}
+
+.heroes-of-lite.actor-sheet .support-actor-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .support-rank-badge {
+  background: #c9a227;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-terrain-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.heroes-of-lite.actor-sheet .battle-terrain-section label {
+  font-weight: 700;
+  color: #6b3a2c;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.heroes-of-lite.actor-sheet .battle-terrain-section select {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #d4c4a0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #4a2c17;
+  font-weight: 600;
+  font-size: 0.85rem;
 }

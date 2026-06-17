@@ -9,9 +9,14 @@
                 <label>Level</label>
                 <input type="number" name="system.level" value="{{system.level}}" min="1" max="20" />
             </div>
+            <button type="button" class="battle-toggle" data-action="toggleBattleMode">
+                <i class="fas fa-crossed-swords"></i> Battle Mode
+            </button>
         </div>
     </header>
 
+    {{!-- ==================== NORMAL MODE ==================== --}}
+    <div class="normal-mode-wrapper">
     <nav class="sheet-tabs tabs">
         <a class="item" data-tab="character-info">Character Info</a>
         <a class="item" data-tab="combat-stats">Combat Stats</a>
@@ -35,7 +40,7 @@
                     </div>
                 </div>
 
-                <!-- Move, Con, Aid Row -->
+                <!-- Move, Con, Aid, Gauge Row -->
                 <div class="derived-row">
                     <div class="derived-stat">
                         <label>Move</label>
@@ -48,6 +53,12 @@
                     <div class="derived-stat">
                         <label>Aid</label>
                         <span>{{system.derivedStats.aid}}</span>
+                    </div>
+                </div>
+                <div class="derived-row">
+                    <div class="derived-stat">
+                        <label>Gauge</label>
+                        <span>{{system.derivedStats.gauge}}</span>
                     </div>
                 </div>
 
@@ -133,6 +144,20 @@
                                 <span class="charge-value">{{system.derivedStats.charge}}</span>
                                 <button type="button" data-action="incrementCharge">+</button>
                             </div>
+                        </div>
+                        <div class="info-field">
+                            <label>Terrain</label>
+                            <select name="system.terrain">
+                                <option value="" {{#if (eq system.terrain "")}}selected{{/if}}>None</option>
+                                <option value="plain" {{#if (eq system.terrain "plain")}}selected{{/if}}>Plain</option>
+                                <option value="forest" {{#if (eq system.terrain "forest")}}selected{{/if}}>Forest</option>
+                                <option value="mountain" {{#if (eq system.terrain "mountain")}}selected{{/if}}>Mountain</option>
+                                <option value="fort" {{#if (eq system.terrain "fort")}}selected{{/if}}>Fort</option>
+                                <option value="desert" {{#if (eq system.terrain "desert")}}selected{{/if}}>Desert</option>
+                                <option value="water" {{#if (eq system.terrain "water")}}selected{{/if}}>Water</option>
+                                <option value="bridge" {{#if (eq system.terrain "bridge")}}selected{{/if}}>Bridge</option>
+                                <option value="throne" {{#if (eq system.terrain "throne")}}selected{{/if}}>Throne</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -283,4 +308,119 @@
             </div>
         </div>
     </section>
+    </div>
+
+    {{!-- ==================== BATTLE MODE ==================== --}}
+    <div class="battle-mode-wrapper">
+        <div class="battle-grid">
+            {{!-- Top-Left Quadrant: Character Info + Combat Stats --}}
+            <div class="battle-quadrant battle-tl">
+                <div class="battle-char-col">
+                    <img class="battle-portrait" src="{{img}}" alt="{{name}}" />
+                    <div class="battle-name">{{name}}</div>
+                    <div class="battle-level">Lv. {{system.level}}</div>
+                    <div class="battle-hp-section">
+                        <label>HP</label>
+                        <div class="battle-hp-bar">
+                            <div class="battle-hp-fill" data-hp-percent="{{hpPercent}}"></div>
+                        </div>
+                        <span class="battle-hp-text">{{system.currentHP}} / {{combatStatTotals.hp}}</span>
+                    </div>
+                    <div class="battle-derived-grid">
+                        <div class="battle-mini-stat"><label>Charge</label><span>{{system.derivedStats.charge}}</span></div>
+                        <div class="battle-mini-stat"><label>Gauge</label><span>{{system.derivedStats.gauge}}</span></div>
+                        <div class="battle-mini-stat"><label>Aid</label><span>{{system.derivedStats.aid}}</span></div>
+                        <div class="battle-mini-stat"><label>Con</label><span>{{system.derivedStats.con}}</span></div>
+                    </div>
+                </div>
+                <div class="battle-stats-col">
+                    <div class="battle-stat-row"><label>Atk</label><span>{{combatStatTotals.atk}}</span></div>
+                    <div class="battle-stat-row"><label>Dex</label><span>{{combatStatTotals.dex}}</span></div>
+                    <div class="battle-stat-row"><label>Spd</label><span>{{combatStatTotals.spd}}</span></div>
+                    <div class="battle-stat-row"><label>Def</label><span>{{combatStatTotals.def}}</span></div>
+                    <div class="battle-stat-row"><label>Res</label><span>{{combatStatTotals.res}}</span></div>
+                    <div class="battle-stat-row"><label>Lck</label><span>{{combatStatTotals.luck}}</span></div>
+                    <div class="battle-stat-divider"></div>
+                    <div class="battle-stat-row"><label>Mov</label><span>{{system.derivedStats.move}}</span></div>
+                    <div class="battle-stat-row"><label>Tri</label><span>{{system.derivedStats.tri}}</span></div>
+                    <div class="battle-stat-row"><label>Hit</label><span>{{system.derivedStats.hit}}</span></div>
+                    <div class="battle-stat-row"><label>Avd</label><span>{{system.derivedStats.avoid}}</span></div>
+                </div>
+            </div>
+
+            {{!-- Top-Right Quadrant: Inventory + Non-Combat Stats --}}
+            <div class="battle-quadrant battle-tr">
+                <div class="battle-inv-col">
+                    <h4>Weapons</h4>
+                    {{#each weaponSlots}}
+                    <div class="battle-inv-row {{#if this.equipped}}equipped{{/if}}">
+                        {{#if this.item}}<span>{{this.item.name}}</span>{{else}}<span class="empty-text">&mdash;</span>{{/if}}
+                    </div>
+                    {{/each}}
+                    <h4>Items</h4>
+                    {{#each itemSlots}}
+                    <div class="battle-inv-row">
+                        {{#if this.item}}<span>{{this.item.name}}</span>{{else}}<span class="empty-text">&mdash;</span>{{/if}}
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="battle-noncombat-col">
+                    <h4>Skills</h4>
+                    <div class="battle-nc-row"><label>Str</label><span>{{system.nonCombatStats.strength}}</span></div>
+                    <div class="battle-nc-row"><label>Int</label><span>{{system.nonCombatStats.intellect}}</span></div>
+                    <div class="battle-nc-row"><label>Perc</label><span>{{system.nonCombatStats.perception}}</span></div>
+                    <div class="battle-nc-row"><label>Cha</label><span>{{system.nonCombatStats.charisma}}</span></div>
+                    <div class="battle-nc-row"><label>Acro</label><span>{{system.nonCombatStats.acrobatics}}</span></div>
+                    <div class="battle-nc-row"><label>Fin</label><span>{{system.nonCombatStats.finesse}}</span></div>
+                    <div class="battle-nc-row"><label>Fate</label><span>{{system.nonCombatStats.fate}}</span></div>
+                    <div class="battle-nc-row battle-gold"><label>Gold</label><span>{{system.money}} G</span></div>
+                </div>
+            </div>
+
+            {{!-- Bottom-Left Quadrant: Skills --}}
+            <div class="battle-quadrant battle-bl">
+                <h4>Skills</h4>
+                <div class="battle-skills-list">
+                    {{#each skillSlots}}
+                    <div class="battle-skill-entry {{#if this.item}}has-skill{{/if}}">
+                        {{#if this.item}}
+                        <span class="battle-skill-icon">&#9670;</span>
+                        <span class="battle-skill-name">{{this.item.name}}</span>
+                        {{else}}
+                        <span class="battle-skill-icon empty">&#9671;</span>
+                        <span class="battle-skill-name empty">Empty Slot</span>
+                        {{/if}}
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            {{!-- Bottom-Right Quadrant: Supports + Terrain --}}
+            <div class="battle-quadrant battle-br">
+                <h4>Supports</h4>
+                <div class="battle-supports-list">
+                    {{#each supports as |level actorId|}}
+                    <div class="battle-support-entry">
+                        <span class="support-actor-name">{{actorId}}</span>
+                        <span class="support-rank-badge">{{level}}</span>
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="battle-terrain-section">
+                    <label>Terrain</label>
+                    <select name="system.terrain">
+                        <option value="" {{#if (eq system.terrain "")}}selected{{/if}}>None</option>
+                        <option value="plain" {{#if (eq system.terrain "plain")}}selected{{/if}}>Plain</option>
+                        <option value="forest" {{#if (eq system.terrain "forest")}}selected{{/if}}>Forest</option>
+                        <option value="mountain" {{#if (eq system.terrain "mountain")}}selected{{/if}}>Mountain</option>
+                        <option value="fort" {{#if (eq system.terrain "fort")}}selected{{/if}}>Fort</option>
+                        <option value="desert" {{#if (eq system.terrain "desert")}}selected{{/if}}>Desert</option>
+                        <option value="water" {{#if (eq system.terrain "water")}}selected{{/if}}>Water</option>
+                        <option value="bridge" {{#if (eq system.terrain "bridge")}}selected{{/if}}>Bridge</option>
+                        <option value="throne" {{#if (eq system.terrain "throne")}}selected{{/if}}>Throne</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>

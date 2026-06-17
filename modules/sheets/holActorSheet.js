@@ -14,7 +14,8 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             incrementCharge: this._onIncrementCharge,
             decrementCharge: this._onDecrementCharge,
             equipWeapon: this._onEquipWeapon,
-            removeItem: this._onRemoveItem
+            removeItem: this._onRemoveItem,
+            toggleBattleMode: this._onToggleBattleMode
         }
     };
 
@@ -117,6 +118,10 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         // Get supports
         context.supports = context.system.supports || {};
 
+        // Calculate HP percentage for battle mode HP bar
+        const maxHP = context.combatStatTotals.hp;
+        context.hpPercent = maxHP > 0 ? Math.round((context.system.currentHP / maxHP) * 100) : 0;
+
         return context;
     }
 
@@ -124,6 +129,36 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         super._onRender(context, options);
         this._activateTabs();
         this._activateDragDrop();
+        this._updateBattleHPBar();
+        this._restoreBattleMode();
+    }
+
+    /**
+     * Update the battle mode HP bar color and width based on current HP percentage
+     */
+    _updateBattleHPBar() {
+        const html = this.element;
+        const hpFill = html.querySelector('.battle-hp-fill');
+        if (!hpFill) return;
+        const percent = parseFloat(hpFill.dataset.hpPercent) || 0;
+        hpFill.style.width = Math.min(100, Math.max(0, percent)) + '%';
+        if (percent > 50) {
+            hpFill.style.backgroundColor = '#27ae60';
+        } else if (percent > 25) {
+            hpFill.style.backgroundColor = '#f39c12';
+        } else {
+            hpFill.style.backgroundColor = '#e74c3c';
+        }
+    }
+
+    /**
+     * Restore battle mode state after re-render
+     */
+    _restoreBattleMode() {
+        if (this._battleModeActive) {
+            const form = this.element;
+            form.classList.add('battle-active');
+        }
     }
 
     _activateTabs() {
@@ -291,5 +326,20 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         }
         
         await actor.deleteEmbeddedDocuments('Item', [itemId]);
+    }
+
+    /**
+     * Toggle between normal mode and battle mode
+     */
+    static _onToggleBattleMode(event, target) {
+        const form = this.element;
+        const isActive = form.classList.toggle('battle-active');
+        this._battleModeActive = isActive;
+        const btn = form.querySelector('.battle-toggle');
+        if (btn) {
+            btn.innerHTML = isActive
+                ? '<i class="fas fa-scroll"></i> Normal Mode'
+                : '<i class="fas fa-crossed-swords"></i> Battle Mode';
+        }
     }
 }

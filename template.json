@@ -58,8 +58,12 @@
           "tri": 0,
           "size": 0,
           "con": 0,
-          "aid": 0
+          "aid": 0,
+          "move": 0,
+          "charge": 0,
+          "gauge": 0
         },
+        "terrain": "",
         "skills": [],
         "personalSkill": "",
         "inventory": {

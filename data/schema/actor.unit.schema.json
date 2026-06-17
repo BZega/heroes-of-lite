@@ -116,9 +116,15 @@
                 "con": { "type": "number" },
                 "aid": { "type": "number" },
                 "charge": { "type": "number" },
-                "move": { "type": "number" }
-
+                "move": { "type": "number" },
+                "gauge": { "type": "number" }
             }
+        },
+
+        "terrain": {
+            "type": "string",
+            "enum": ["plain", "forest", "mountain", "fort", "desert", "water", "bridge", "throne"],
+            "description": "The current terrain the actor is standing on"
         },
 
         "skills": {
