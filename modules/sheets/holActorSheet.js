@@ -56,7 +56,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const tempStats  = context.system.tempStats  || {};
         const bonuses    = context.system.bonuses    || {};
         const nonCombat  = context.system.nonCombatStats || {};
-        const inventory  = context.system.inventory || { equipped: '' };
+        const equippedId = context.system.inventory?.equipped || '';
         const movementType = context.system.movementType || 'infantry';
         const sizeCategory = context.system.size || 'medium';
         const statusName   = context.system.status || 'healthy';
@@ -118,7 +118,6 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
         // Equipped weapon for Power/Tri
         let weaponMight = 0;
-        const equippedId = inventory.equipped;
         if (equippedId) {
             const eq = this.document.items.get(equippedId);
             if (eq && eq.type === 'weapon') {
