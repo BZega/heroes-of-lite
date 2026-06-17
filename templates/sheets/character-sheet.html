@@ -89,6 +89,11 @@
                         <input type="number" name="system.bonuses.avoid" value="{{system.bonuses.avoid}}" placeholder="0" />
                         <span class="total">{{system.derivedStats.avoid}}</span>
                     </div>
+                    <div class="preview-row">
+                        <label>Crit Avd</label>
+                        <span class="derived-only" title="Avoid + 15 (or 15 if Shocked)">&mdash;</span>
+                        <span class="total">{{system.derivedStats.critAvoid}}</span>
+                    </div>
                 </div>
             </div>
 
@@ -116,6 +121,25 @@
                             </select>
                         </div>
                         <div class="info-field">
+                            <label>Weapon Proficiency</label>
+                            <select name="system.weaponProficiency">
+                                <option value="" {{#if (eq system.weaponProficiency "")}}selected{{/if}}>--</option>
+                                <option value="sword" {{#if (eq system.weaponProficiency "sword")}}selected{{/if}}>Sword</option>
+                                <option value="lance" {{#if (eq system.weaponProficiency "lance")}}selected{{/if}}>Lance</option>
+                                <option value="axe" {{#if (eq system.weaponProficiency "axe")}}selected{{/if}}>Axe</option>
+                                <option value="bow" {{#if (eq system.weaponProficiency "bow")}}selected{{/if}}>Bow</option>
+                                <option value="dagger" {{#if (eq system.weaponProficiency "dagger")}}selected{{/if}}>Dagger</option>
+                                <option value="anima" {{#if (eq system.weaponProficiency "anima")}}selected{{/if}}>Anima</option>
+                                <option value="light" {{#if (eq system.weaponProficiency "light")}}selected{{/if}}>Light</option>
+                                <option value="dark" {{#if (eq system.weaponProficiency "dark")}}selected{{/if}}>Dark</option>
+                                <option value="staff" {{#if (eq system.weaponProficiency "staff")}}selected{{/if}}>Staff</option>
+                                <option value="strike" {{#if (eq system.weaponProficiency "strike")}}selected{{/if}}>Strike</option>
+                                <option value="talons" {{#if (eq system.weaponProficiency "talons")}}selected{{/if}}>Talons</option>
+                                <option value="breath" {{#if (eq system.weaponProficiency "breath")}}selected{{/if}}>Breath</option>
+                                <option value="shiftingStone" {{#if (eq system.weaponProficiency "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
+                            </select>
+                        </div>
+                        <div class="info-field">
                             <label>Size</label>
                             <select name="system.size">
                                 <option value="">--</option>
@@ -128,13 +152,13 @@
                         <div class="info-field">
                             <label>Status</label>
                             <select name="system.status">
-                                <option value="healthy" {{#if (eq system.status "healthy")}}selected{{/if}}>Healthy</option>
+                                <option value="healthy"  {{#if (eq system.status "healthy")}}selected{{/if}}>Healthy</option>
                                 <option value="poisoned" {{#if (eq system.status "poisoned")}}selected{{/if}}>Poisoned</option>
-                                <option value="asleep" {{#if (eq system.status "asleep")}}selected{{/if}}>Asleep</option>
-                                <option value="stunned" {{#if (eq system.status "stunned")}}selected{{/if}}>Stunned</option>
-                                <option value="burned" {{#if (eq system.status "burned")}}selected{{/if}}>Burned</option>
-                                <option value="frozen" {{#if (eq system.status "frozen")}}selected{{/if}}>Frozen</option>
-                                <option value="paralyzed" {{#if (eq system.status "paralyzed")}}selected{{/if}}>Paralyzed</option>
+                                <option value="silenced" {{#if (eq system.status "silenced")}}selected{{/if}}>Silenced</option>
+                                <option value="berserk"  {{#if (eq system.status "berserk")}}selected{{/if}}>Berserk</option>
+                                <option value="broken"   {{#if (eq system.status "broken")}}selected{{/if}}>Broken</option>
+                                <option value="shocked"  {{#if (eq system.status "shocked")}}selected{{/if}}>Shocked</option>
+                                <option value="injured"  {{#if (eq system.status "injured")}}selected{{/if}}>Injured</option>
                             </select>
                         </div>
                         <div class="info-field">
@@ -211,16 +235,16 @@
                             <input type="number" name="system.nonCombatStats.charisma" value="{{system.nonCombatStats.charisma}}" min="0" max="3" />
                         </div>
                         <div class="stat-field">
-                            <label>Fate</label>
-                            <input type="number" name="system.nonCombatStats.fate" value="{{system.nonCombatStats.fate}}" min="0" max="3" />
+                            <label>Fate <span class="derived-tag" title="Derived: min(3, floor(Luck/5))">auto</span></label>
+                            <input type="number" name="system.nonCombatStats.fate" value="{{system.nonCombatStats.fate}}" min="0" max="3" readonly disabled tabindex="-1" />
                         </div>
                         <div class="stat-field">
-                            <label>Finesse</label>
-                            <input type="number" name="system.nonCombatStats.finesse" value="{{system.nonCombatStats.finesse}}" min="0" max="3" />
+                            <label>Finesse <span class="derived-tag" title="Derived: min(3, floor(Dex/5))">auto</span></label>
+                            <input type="number" name="system.nonCombatStats.finesse" value="{{system.nonCombatStats.finesse}}" min="0" max="3" readonly disabled tabindex="-1" />
                         </div>
                         <div class="stat-field">
-                            <label>Acrobatics</label>
-                            <input type="number" name="system.nonCombatStats.acrobatics" value="{{system.nonCombatStats.acrobatics}}" min="0" max="3" />
+                            <label>Acrobatics <span class="derived-tag" title="Derived: min(3, floor(Spd/5))">auto</span></label>
+                            <input type="number" name="system.nonCombatStats.acrobatics" value="{{system.nonCombatStats.acrobatics}}" min="0" max="3" readonly disabled tabindex="-1" />
                         </div>
                     </div>
                 </div>

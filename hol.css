@@ -1706,3 +1706,36 @@ form.heroes-of-lite.actor-sheet,
 .heroes-of-lite.sheet.item select {
   min-height: 34px;
 }
+
+/* Derived-only marker in preview-rows (no input, only a label and total) */
+.heroes-of-lite.actor-sheet .preview-row .derived-only {
+  text-align: center;
+  color: #8a7a55;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* Inline "auto" hint shown on derived non-combat stats */
+.heroes-of-lite.actor-sheet .derived-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-left: 0.35rem;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #f1e6c4;
+  color: #6b4f1d;
+  border: 1px solid #d6c089;
+  vertical-align: middle;
+}
+
+/* Read-only derived inputs (Fate / Finesse / Acrobatics): visually distinct, non-editable */
+.heroes-of-lite.actor-sheet input[readonly][disabled] {
+  background-color: #f5efe0 !important;
+  color: #6b4f1d !important;
+  border-color: #c0a060 !important;
+  cursor: not-allowed;
+  opacity: 0.95;
+}

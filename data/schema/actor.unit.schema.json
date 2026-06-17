@@ -57,7 +57,7 @@
                 },
                 "status": {
                     "type": "string",
-                    "enum": ["healthy", "poisoned", "asleep", "stunned", "burned", "frozen", "paralyzed"]
+                    "enum": ["healthy", "poisoned", "silenced", "berserk", "broken", "shocked", "injured"]
                 },
                 "weaponProficiency": {
                     "type": "string",
