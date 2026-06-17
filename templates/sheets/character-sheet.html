@@ -298,6 +298,7 @@
                             {{#if this.item}}
                                 <div class="skill-content">
                                     <a class="skill-name" data-action="openEmbeddedItem" data-item-id="{{this.item.id}}" title="Open skill">{{this.item.name}}</a>
+                                    <button type="button" class="remove-skill" data-action="removeItem" data-item-id="{{this.item.id}}" data-item-type="skill" title="Remove skill">&times;</button>
                                 </div>
                             {{else}}
                                 <span class="empty-slot">Drop skill here</span>

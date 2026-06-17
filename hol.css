@@ -1050,11 +1050,35 @@
 
 .heroes-of-lite.actor-sheet .skill-content {
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .heroes-of-lite.actor-sheet .skill-name {
   font-weight: 600;
   color: #4a2c17;
+}
+
+.heroes-of-lite.actor-sheet .skill-content .remove-skill {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  flex: 0 0 auto;
+  transition: background 0.2s;
+}
+
+.heroes-of-lite.actor-sheet .skill-content .remove-skill:hover {
+  background: #c0392b;
 }
 
 /* Supports Tab */

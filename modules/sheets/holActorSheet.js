@@ -8,7 +8,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         },
         position: {
             width: 1100,
-            height: 820
+            height: 920
         },
         form: {
             submitOnChange: true,
@@ -384,10 +384,26 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const actor = this.document;
         const skills = (actor.system.skills || []).slice();
 
-        const newSkillData = item.toObject();
-        const newSkillSys  = newSkillData.system || {};
+        // Skill data may store its mechanical fields under either
+        // `system.details.*` (current template.json layout) or directly
+        // under `system.*` (legacy / seed shape). Normalise here.
+        const readSkillFields = (sys) => {
+            const details = sys?.details || {};
+            return {
+                typeGroup:      details.typeGroup     ?? sys?.typeGroup     ?? '',
+                prerequisite:   details.prerequisite  ?? sys?.prereq        ?? [],
+                requiredCharge: details.requiredCharge ?? sys?.requiredCharge ?? ''
+            };
+        };
+
+        const newSkillData   = item.toObject();
+        const newFields      = readSkillFields(newSkillData.system);
         const skillSlug = (s) => String(s || '').replace(/^skill\./, '');
-        const newSlug = skillSlug(newSkillSys.id || (item.name || '').toLowerCase().replace(/\s+/g, '-'));
+        const newSlug = skillSlug(
+            newSkillData._id
+            || (item.flags?.['heroes-of-lite']?.skillKey)
+            || (item.name || '').toLowerCase().replace(/\s+/g, '-')
+        );
 
         const level        = Number(actor.system.level) || 1;
         const movementType = actor.system.movementType || '';
@@ -406,7 +422,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         // 2) Duplicate check — each skill can only be taken once (rules p.15)
         const dup = actor.items.find(i =>
             i.type === 'skill' &&
-            (i.system?.id === newSkillSys.id || i.name === item.name) &&
+            i.name === item.name &&
             i.id !== replacingSkillId
         );
         if (dup) {
@@ -419,11 +435,15 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         for (const sId of skills.filter(Boolean)) {
             if (sId === replacingSkillId) continue;
             const it = actor.items.get(sId);
-            if (it) knownSlugs.add(skillSlug(it.system?.id || ''));
+            if (!it) continue;
+            knownSlugs.add(skillSlug(
+                it.flags?.['heroes-of-lite']?.skillKey
+                || it.name.toLowerCase().replace(/\s+/g, '-')
+            ));
         }
 
         // 3) typeGroup qualification
-        const typeGroup = newSkillSys.typeGroup || '';
+        const typeGroup = newFields.typeGroup;
         const WEAPON_GROUP_MAP = {
             'sword, lance, and axe':      ['sword', 'lance', 'axe'],
             'dagger and bow':             ['dagger', 'bow'],
@@ -433,8 +453,8 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             'shifting stone':             ['shiftingStone']
         };
         const MOVE_GROUPS = ['infantry', 'cavalry', 'flier', 'armor'];
-        const levelPrereqRaw = (newSkillSys.prereq || []).find(p => p.startsWith('level:'));
-        const skillLevelReq  = levelPrereqRaw ? (Number(levelPrereqRaw.split(':')[1]) || 0) : 0;
+        const levelPrereqRaw = (newFields.prerequisite || []).find(p => String(p).startsWith('level:'));
+        const skillLevelReq  = levelPrereqRaw ? (Number(String(levelPrereqRaw).split(':')[1]) || 0) : 0;
 
         let qualifies = false;
         let qualifyReason = '';
@@ -448,8 +468,6 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             if (movementType === typeGroup) {
                 qualifies = true;
             } else {
-                // Heritor passives (rules p.16) grant access to other movement-type skills
-                // with a level prereq <= 10 (excluding Canter).
                 const heritorMap = {
                     'flier':   'heritor-of-feathers',
                     'cavalry': 'heritor-of-furs',
@@ -482,7 +500,8 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const armorBonus     = movementType === 'armor' ? 5 : 0;
         const effectiveLevel = level + armorBonus;
 
-        for (const p of newSkillSys.prereq || []) {
+        for (const raw of newFields.prerequisite || []) {
+            const p = String(raw);
             const idx = p.indexOf(':');
             const kind  = idx === -1 ? p : p.slice(0, idx);
             const value = idx === -1 ? '' : p.slice(idx + 1);
@@ -494,6 +513,12 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
                         ? `level ${need} (you are level ${level}; Armor counts as ${effectiveLevel})`
                         : `level ${need} (you are level ${level})`;
                     ui.notifications.warn(`${item.name} requires ${detail}.`);
+                    return;
+                }
+            } else if (kind === 'movement') {
+                const allowed = value.split('|').filter(Boolean);
+                if (!allowed.includes(movementType)) {
+                    ui.notifications.warn(`${item.name} requires movement type: ${allowed.join(' or ')} (you are ${movementType || 'unset'}).`);
                     return;
                 }
             } else if (kind === 'skill') {
@@ -512,10 +537,16 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
                     ui.notifications.warn(`${item.name} is exclusive with a skill you already have: ${value.replace(/-/g, ' ')}.`);
                     return;
                 }
+            } else if (kind === 'trait') {
+                if (!traitText.includes(value.toLowerCase())) {
+                    ui.notifications.warn(`${item.name} requires the trait: ${value}.`);
+                    return;
+                }
             } else if (kind === 'requires') {
                 if (value === 'combatArt') {
                     const hasArt = actor.items.some(i =>
-                        i.type === 'skill' && i.id !== replacingSkillId && i.system?.requiredCharge
+                        i.type === 'skill' && i.id !== replacingSkillId &&
+                        (i.system?.details?.requiredCharge || i.system?.requiredCharge)
                     );
                     if (!hasArt) {
                         ui.notifications.warn(`${item.name} requires at least one Combat Art to be known.`);
@@ -587,15 +618,20 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const actor = this.document;
         const itemId = target.dataset.itemId;
         const itemType = target.dataset.itemType;
-        
+
         if (itemType === 'weapon') {
             const weapons = actor.system.inventory.weapons.filter(id => id !== itemId);
-            await actor.update({ 'system.inventory.weapons': weapons });
+            const update = { 'system.inventory.weapons': weapons };
+            if (actor.system.inventory.equipped === itemId) update['system.inventory.equipped'] = '';
+            await actor.update(update);
         } else if (itemType === 'item') {
             const items = actor.system.inventory.items.filter(id => id !== itemId);
             await actor.update({ 'system.inventory.items': items });
+        } else if (itemType === 'skill') {
+            const skills = (actor.system.skills || []).map(id => id === itemId ? null : id);
+            await actor.update({ 'system.skills': skills });
         }
-        
+
         await actor.deleteEmbeddedDocuments('Item', [itemId]);
     }
 
