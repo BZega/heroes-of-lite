@@ -12,7 +12,7 @@
     "verified": "14.368"
   },
 
-  "esmodules": ["dist/hol.js"],
+  "esmodules": ["hol.ts"],
   "scripts": [],
   "styles": ["hol.css"],
 
