@@ -1,6 +1,11 @@
+import { sheetTemplate } from '../constants.js';
+import { activateSheetTabs, getDragEventData } from '../helpers.js';
+import { buildUnitProfile, terrainChoices, STAT_FLOOR, STAT_LABELS } from '../rules.js';
+import { weaponTags } from '../refineIndex.js';
+
 export default class HolActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
     static DEFAULT_OPTIONS = {
-        classes: ["heroes-of-lite", "actor-sheet", "character-sheet"],
+        classes: ["heroes-of-lite", "hol-sheet", "actor-sheet", "character-sheet"],
         window: {
             icon: "fas fa-user",
             resizable: true,
@@ -26,7 +31,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
     static PARTS = {
         form: {
-            template: "systems/heroes-of-lite/templates/sheets/character-sheet.html"
+            template: sheetTemplate("character-sheet.html")
         }
     };
 
@@ -37,149 +42,53 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         context.name = actor.name;
         context.img = actor.img;
         context.type = actor.type;
-        
-        if (!context.system) {
-            context.system = actor.system;
-        }
 
-        // Calculate derived stats
+        // Work against a copy so writes in this method do NOT mutate the live actor.
+        const sourceSystem = context.system || actor.system;
+        context.system = foundry.utils.deepClone(sourceSystem);
+
+        // Every derived number comes from the shared rules module so the sheet and
+        // the combat automation can never disagree.
+        const profile = buildUnitProfile(actor, { weaponTags });
         const combatStats = context.system.combatStats || {};
-        const derivedStats = context.system.derivedStats || {};
-        
-        // Ensure current HP exists
-        if (context.system.currentHP === undefined) {
-            context.system.currentHP = combatStats.hp || 15;
-        }
+        const bonusStats  = context.system.bonusStats  || {};
+        const tempStats   = context.system.tempStats   || {};
 
-        // ---- Rules-driven derivations (Heroes of Lite 4.0.3) ----
-        const bonusStats = context.system.bonusStats || {};
-        const tempStats  = context.system.tempStats  || {};
-        const bonuses    = context.system.bonuses    || {};
-        const nonCombat  = context.system.nonCombatStats || {};
-        const equippedId = context.system.inventory?.equipped || '';
-        const movementType = context.system.movementType || 'infantry';
-        const sizeCategory = context.system.size || 'medium';
-        const statusName   = context.system.status || 'healthy';
-        const terrainName  = context.system.terrain || '';
+        context.profile                 = profile;
+        context.system.currentHP        = profile.currentHP;
+        context.system.derivedStats     = profile.derived;
+        context.system.nonCombatStats   = profile.nonCombatStats;
+        context.combatStatTotals        = profile.totals;
+        context.traits                  = profile.traits;
+        context.isTransformed           = profile.isTransformed;
+        context.showGauge               = profile.isShifter;
+        context.statusName              = profile.statusKey;
+        context.terrainName             = profile.terrainKey;
+        context.terrainHpStart          = profile.terrainHpStart;
+        context.unallocatedPoints       = profile.unallocatedPoints;
+        context.unallocatedCombatPoints = profile.unallocatedCombatPoints;
+        context.statCaps                = profile.caps;
+        context.terrainOptions          = terrainChoices();
 
-        // Status modifiers (rules p.28)
-        // Injured: -3 atk/spd/def/res (cannot be healed by anything)
-        // Shocked: Avoid = 0, CritAvoid = 15 (handled below)
-        const isInjured = statusName === 'injured';
-        const isShocked = statusName === 'shocked';
-        const injuredMod = isInjured ? -3 : 0;
+        context.overCapStats = Object.keys(STAT_FLOOR).filter(key =>
+            (Number(combatStats[key]) || 0) > (key === 'hp' ? profile.caps.hp : profile.caps.stat));
 
-        const sumStat = (key, baseDefault, extra = 0) => {
-            const base  = Number(combatStats[key] ?? baseDefault) || 0;
-            const bonus = Number(bonusStats[key] ?? 0) || 0;
-            const temp  = Number(tempStats[key]  ?? 0) || 0;
-            return base + bonus + temp + extra;
-        };
-
-        context.combatStatTotals = {
-            hp:   sumStat('hp', 15),
-            atk:  sumStat('atk',  3, injuredMod),
-            spd:  sumStat('spd',  3, injuredMod),
-            dex:  sumStat('dex',  3),
-            def:  sumStat('def',  3, injuredMod),
-            res:  sumStat('res',  3, injuredMod),
-            luck: sumStat('luck', 3)
-        };
-
-        // Movement type table
-        const movementInfo = {
-            infantry: { move: 5, baseAid: 2 },
-            cavalry:  { move: 7, baseAid: 4 },
-            flier:    { move: 6, baseAid: 4 },
-            armor:    { move: 4, baseAid: 2 }
-        }[movementType] || { move: 5, baseAid: 2 };
-
-        // Size category → numeric size
-        const sizeNumber = { small: 1, medium: 2, large: 3, extraLarge: 4 }[sizeCategory] || 2;
-
-        // Terrain bonuses (rules p.27). Fliers ignore terrain bonuses and penalties.
-        const terrainTable = {
-            plain:    { avoid: 0, def: 0, hpStart: 0 },
-            forest:   { avoid: 2, def: 1, hpStart: 0 },
-            mountain: { avoid: 3, def: 3, hpStart: 0 },
-            fort:     { avoid: 2, def: 0, hpStart: 3 },
-            water:    { avoid: 4, def: 2, hpStart: 0 },
-            desert:   { avoid: 0, def: 0, hpStart: 0 },
-            bridge:   { avoid: 0, def: 0, hpStart: 0 },
-            throne:   { avoid: 2, def: 0, hpStart: 3 },
-            '':       { avoid: 0, def: 0, hpStart: 0 }
-        };
-        const terrainMod = terrainTable[terrainName] || terrainTable[''];
-        const ignoresTerrain = movementType === 'flier';
-        const terrainAvoid = ignoresTerrain ? 0 : terrainMod.avoid;
-        const terrainDef   = ignoresTerrain ? 0 : terrainMod.def;
-        // Add terrain Def into the displayed Def total
-        context.combatStatTotals.def += terrainDef;
-
-        // Equipped weapon for Power/Tri
-        let weaponMight = 0;
-        if (equippedId) {
-            const eq = this.document.items.get(equippedId);
-            if (eq && eq.type === 'weapon') {
-                weaponMight = Number(eq.system?.details?.might ?? 0) || 0;
-            }
-        }
-
-        // Hit / Avoid / CritAvoid / Power / Tri
-        const dex  = context.combatStatTotals.dex;
-        const luck = context.combatStatTotals.luck;
-        const atk  = context.combatStatTotals.atk;
-
-        const hitBase   = Math.floor(dex  / 4) + (Number(bonuses.hit)   || 0);
-        const avoidBase = isShocked ? 0 : (Math.floor(luck / 4) + 4 + terrainAvoid + (Number(bonuses.avoid) || 0));
-        const power     = atk + weaponMight + (Number(bonuses.power) || 0);
-        const tri       = Math.floor(power / 5) + (Number(bonuses.tri) || 0);
-        const critAvoid = isShocked ? 15 : (avoidBase + 15);
-
-        // Size / Con / Aid / Move (rules p.13)
-        const con = sizeNumber + (movementType === 'armor' ? 2 : 0);
-        const strength = Number(nonCombat.strength ?? 0) || 0;
-        const aid = strength + movementInfo.baseAid;
-        const move = movementInfo.move;
-
-        // Overwrite derivedStats on context so the template renders them
-        // (we do NOT persist these — they are recomputed on every render).
-        context.system.derivedStats = {
-            ...derivedStats,
-            hit:    hitBase,
-            avoid:  avoidBase,
-            crit:   Number(derivedStats.crit) || 0,
-            critAvoid: critAvoid,
-            power:  power,
-            tri:    tri,
-            size:   sizeNumber,
-            con:    con,
-            aid:    aid,
-            move:   move,
-            charge: Number(derivedStats.charge) || 0,
-            gauge:  Number(derivedStats.gauge)  || 0
-        };
-
-        // Auto-derived non-combat stats from rules (display-only)
-        context.system.nonCombatStats = {
-            ...nonCombat,
-            fate:       Math.min(3, Math.floor(luck / 5)),
-            finesse:    Math.min(3, Math.floor(dex  / 5)),
-            acrobatics: Math.min(3, Math.floor(context.combatStatTotals.spd / 5))
-        };
-
-        // Optional warnings exposed to template (not yet rendered, but available)
-        context.statusName  = statusName;
-        context.terrainName = terrainName;
-        context.terrainHpStart = ignoresTerrain ? 0 : terrainMod.hpStart;
-
-        // Calculate unallocated non-combat stat points
-        const nonCombatStats = context.system.nonCombatStats || {};
-        const totalAllocated = Object.values(nonCombatStats).reduce((sum, val) => sum + (val || 0), 0);
-        context.unallocatedPoints = 12 - totalAllocated;
+        context.combatStatRows = Object.entries(STAT_LABELS).map(([key, label]) => ({
+            key,
+            label,
+            total:   profile.totals[key],
+            base:    Number(combatStats[key] ?? STAT_FLOOR[key]) || 0,
+            temp:    Number(tempStats[key] ?? 0) || 0,
+            bonus:   Number(bonusStats[key] ?? 0) || 0,
+            min:     STAT_FLOOR[key],
+            max:     key === 'hp' ? profile.caps.hp : profile.caps.stat,
+            overCap: context.overCapStats.includes(key)
+        }));
 
         // Get inventory items
         const inventory = context.system.inventory || { weapons: [], items: [], equipped: null };
+        const weaponIds = Array.from(new Set(inventory.weapons || []));
+        const itemIds   = Array.from(new Set(inventory.items   || []));
         context.weaponSlots = [];
         context.itemSlots = [];
 
@@ -191,13 +100,14 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             }
         }
 
-        // Add remaining weapons
-        for (const weaponId of inventory.weapons || []) {
-            if (weaponId !== inventory.equipped) {
-                const weapon = actor.items.get(weaponId);
-                if (weapon && weapon.type === 'weapon') {
-                    context.weaponSlots.push({ item: weapon, equipped: false });
-                }
+        // Add remaining weapons (skip equipped, skip duplicates)
+        const seenWeapons = new Set(inventory.equipped ? [inventory.equipped] : []);
+        for (const weaponId of weaponIds) {
+            if (seenWeapons.has(weaponId)) continue;
+            seenWeapons.add(weaponId);
+            const weapon = actor.items.get(weaponId);
+            if (weapon && weapon.type === 'weapon') {
+                context.weaponSlots.push({ item: weapon, equipped: false });
             }
         }
 
@@ -206,8 +116,11 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             context.weaponSlots.push({ item: null, equipped: false });
         }
 
-        // Add items
-        for (const itemId of inventory.items || []) {
+        // Add items (dedupe by id)
+        const seenItems = new Set();
+        for (const itemId of itemIds) {
+            if (seenItems.has(itemId)) continue;
+            seenItems.add(itemId);
             const item = actor.items.get(itemId);
             if (item && (item.type === 'consumable' || item.type === 'item')) {
                 context.itemSlots.push({ item: item });
@@ -233,6 +146,11 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
         // Get supports
         context.supports = context.system.supports || {};
+        context.supportList = Object.entries(context.supports).map(([actorId, level]) => ({
+            id: actorId,
+            level,
+            name: game.actors?.get(actorId)?.name ?? actorId
+        }));
 
         // Calculate HP percentage for battle mode HP bar
         const maxHP = context.combatStatTotals.hp;
@@ -243,10 +161,35 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
     _onRender(context, options) {
         super._onRender(context, options);
-        this._activateTabs();
+        activateSheetTabs(this);
         this._activateDragDrop();
         this._updateBattleHPBar();
         this._restoreBattleMode();
+        this._cleanupDuplicateInventory();
+    }
+
+    /**
+     * One-shot heal for actors whose inventory arrays accumulated duplicate IDs
+     * from the previous (buggy) drop handler. Quietly rewrites the arrays so the
+     * underlying data matches what we already render.
+     */
+    async _cleanupDuplicateInventory() {
+        if (this._inventoryCleaned) return;
+        this._inventoryCleaned = true;
+        const actor = this.document;
+        if (!actor?.isOwner) return;
+        const inv = actor.system?.inventory;
+        if (!inv) return;
+        const weapons = Array.from(inv.weapons || []);
+        const items   = Array.from(inv.items   || []);
+        const dedupWeapons = Array.from(new Set(weapons));
+        const dedupItems   = Array.from(new Set(items));
+        const update = {};
+        if (dedupWeapons.length !== weapons.length) update['system.inventory.weapons'] = dedupWeapons;
+        if (dedupItems.length   !== items.length)   update['system.inventory.items']   = dedupItems;
+        if (Object.keys(update).length) {
+            await actor.update(update, { diff: false });
+        }
     }
 
     /**
@@ -277,33 +220,6 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         }
     }
 
-    _activateTabs() {
-        const html = this.element;
-        const tabs = html.querySelectorAll('.sheet-tabs .item');
-        const tabContents = html.querySelectorAll('.tab-content');
-        if (tabs.length === 0 || tabContents.length === 0) return;
-
-        // Restore previously active tab (or default to the first)
-        const desired = this._activeTabId
-            || Array.from(tabs).find(t => t.classList.contains('active'))?.dataset.tab
-            || tabs[0].dataset.tab;
-
-        const applyActive = (tabId) => {
-            this._activeTabId = tabId;
-            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
-            tabContents.forEach(c => c.classList.toggle('active', c.dataset.tab === tabId));
-        };
-
-        applyActive(desired);
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (event) => {
-                event.preventDefault();
-                applyActive(event.currentTarget.dataset.tab);
-            });
-        });
-    }
-
     _activateDragDrop() {
         const html = this.element;
         
@@ -321,6 +237,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
             zone.addEventListener('drop', (event) => {
                 event.preventDefault();
+                event.stopPropagation();
                 zone.classList.remove('drag-over');
                 this._onDrop(event);
             });
@@ -328,16 +245,17 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
     }
 
     async _onDrop(event) {
-        const data = TextEditor.getDragEventData(event);
-        const actor = this.document;
+        // `currentTarget` is nulled out as soon as this handler awaits, so read the
+        // slot metadata synchronously before resolving the dropped document.
+        const target = event.currentTarget;
+        const slotType = target?.dataset.slotType;
+        const slotIndex = Number.parseInt(target?.dataset.slotIndex ?? '', 10);
+
+        const data = getDragEventData(event);
 
         if (data.type === 'Item') {
             const item = await fromUuid(data.uuid);
             if (!item) return;
-
-            const target = event.currentTarget;
-            const slotType = target.dataset.slotType;
-            const slotIndex = parseInt(target.dataset.slotIndex);
 
             if (slotType === 'weapon' && item.type === 'weapon') {
                 await this._addWeaponToInventory(item, slotIndex);
@@ -346,7 +264,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             } else if (slotType === 'skill' && item.type === 'skill') {
                 await this._addSkillToActor(item, slotIndex);
             }
-        } else if (data.type === 'Actor' && event.currentTarget.classList.contains('support-slot')) {
+        } else if (data.type === 'Actor' && target?.classList.contains('support-slot')) {
             const supportActor = await fromUuid(data.uuid);
             if (supportActor && supportActor.type === 'unit') {
                 await this._addSupport(supportActor);
@@ -356,28 +274,60 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
     async _addWeaponToInventory(item, slotIndex) {
         const actor = this.document;
-        const inventory = actor.system.inventory || { weapons: [], items: [], equipped: null };
-        
-        const existingItem = actor.items.find(i => i.name === item.name && i.type === item.type);
-        if (existingItem) return;
+        const inv   = actor.system.inventory || { weapons: [], items: [], equipped: '' };
+        const currentWeapons = Array.from(inv.weapons || []);
 
-        const newItem = await actor.createEmbeddedDocuments('Item', [item.toObject()]);
-        inventory.weapons.push(newItem[0].id);
-        
-        await actor.update({ 'system.inventory.weapons': inventory.weapons });
+        // If an embedded copy already exists, just make sure it's tracked once.
+        const sourceUuid    = item.uuid || '';
+        const existingItem  = actor.items.find(i =>
+            i.type === 'weapon' &&
+            (i.name === item.name || this.constructor._compendiumSource(i) === sourceUuid)
+        );
+        if (existingItem) {
+            if (!currentWeapons.includes(existingItem.id)) {
+                const next = Array.from(new Set([...currentWeapons, existingItem.id]));
+                await actor.update({ 'system.inventory.weapons': next });
+            }
+            return;
+        }
+
+        const [created] = await actor.createEmbeddedDocuments('Item', [item.toObject()]);
+        if (!created) return;
+
+        // Re-read inventory in case anything raced; dedupe by id.
+        const after = Array.from(new Set([
+            ...Array.from(actor.system.inventory?.weapons || []),
+            created.id
+        ]));
+        await actor.update({ 'system.inventory.weapons': after });
     }
 
     async _addItemToInventory(item, slotIndex) {
         const actor = this.document;
-        const inventory = actor.system.inventory || { weapons: [], items: [], equipped: null };
-        
-        const existingItem = actor.items.find(i => i.name === item.name && i.type === item.type);
-        if (existingItem) return;
+        const inv   = actor.system.inventory || { weapons: [], items: [], equipped: '' };
+        const currentItems = Array.from(inv.items || []);
 
-        const newItem = await actor.createEmbeddedDocuments('Item', [item.toObject()]);
-        inventory.items.push(newItem[0].id);
-        
-        await actor.update({ 'system.inventory.items': inventory.items });
+        const sourceUuid   = item.uuid || '';
+        const existingItem = actor.items.find(i =>
+            (i.type === 'consumable' || i.type === 'item') &&
+            (i.name === item.name || this.constructor._compendiumSource(i) === sourceUuid)
+        );
+        if (existingItem) {
+            if (!currentItems.includes(existingItem.id)) {
+                const next = Array.from(new Set([...currentItems, existingItem.id]));
+                await actor.update({ 'system.inventory.items': next });
+            }
+            return;
+        }
+
+        const [created] = await actor.createEmbeddedDocuments('Item', [item.toObject()]);
+        if (!created) return;
+
+        const after = Array.from(new Set([
+            ...Array.from(actor.system.inventory?.items || []),
+            created.id
+        ]));
+        await actor.update({ 'system.inventory.items': after });
     }
 
     async _addSkillToActor(item, slotIndex) {
@@ -387,11 +337,15 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         // Skill data may store its mechanical fields under either
         // `system.details.*` (current template.json layout) or directly
         // under `system.*` (legacy / seed shape). Normalise here.
+        const toPrereqArray = (value) => {
+            if (Array.isArray(value)) return value;
+            return String(value ?? '').split(',').map(p => p.trim()).filter(Boolean);
+        };
         const readSkillFields = (sys) => {
             const details = sys?.details || {};
             return {
                 typeGroup:      details.typeGroup     ?? sys?.typeGroup     ?? '',
-                prerequisite:   details.prerequisite  ?? sys?.prereq        ?? [],
+                prerequisite:   toPrereqArray(details.prerequisite ?? sys?.prereq),
                 requiredCharge: details.requiredCharge ?? sys?.requiredCharge ?? ''
             };
         };
@@ -399,9 +353,11 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const newSkillData   = item.toObject();
         const newFields      = readSkillFields(newSkillData.system);
         const skillSlug = (s) => String(s || '').replace(/^skill\./, '');
+        // The random document `_id` is never a prerequisite key, so prefer the
+        // authored skill key and only fall back to a slug of the name.
         const newSlug = skillSlug(
-            newSkillData._id
-            || (item.flags?.['heroes-of-lite']?.skillKey)
+            item.flags?.['heroes-of-lite']?.skillKey
+            || item.flags?.['heroes-of-lite']?.sourceId
             || (item.name || '').toLowerCase().replace(/\s+/g, '-')
         );
 
@@ -438,6 +394,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             if (!it) continue;
             knownSlugs.add(skillSlug(
                 it.flags?.['heroes-of-lite']?.skillKey
+                || it.flags?.['heroes-of-lite']?.sourceId
                 || it.name.toLowerCase().replace(/\s+/g, '-')
             ));
         }
@@ -462,8 +419,9 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         if (typeGroup === 'all-access' || typeGroup === 'combat' || !typeGroup) {
             qualifies = true;
         } else if (typeGroup === 'fiend') {
-            qualifies = traitText.includes('fiend');
-            qualifyReason = 'requires the Fiend trait';
+            // Fiend skills need the Monstrous skill or a Curse proficiency (rules p.37).
+            qualifies = traitText.includes('fiend') || weaponProf === 'curse' || knownSlugs.has('monstrous');
+            qualifyReason = 'requires the Monstrous skill, a Curse proficiency, or the Fiendish trait';
         } else if (MOVE_GROUPS.includes(typeGroup)) {
             if (movementType === typeGroup) {
                 qualifies = true;
@@ -553,6 +511,11 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
                         return;
                     }
                 }
+            } else if (kind === 'gmOnly' || kind === 'gmApproval') {
+                if (!game.user.isGM) {
+                    ui.notifications.warn(`${item.name} requires the Game Master to assign it.`);
+                    return;
+                }
             }
             // unknown prereq kinds are ignored
         }
@@ -580,6 +543,11 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             supports[supportActor.id] = 'C';
             await actor.update({ 'system.supports': supports });
         }
+    }
+
+    /** Resolve where an item was copied from, tolerating the pre-v12 `core.sourceId` flag. */
+    static _compendiumSource(item) {
+        return item._stats?.compendiumSource ?? item.flags?.core?.sourceId ?? '';
     }
 
     static async _onIncrementCharge(event, target) {
@@ -618,21 +586,26 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         const actor = this.document;
         const itemId = target.dataset.itemId;
         const itemType = target.dataset.itemType;
+        if (!itemId) return;
+
+        const inventory = actor.system.inventory || {};
 
         if (itemType === 'weapon') {
-            const weapons = actor.system.inventory.weapons.filter(id => id !== itemId);
+            const weapons = (inventory.weapons || []).filter(id => id !== itemId);
             const update = { 'system.inventory.weapons': weapons };
-            if (actor.system.inventory.equipped === itemId) update['system.inventory.equipped'] = '';
+            if (inventory.equipped === itemId) update['system.inventory.equipped'] = '';
             await actor.update(update);
         } else if (itemType === 'item') {
-            const items = actor.system.inventory.items.filter(id => id !== itemId);
+            const items = (inventory.items || []).filter(id => id !== itemId);
             await actor.update({ 'system.inventory.items': items });
         } else if (itemType === 'skill') {
             const skills = (actor.system.skills || []).map(id => id === itemId ? null : id);
             await actor.update({ 'system.skills': skills });
+        } else {
+            return;
         }
 
-        await actor.deleteEmbeddedDocuments('Item', [itemId]);
+        if (actor.items.get(itemId)) await actor.deleteEmbeddedDocuments('Item', [itemId]);
     }
 
     /**
@@ -646,7 +619,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         if (btn) {
             btn.innerHTML = isActive
                 ? '<i class="fas fa-scroll"></i> Normal Mode'
-                : '<i class="fas fa-crossed-swords"></i> Battle Mode';
+                : '<i class="fas fa-khanda"></i> Battle Mode';
         }
     }
 }

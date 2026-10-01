@@ -1,0 +1,54 @@
+<div class="heroes-of-lite hol-chat-card">
+    <header class="hol-chat-header">
+        <div class="hol-chat-combatant">
+            <img src="{{attacker.img}}" alt="{{attacker.name}}" />
+            <span>{{attacker.name}}</span>
+        </div>
+        <span class="hol-chat-vs">vs</span>
+        <div class="hol-chat-combatant">
+            <img src="{{defender.img}}" alt="{{defender.name}}" />
+            <span>{{defender.name}}</span>
+        </div>
+    </header>
+
+    <div class="hol-chat-badges">
+        {{#if (eq triangle "advantage")}}<span class="hol-badge wta">WTA</span>{{/if}}
+        {{#if (eq triangle "disadvantage")}}<span class="hol-badge wtd">WTD</span>{{/if}}
+        {{#if effective}}<span class="hol-badge effective">Effective</span>{{/if}}
+        {{#each attackerSkills}}<span class="hol-badge skill">{{this}}</span>{{/each}}
+        {{#each defenderSkills}}<span class="hol-badge skill foe">{{this}}</span>{{/each}}
+    </div>
+
+    <ol class="hol-chat-strikes">
+        {{#each strikes}}
+        <li class="strike {{this.side}} {{#if this.hit}}is-hit{{else}}is-miss{{/if}} {{#if this.crit}}is-crit{{/if}}">
+            <span class="strike-label">{{this.actorName}} &mdash; {{this.label}}</span>
+            <span class="strike-roll">
+                {{this.diceText}}{{#if this.modeLabel}} <em>{{this.modeLabel}}</em>{{/if}} &rarr; {{this.total}}
+            </span>
+            <span class="strike-result">
+                {{#if this.hit}}{{#if this.crit}}CRIT {{/if}}{{this.damage}} dmg{{else}}Miss{{/if}}
+            </span>
+        </li>
+        {{/each}}
+    </ol>
+
+    {{#if postCombat}}
+    <ul class="hol-chat-post">
+        {{#each postCombat}}
+        <li>
+            {{#if (eq this.type "damage")}}{{this.targetName}} takes {{this.amount}} post-combat damage.{{/if}}
+            {{#if (eq this.type "status")}}{{this.targetName}} is now <strong>{{this.statusLabel}}</strong>.{{/if}}
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+
+    <footer class="hol-chat-footer">
+        <span class="{{#if attacker.defeated}}defeated{{/if}}">{{attacker.name}}: {{attacker.hp}} HP</span>
+        <span class="{{#if defender.defeated}}defeated{{/if}}">{{defender.name}}: {{defender.hp}} HP</span>
+    </footer>
+
+    {{#if defender.defeated}}<div class="hol-chat-ko">{{defender.name}} is knocked out!</div>{{/if}}
+    {{#if attacker.defeated}}<div class="hol-chat-ko">{{attacker.name}} is knocked out!</div>{{/if}}
+</div>

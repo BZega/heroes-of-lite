@@ -1,0 +1,82 @@
+<div class="hol-sheet-inner action-menu-inner">
+    <header class="action-header">
+        <img class="action-portrait" src="{{img}}" alt="{{name}}" />
+        <div class="action-identity">
+            <div class="action-name">{{name}}</div>
+            <div class="action-hp">
+                <div class="forecast-hp-bar"><div class="forecast-hp-fill" style="width: {{hpPercent}}%"></div></div>
+                <span>{{hp}} / {{maxHp}}</span>
+            </div>
+            <div class="action-meta">
+                <span>{{weaponName}}</span>
+                <span>&bull;</span>
+                <span>Move {{move}}</span>
+                <span>&bull;</span>
+                <span>Charge {{charge}}</span>
+            </div>
+        </div>
+        <button type="button" class="hol-icon-button" data-action="openSheet" title="Open sheet"><i class="fas fa-user"></i></button>
+    </header>
+
+    <div class="action-context">
+        <span class="hol-tag">{{status}}</span>
+        <span class="hol-tag">{{terrain}}</span>
+        {{#each traits}}<span class="hol-tag">{{this}}</span>{{/each}}
+    </div>
+
+    <div class="action-target">
+        {{#if targetName}}
+            Target: <strong>{{targetName}}</strong> &mdash; {{distance}} tile{{#unless (eq distance 1)}}s{{/unless}} away
+        {{else}}
+            <span class="empty-text">No target selected</span>
+        {{/if}}
+    </div>
+
+    <div class="action-buttons">
+        <button type="button" class="hol-action-button attack" data-action="attack" {{#unless canAttack}}disabled{{/unless}}>
+            <i class="fas fa-khanda"></i>
+            <span class="action-label">Attack</span>
+            <span class="action-sub">{{attackHint}}</span>
+        </button>
+
+        {{#if isStaffUser}}
+        <button type="button" class="hol-action-button" data-action="staffEffect">
+            <i class="fas fa-staff-snake"></i>
+            <span class="action-label">Staff Effect</span>
+            <span class="action-sub">Heal the targeted ally</span>
+        </button>
+        {{/if}}
+
+        {{#if isShifter}}
+        <button type="button" class="hol-action-button" data-action="transform">
+            <i class="fas fa-paw"></i>
+            <span class="action-label">{{#if isTransformed}}Untransform{{else}}Transform{{/if}}</span>
+            <span class="action-sub">{{#if isTransformed}}Rest to refill the Gauge{{else}}Free action, Gauge starts at 4{{/if}}</span>
+        </button>
+        {{/if}}
+
+        <button type="button" class="hol-action-button" data-action="rescue" {{#unless canRescue}}disabled{{/unless}}>
+            <i class="fas fa-hands-holding"></i>
+            <span class="action-label">Rescue</span>
+            <span class="action-sub">Carry an adjacent ally</span>
+        </button>
+
+        <button type="button" class="hol-action-button" data-action="wait">
+            <i class="fas fa-hourglass-half"></i>
+            <span class="action-label">Wait</span>
+            <span class="action-sub">End this unit's turn</span>
+        </button>
+    </div>
+
+    <div class="action-items">
+        <h3>Items</h3>
+        {{#each consumables}}
+        <button type="button" class="hol-item-button" data-action="useItem" data-item-id="{{this.id}}" {{#if this.spent}}disabled{{/if}}>
+            <span>{{this.name}}</span>
+            <span class="hol-badge">{{this.uses}}</span>
+        </button>
+        {{else}}
+        <span class="empty-text">No consumables carried</span>
+        {{/each}}
+    </div>
+</div>

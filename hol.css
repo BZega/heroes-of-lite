@@ -1,1309 +1,1049 @@
-.heroes-of-lite.sheet.item {
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  color: #1a1a1a;
+/* ==========================================================================
+   Heroes of Lite - shared sheet styling
+   Every sheet (actor and item) opts in via the `hol-sheet` class applied in
+   each Application's DEFAULT_OPTIONS, so the rules below give all windows the
+   same chrome, typography, controls and spacing.
+   ========================================================================== */
+
+.heroes-of-lite.hol-sheet {
+  --hol-navy: #1b2d44;
+  --hol-navy-dark: #122030;
+  --hol-crimson: #8c2f2a;
+  --hol-gold: #c9a227;
+  --hol-gold-soft: #e8d49a;
+  --hol-parchment: #f7f2e6;
+  --hol-parchment-dark: #ece3cf;
+  --hol-surface: #ffffff;
+  --hol-ink: #24211c;
+  --hol-ink-soft: #554f44;
+  --hol-muted: #8a8172;
+  --hol-border: #d6c9ad;
+  --hol-danger: #b3362c;
+  --hol-success: #27824f;
+
+  --hol-radius: 6px;
+  --hol-radius-sm: 4px;
+  --hol-gap: 0.75rem;
+  --hol-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+  --hol-header: linear-gradient(135deg, var(--hol-navy) 0%, var(--hol-crimson) 100%);
 }
 
-.heroes-of-lite.sheet.item .sheet-header {
-  background: linear-gradient(135deg, #1a3a52 0%, #c0392b 100%);
-  color: white;
-  padding: 1.5rem;
-  border-radius: 4px 4px 0 0;
+/* --------------------------------------------------------------------------
+   Window chrome
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet {
+  min-width: 0;
+  color: var(--hol-ink);
+}
+
+.heroes-of-lite.hol-sheet .window-content {
+  padding: 0;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  flex-direction: column;
+  background: var(--hol-parchment);
+  gap: 0;
+}
+
+.heroes-of-lite.hol-sheet .hol-sheet-inner {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--hol-parchment);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet .sheet-header {
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.heroes-of-lite.sheet.item .header-content {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  width: 100%;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--hol-header);
+  color: #fff;
+  box-shadow: var(--hol-shadow);
 }
 
-.heroes-of-lite.sheet.item .item-image {
-  border-radius: 6px;
-  border: 3px solid white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+.heroes-of-lite.hol-sheet .sheet-portrait {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  object-fit: cover;
+  border-radius: var(--hol-radius);
+  border: 2px solid var(--hol-gold-soft);
+  background: rgba(0, 0, 0, 0.2);
 }
 
-.heroes-of-lite.sheet.item .header-info h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-
-.heroes-of-lite.sheet.item .header-info input {
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  font-size: 1.4rem;
-  font-weight: bold;
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 4px;
-}
-
-.heroes-of-lite.sheet.item .header-info input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.heroes-of-lite.sheet.item .sheet-body {
+.heroes-of-lite.hol-sheet .header-info {
   flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-  background: #fafafa;
-}
-
-.heroes-of-lite.sheet.item .form-group {
-  margin-bottom: 0.5rem;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 
-.heroes-of-lite.sheet.item .form-group label {
+.heroes-of-lite.hol-sheet .sheet-title {
+  margin: 0;
+  border: none;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #1a3a52;
-  margin-bottom: 0.15rem;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  line-height: 1.2;
 }
 
-.heroes-of-lite.sheet.item .form-group input,
-.heroes-of-lite.sheet.item .form-group textarea,
-.heroes-of-lite.sheet.item .form-group select {
-  padding: 0.4rem 0.5rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 3px;
-  background: white;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: #1a1a1a;
-  transition: all 0.2s ease;
-  line-height: 1.3;
+.heroes-of-lite.hol-sheet .sheet-title input {
+  width: 100%;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
-.heroes-of-lite.sheet.item .form-group input::placeholder,
-.heroes-of-lite.sheet.item .form-group textarea::placeholder {
-  color: #999;
-}
-
-.heroes-of-lite.sheet.item .form-group input:focus,
-.heroes-of-lite.sheet.item .form-group textarea:focus,
-.heroes-of-lite.sheet.item .form-group select:focus {
-  outline: none;
-  border-color: #1a7fb0;
-  box-shadow: 0 0 4px rgba(26, 127, 176, 0.3);
-  background: #f9f9f9;
-}
-
-.heroes-of-lite.sheet.item .data-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.heroes-of-lite.sheet.item .two-columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.heroes-of-lite.sheet.item .range-inputs {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.heroes-of-lite.sheet.item .range-inputs input {
-  flex: 1;
-}
-
-.heroes-of-lite.sheet.item .range-inputs span {
-  font-size: 0.95rem;
-  color: #666;
-  font-weight: 500;
-  color: #666;
-}
-
-.heroes-of-lite.sheet.item textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.heroes-of-lite.sheet.item h3 {
-  margin: 1rem 0 0.5rem 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #e74c3c;
-  padding-bottom: 0.25rem;
-  font-size: 1.1rem;
-}
-
-.heroes-of-lite.sheet.item .innate-attributes-container {
+.heroes-of-lite.hol-sheet .header-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  min-height: 2rem;
-}
-
-.heroes-of-lite.sheet.item .innate-attribute-tag {
-  display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.heroes-of-lite.sheet.item .innate-attribute-tag:hover {
-  background: linear-gradient(135deg, #7c8ff5 0%, #8a5bb5 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-}
-
-.heroes-of-lite.sheet.item .empty-innate {
-  color: #999;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-.heroes-of-lite.sheet.item .stat-bonuses-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.heroes-of-lite.sheet.item .stat-bonuses-grid .stat-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.heroes-of-lite.sheet.item .stat-bonuses-grid .stat-row label {
-  min-width: 50px;
-  font-weight: 700;
-  color: #1a3a52;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.heroes-of-lite.sheet.item .stat-bonuses-grid .stat-row input {
-  flex: 1;
-  padding: 0.4rem 0.5rem;
-  font-size: 0.9rem;
-}
-
-.heroes-of-lite.sheet.item .refines-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.heroes-of-lite.sheet.item .refine-slot {
-  background: white;
-  border: 2px dashed #bdc3c7;
-  border-radius: 4px;
-  padding: 1rem;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.sheet.item .refine-slot:hover {
-  border-color: #3498db;
-  background: #f0f8ff;
-}
-
-.heroes-of-lite.sheet.item .refine-slot.drag-over {
-  background: #e8f4f8;
-  border-color: #3498db;
-  box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
-}
-
-.heroes-of-lite.sheet.item .refine-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.5rem;
-}
-
-.heroes-of-lite.sheet.item .refine-name {
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.heroes-of-lite.sheet.item .refine-name {
-  font-weight: 600;
-  color: #2c3e50;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.heroes-of-lite.sheet.item .refine-name:hover {
-  color: #3498db;
-  text-decoration: underline;
-}
-
-.heroes-of-lite.sheet.item .empty-slot {
-  color: #999;
-  font-style: italic;
-  font-size: 0.9rem;
-}
-
-.heroes-of-lite.sheet.item .remove-refine {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  transition: background 0.2s;
-  flex-shrink: 0;
-}
-
-.heroes-of-lite.sheet.item .remove-refine:hover {
-  background: #c0392b;
-}
-
-/* Refine Sheet Specific Styles */
-.heroes-of-lite.sheet.item.refine-sheet .header-details {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 0.5rem;
-}
-
-.heroes-of-lite.sheet.item.refine-sheet .form-group.inline {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0;
-}
-
-.heroes-of-lite.sheet.item.refine-sheet .form-group.inline label {
-  margin-bottom: 0;
-  font-size: 0.9rem;
-}
-
-.heroes-of-lite.sheet.item.refine-sheet .form-group.inline input,
-.heroes-of-lite.sheet.item.refine-sheet .form-group.inline select {
-  width: auto;
-  min-width: 100px;
-}
-
-.heroes-of-lite.sheet.item.refine-sheet .currency {
-  font-weight: bold;
-  color: #f39c12;
-}
-
-/* Consumable Sheet Header Inline Fields */
-.heroes-of-lite.sheet.item .header-details {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 0.5rem 1rem;
   align-items: center;
 }
 
-.heroes-of-lite.sheet.item .inline-field {
+.heroes-of-lite.hol-sheet .inline-field {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  min-width: 0;
 }
 
-.heroes-of-lite.sheet.item .inline-field label {
+.heroes-of-lite.hol-sheet .inline-field label {
   margin: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.85);
   white-space: nowrap;
 }
 
-.heroes-of-lite.sheet.item .inline-field input,
-.heroes-of-lite.sheet.item .inline-field select {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  padding: 0.3rem 0.5rem;
-  border-radius: 3px;
-  font-size: 0.9rem;
+.heroes-of-lite.hol-sheet .inline-field input,
+.heroes-of-lite.hol-sheet .inline-field select {
+  width: auto;
+  min-width: 84px;
+  max-width: 180px;
 }
 
-.heroes-of-lite.sheet.item .inline-field select {
-  width: 90px;
-}
+/* --------------------------------------------------------------------------
+   Tabs
+   -------------------------------------------------------------------------- */
 
-.heroes-of-lite.sheet.item .sheet-tabs {
+.heroes-of-lite.hol-sheet .sheet-tabs {
+  flex-shrink: 0;
   display: flex;
-  border-bottom: 2px solid #e74c3c;
+  flex-wrap: wrap;
   margin: 0;
-  padding: 0;
-  background: #f5f5f5;
-}
-
-.heroes-of-lite.sheet.item .sheet-tabs .item {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  cursor: pointer;
+  padding: 0 0.5rem;
+  gap: 0.15rem;
   border: none;
-  background: transparent;
-  color: #2c3e50;
-  font-weight: 600;
+  border-bottom: 2px solid var(--hol-gold);
+  background: var(--hol-parchment-dark);
+}
+
+.heroes-of-lite.hol-sheet .sheet-tabs .item {
+  flex: 1 1 auto;
+  padding: 0.55rem 0.9rem;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--hol-ink-soft);
   text-decoration: none;
-  transition: all 0.2s;
+  border: none;
+  border-radius: var(--hol-radius-sm) var(--hol-radius-sm) 0 0;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.heroes-of-lite.sheet.item .sheet-tabs .item:hover {
-  background: #e8e8e8;
-  color: #e74c3c;
+.heroes-of-lite.hol-sheet .sheet-tabs .item:hover {
+  background: rgba(201, 162, 39, 0.18);
+  color: var(--hol-navy);
+  text-shadow: none;
 }
 
-.heroes-of-lite.sheet.item .sheet-tabs .item.active {
-  background: white;
-  color: #e74c3c;
-  border-bottom: 3px solid #e74c3c;
+.heroes-of-lite.hol-sheet .sheet-tabs .item.active {
+  background: var(--hol-surface);
+  color: var(--hol-navy);
+  box-shadow: inset 0 -3px 0 var(--hol-gold);
 }
 
-.heroes-of-lite.sheet.item .tab {
+/* --------------------------------------------------------------------------
+   Body and panels
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet .sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--hol-surface);
+}
+
+.heroes-of-lite.hol-sheet .tab {
   display: none;
-  padding: 1.5rem;
 }
 
-.heroes-of-lite.sheet.item .tab.active {
+.heroes-of-lite.hol-sheet .tab.active {
   display: block;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem 1.1rem;
 }
 
-.heroes-of-lite.sheet.item .tab[data-tab="description"] textarea {
-  width: 100%;
+.heroes-of-lite.hol-sheet h3 {
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--hol-gold);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .stat-bonuses {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1rem;
+.heroes-of-lite.hol-sheet h3:not(:first-child) {
+  margin-top: 1.25rem;
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .stat-row {
+.heroes-of-lite.hol-sheet .section-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: white;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .stat-row label {
+.heroes-of-lite.hol-sheet .section-header h3 {
   flex: 1;
   margin: 0;
-  font-weight: 600;
-  color: #2c3e50;
-  font-size: 0.95rem;
-  text-transform: none;
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .stat-row input {
-  width: 80px;
-  text-align: center;
-  padding: 0.3rem 0.5rem;
+.heroes-of-lite.hol-sheet .hol-panel {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius);
+  background: var(--hol-surface);
+  box-shadow: var(--hol-shadow);
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .weapon-groups {
+.heroes-of-lite.hol-sheet .hol-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .hol-hint code {
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  background: var(--hol-parchment-dark);
+  font-size: 0.75rem;
+}
+
+.heroes-of-lite.hol-sheet .empty-slot,
+.heroes-of-lite.hol-sheet .empty-text {
+  color: var(--hol-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+   Form controls
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet input[type="text"],
+.heroes-of-lite.hol-sheet input[type="number"],
+.heroes-of-lite.hol-sheet textarea,
+.heroes-of-lite.hol-sheet select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 32px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+  color: var(--hol-ink);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet select {
+  padding-right: 1.6rem;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--hol-ink-soft) 50%),
+    linear-gradient(135deg, var(--hol-ink-soft) 50%, transparent 50%);
+  background-position: right 0.8rem center, right 0.55rem center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.heroes-of-lite.hol-sheet textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.heroes-of-lite.hol-sheet input::placeholder,
+.heroes-of-lite.hol-sheet textarea::placeholder {
+  color: var(--hol-muted);
+}
+
+.heroes-of-lite.hol-sheet input:focus,
+.heroes-of-lite.hol-sheet textarea:focus,
+.heroes-of-lite.hol-sheet select:focus {
+  outline: none;
+  border-color: var(--hol-gold);
+  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.3);
+}
+
+.heroes-of-lite.hol-sheet input[readonly][disabled] {
+  background: var(--hol-parchment-dark);
+  color: var(--hol-ink-soft);
+  cursor: not-allowed;
+}
+
+.heroes-of-lite.hol-sheet .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.heroes-of-lite.hol-sheet .form-group.stretch {
+  height: 100%;
+}
+
+.heroes-of-lite.hol-sheet .form-group.stretch textarea {
+  flex: 1;
+}
+
+.heroes-of-lite.hol-sheet .form-group > label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .field-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--hol-gap);
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .weapon-groups label {
+.heroes-of-lite.hol-sheet .checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.4rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-checkbox {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-  background: white;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: normal;
-  text-transform: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .weapon-groups label:hover {
-  background: #f0f8ff;
-  border-color: #3498db;
+.heroes-of-lite.hol-sheet .hol-checkbox:hover {
+  border-color: var(--hol-gold);
+  background: rgba(201, 162, 39, 0.1);
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .weapon-groups input[type="checkbox"] {
+.heroes-of-lite.hol-sheet .hol-checkbox input[type="checkbox"] {
+  width: auto;
+  min-height: 0;
   margin: 0;
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons, tags and badges
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet .hol-button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+  color: var(--hol-navy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .hol-button:hover {
+  border-color: var(--hol-gold);
+  background: var(--hol-gold-soft);
+}
+
+.heroes-of-lite.hol-sheet .hol-icon-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--hol-border);
+  border-radius: 50%;
+  background: var(--hol-surface);
+  color: var(--hol-ink-soft);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .hol-icon-button:hover {
+  border-color: var(--hol-gold);
+  background: var(--hol-gold-soft);
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .hol-icon-button.danger:hover {
+  border-color: var(--hol-danger);
+  background: var(--hol-danger);
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 2rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-tag {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--hol-navy);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.heroes-of-lite.hol-sheet .innate-attribute-tag {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .innate-attribute-tag:hover {
+  background: var(--hol-crimson);
+}
+
+.heroes-of-lite.hol-sheet .hol-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 0.35rem;
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-gold);
+  color: var(--hol-navy-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   Drop slots
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet .slot-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.hol-sheet .slot-grid.two-up {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.heroes-of-lite.hol-sheet .hol-slot {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0.5rem 0.7rem;
+  border: 1px dashed var(--hol-border);
+  border-radius: var(--hol-radius);
+  background: var(--hol-surface);
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .hol-slot.drag-over {
+  border-color: var(--hol-gold);
+  border-style: solid;
+  background: rgba(201, 162, 39, 0.14);
+  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.3);
+}
+
+.heroes-of-lite.hol-sheet .hol-slot.is-equipped {
+  border-style: solid;
+  border-color: var(--hol-gold);
+  background: rgba(201, 162, 39, 0.12);
+}
+
+.heroes-of-lite.hol-sheet .slot-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hol-muted);
+}
+
+.heroes-of-lite.hol-sheet .slot-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.hol-sheet .slot-body select {
+  width: auto;
+  min-width: 70px;
+  margin-left: auto;
+}
+
+.heroes-of-lite.hol-sheet .item-name,
+.heroes-of-lite.hol-sheet .refine-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--hol-navy);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
   cursor: pointer;
 }
 
-.heroes-of-lite.sheet.item.refine-sheet .stat-bonuses {
+.heroes-of-lite.hol-sheet .item-name:hover,
+.heroes-of-lite.hol-sheet .refine-name:hover {
+  color: var(--hol-crimson);
+  border-bottom-color: var(--hol-crimson);
+  text-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Stat grids
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet .stat-bonus-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.5rem;
 }
 
-/* Compendium Read-Only Styles */
-.heroes-of-lite.sheet.item.compendium-item-readonly {
-  position: relative;
+.heroes-of-lite.hol-sheet .stat-bonus-grid .stat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
 }
 
-.heroes-of-lite.sheet.item.compendium-item-readonly::before {
-  content: "📚 Compendium Item (Read-Only)";
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: #f39c12;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.heroes-of-lite.hol-sheet .stat-bonus-grid .stat-row label {
+  flex: 1;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.sheet.item.compendium-item-readonly input:disabled,
-.heroes-of-lite.sheet.item.compendium-item-readonly select:disabled,
-.heroes-of-lite.sheet.item.compendium-item-readonly textarea:disabled {
-  background: #f5f5f5;
+.heroes-of-lite.hol-sheet .stat-bonus-grid .stat-row input {
+  width: 68px;
+  flex: 0 0 68px;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Compendium read-only state
+   -------------------------------------------------------------------------- */
+
+.heroes-of-lite.hol-sheet.compendium-item-readonly .sheet-header::after {
+  content: "Compendium (read only)";
+  align-self: flex-start;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-gold);
+  color: var(--hol-navy-dark);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.heroes-of-lite.hol-sheet.compendium-item-readonly input:disabled,
+.heroes-of-lite.hol-sheet.compendium-item-readonly select:disabled,
+.heroes-of-lite.hol-sheet.compendium-item-readonly textarea:disabled {
+  background: var(--hol-parchment-dark);
+  color: var(--hol-ink-soft);
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
-.heroes-of-lite.sheet.item.compendium-item-readonly .refine-slot {
+.heroes-of-lite.hol-sheet.compendium-item-readonly .hol-slot {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-.heroes-of-lite.sheet.item.compendium-item-readonly .refine-slot:hover {
-  border-color: #bdc3c7;
-  background: white;
-}
-
-.heroes-of-lite.sheet.item.compendium-item-readonly .remove-refine {
+.heroes-of-lite.hol-sheet.compendium-item-readonly .hol-icon-button {
   pointer-events: none;
   opacity: 0.5;
 }
 
-.hol.sheet.characterSheet .sheet {
-  width: 500px;
-  height: 500px;
-}
+/* ==========================================================================
+   Actor sheet
+   ========================================================================== */
 
-/* Character Sheet Styles */
-.heroes-of-lite.actor-sheet.character-sheet {
-  display: flex;
-  flex-direction: column;
-  background: #fdf8ef;
-  color: #3d2b1f;
-}
-
-.heroes-of-lite.actor-sheet .sheet-header {
-  background: linear-gradient(135deg, #4a2c17 0%, #8b6914 100%);
-  color: white;
-  padding: 1rem 1.5rem;
-  display: flex;
+.heroes-of-lite.hol-sheet .battle-toggle {
+  align-self: flex-start;
+  display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.heroes-of-lite.actor-sheet .header-content {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-}
-
-.heroes-of-lite.actor-sheet .header-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.heroes-of-lite.actor-sheet .header-field label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
-}
-
-.heroes-of-lite.actor-sheet .header-field input {
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-color: rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 0.5rem;
-  border-radius: 4px;
-  min-width: 200px;
+  color: #fff;
+  text-transform: uppercase;
 }
 
-.heroes-of-lite.actor-sheet .header-field input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+.heroes-of-lite.hol-sheet .battle-toggle:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
 }
 
-.heroes-of-lite.actor-sheet .sheet-tabs {
-  display: flex;
-  border-bottom: 2px solid #c9a227;
-  margin: 0;
-  padding: 0;
-  background: #f5e6c8;
-}
-
-.heroes-of-lite.actor-sheet .sheet-tabs .item {
+.heroes-of-lite.hol-sheet .normal-mode-wrapper {
   flex: 1;
-  padding: 0.75rem 1rem;
-  text-align: center;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: #4a2c17;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .sheet-tabs .item:hover {
-  background: #edd9b0;
-  color: #4a2c17;
-}
-
-.heroes-of-lite.actor-sheet .sheet-tabs .item.active {
-  background: #fdf8ef;
-  color: #4a2c17;
-  border-bottom: 3px solid #c9a227;
-}
-
-.heroes-of-lite.actor-sheet .sheet-body {
-  flex: 1;
-  overflow: hidden;
-  background: #fdf8ef;
-}
-
-.heroes-of-lite.actor-sheet .main-layout {
+  min-height: 0;
   display: flex;
-  height: 100%;
+  flex-direction: column;
+}
+
+.heroes-of-lite.hol-sheet .battle-mode-wrapper {
+  display: none;
+  flex: 1;
+  min-height: 0;
+}
+
+.heroes-of-lite.hol-sheet.battle-active .normal-mode-wrapper {
+  display: none;
+}
+
+.heroes-of-lite.hol-sheet.battle-active .battle-mode-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.heroes-of-lite.hol-sheet.battle-active .sheet-header {
+  background: linear-gradient(135deg, #3d2a10 0%, #8b6914 100%);
+}
+
+/* Two-column body: persistent vitals beside the tab panels */
+.heroes-of-lite.hol-sheet .main-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
   gap: 0;
 }
 
-/* Left Column (30%) */
-.heroes-of-lite.actor-sheet .left-column {
-  width: 30%;
-  background: linear-gradient(180deg, #4a2c17 0%, #6b3a2c 100%);
-  color: white;
-  padding: 1.5rem;
+.heroes-of-lite.hol-sheet .left-column {
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  overflow-y: auto;
+  gap: 0.6rem;
+  padding: 1rem;
+  border-right: 1px solid var(--hol-border);
+  background: var(--hol-parchment-dark);
 }
 
-.heroes-of-lite.actor-sheet .hp-display {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  border-radius: 6px;
+.heroes-of-lite.hol-sheet .right-column {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--hol-surface);
+}
+
+.heroes-of-lite.hol-sheet .hp-display {
   text-align: center;
 }
 
-.heroes-of-lite.actor-sheet .hp-display label {
+.heroes-of-lite.hol-sheet .hp-display > label {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .hp-values {
+.heroes-of-lite.hol-sheet .hp-values {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-size: 1.8rem;
-  font-weight: bold;
+  gap: 0.4rem;
 }
 
-.heroes-of-lite.actor-sheet .hp-values input {
-  width: 60px;
+.heroes-of-lite.hol-sheet .hp-values input {
+  width: 72px;
+  flex: 0 0 72px;
   text-align: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  padding: 0.25rem;
-  color: #1a1a1a;
-}
-
-.heroes-of-lite.actor-sheet .hp-values .max-hp {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.heroes-of-lite.actor-sheet .derived-row {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .derived-stat {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 0.75rem;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.heroes-of-lite.actor-sheet .derived-stat label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
-}
-
-.heroes-of-lite.actor-sheet .derived-stat span {
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-
-.heroes-of-lite.actor-sheet .combat-preview {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  border-radius: 6px;
-}
-
-.heroes-of-lite.actor-sheet .preview-header {
-  display: grid;
-  grid-template-columns: 1fr 80px 80px;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.heroes-of-lite.actor-sheet .preview-row {
-  display: grid;
-  grid-template-columns: 1fr 80px 80px;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .preview-row label {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.heroes-of-lite.actor-sheet .preview-row input {
-  width: 100%;
-  text-align: center;
-  padding: 0.4rem;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-  font-size: 0.9rem;
-  color: #1a1a1a;
-}
-
-.heroes-of-lite.actor-sheet .preview-row .total {
-  text-align: center;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* Right Column (70%) */
-.heroes-of-lite.actor-sheet .right-column {
-  width: 70%;
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-.heroes-of-lite.actor-sheet .tab-content {
-  display: none;
-}
-
-.heroes-of-lite.actor-sheet .tab-content.active {
-  display: block;
-}
-
-/* Character Info Tab */
-.heroes-of-lite.actor-sheet .character-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.heroes-of-lite.actor-sheet .info-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.heroes-of-lite.actor-sheet .info-field label {
-  font-weight: 600;
-  color: #6b3a2c;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.heroes-of-lite.actor-sheet .info-field input,
-.heroes-of-lite.actor-sheet .info-field select {
-  padding: 0.5rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  background: white;
-  font-size: 1rem;
-}
-
-.heroes-of-lite.actor-sheet .charge-counter {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .charge-counter button {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #c9a227;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .charge-counter button:hover {
-  background: #a8861e;
-}
-
-.heroes-of-lite.actor-sheet .charge-value {
-  font-size: 1.5rem;
-  font-weight: bold;
-  min-width: 40px;
-  text-align: center;
-}
-
-/* Combat Stats Tab */
-.heroes-of-lite.actor-sheet .stat-table {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .stat-header,
-.heroes-of-lite.actor-sheet .stat-row {
-  display: grid;
-  grid-template-columns: 100px 80px 80px 80px 80px;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .stat-header {
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #6b3a2c;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  background: #f5e6c8;
-  border-radius: 4px;
 }
 
-.heroes-of-lite.actor-sheet .stat-row {
-  background: white;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
+.heroes-of-lite.hol-sheet .hp-separator {
+  color: var(--hol-muted);
+  font-size: 1.2rem;
 }
 
-.heroes-of-lite.actor-sheet .stat-row label {
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #6b3a2c;
+.heroes-of-lite.hol-sheet .max-hp {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .stat-row input {
-  text-align: center;
-  padding: 0.4rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 3px;
+.heroes-of-lite.hol-sheet .derived-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
 }
 
-.heroes-of-lite.actor-sheet .stat-row .total {
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #4a2c17;
-}
-
-/* Non-Combat Stats Tab */
-.heroes-of-lite.actor-sheet .non-combat-header {
+.heroes-of-lite.hol-sheet .derived-stat {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #c9a227;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
 }
 
-.heroes-of-lite.actor-sheet .non-combat-header h3 {
-  margin: 0;
-  color: #4a2c17;
-}
-
-.heroes-of-lite.actor-sheet .unallocated {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.heroes-of-lite.actor-sheet .unallocated span {
-  background: #c9a227;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 1.2rem;
-}
-
-.heroes-of-lite.actor-sheet .non-combat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.heroes-of-lite.actor-sheet .stat-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.heroes-of-lite.actor-sheet .stat-field label {
-  font-weight: 600;
-  color: #6b3a2c;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-}
-
-.heroes-of-lite.actor-sheet .stat-field input {
-  padding: 0.5rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-/* Inventory Tab */
-.heroes-of-lite.actor-sheet .inventory-section h3 {
-  margin: 0 0 1rem 0;
-  color: #4a2c17;
-  border-bottom: 2px solid #c9a227;
-  padding-bottom: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .weapon-list,
-.heroes-of-lite.actor-sheet .item-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.heroes-of-lite.actor-sheet .weapon-slot,
-.heroes-of-lite.actor-sheet .item-slot {
-  padding: 0.75rem;
-  border: 2px dashed #bdc3c7;
-  border-radius: 4px;
-  background: white;
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .weapon-slot.drag-over,
-.heroes-of-lite.actor-sheet .item-slot.drag-over {
-  border-color: #c9a227;
-  background: #fdf8ef;
-}
-
-.heroes-of-lite.actor-sheet .weapon-slot .empty-slot,
-.heroes-of-lite.actor-sheet .item-slot .empty-slot {
-  color: #95a5a6;
-  font-style: italic;
-}
-
-.heroes-of-lite.actor-sheet .item-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.heroes-of-lite.actor-sheet .equipped-badge {
-  background: #c9a227;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-  font-weight: bold;
-  font-size: 0.75rem;
-}
-
-.heroes-of-lite.actor-sheet .item-name {
-  flex: 1;
-  font-weight: 600;
-}
-
-.heroes-of-lite.actor-sheet .item-content button {
-  padding: 0.25rem 0.75rem;
-  border: none;
-  background: #c9a227;
-  color: white;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .item-content button:hover {
-  background: #a8861e;
-}
-
-.heroes-of-lite.actor-sheet .item-content button[data-action="removeItem"] {
-  background: #e74c3c;
-  font-size: 1.2rem;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  line-height: 1;
-}
-
-.heroes-of-lite.actor-sheet .item-content button[data-action="removeItem"]:hover {
-  background: #c0392b;
-}
-
-/* Skills Tab */
-.heroes-of-lite.actor-sheet .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.heroes-of-lite.actor-sheet .skill-slot {
-  padding: 1rem;
-  border: 2px dashed #bdc3c7;
-  border-radius: 4px;
-  background: white;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .skill-slot.drag-over {
-  border-color: #c9a227;
-  background: #fdf8ef;
-}
-
-.heroes-of-lite.actor-sheet .skill-slot .empty-slot {
-  color: #95a5a6;
-  font-style: italic;
-}
-
-.heroes-of-lite.actor-sheet .skill-content {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.heroes-of-lite.actor-sheet .skill-name {
-  font-weight: 600;
-  color: #4a2c17;
-}
-
-.heroes-of-lite.actor-sheet .skill-content .remove-skill {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  line-height: 1;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0;
-  flex: 0 0 auto;
-  transition: background 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .skill-content .remove-skill:hover {
-  background: #c0392b;
-}
-
-/* Supports Tab */
-.heroes-of-lite.actor-sheet .supports-section h3 {
-  margin: 0 0 1rem 0;
-  color: #4a2c17;
-  border-bottom: 2px solid #c9a227;
-  padding-bottom: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .support-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.heroes-of-lite.actor-sheet .support-entry {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: white;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-}
-
-.heroes-of-lite.actor-sheet .support-name {
-  flex: 1;
-  font-weight: 600;
-}
-
-.heroes-of-lite.actor-sheet .support-entry select {
-  padding: 0.4rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 3px;
-}
-
-.heroes-of-lite.actor-sheet .support-slot {
-  padding: 1rem;
-  border: 2px dashed #bdc3c7;
-  border-radius: 4px;
-  background: white;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.heroes-of-lite.actor-sheet .support-slot.drag-over {
-  border-color: #c9a227;
-  background: #fdf8ef;
-}
-
-.heroes-of-lite.actor-sheet .support-slot .empty-slot {
-  color: #95a5a6;
-  font-style: italic;
-}
-
-/* =====================================================
-   BATTLE TOGGLE BUTTON
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-toggle {
-  margin-left: auto;
-  padding: 0.5rem 1.2rem;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border-radius: 6px;
+.heroes-of-lite.hol-sheet .derived-stat label {
+  font-size: 0.7rem;
   font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .derived-stat span {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .preview-header,
+.heroes-of-lite.hol-sheet .combat-preview .preview-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 46px;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .preview-header {
+  padding-bottom: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-muted);
+  text-align: center;
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .preview-row {
+  padding: 0.2rem 0;
+  border-top: 1px solid var(--hol-parchment-dark);
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .preview-row label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .preview-row input {
+  min-height: 28px;
+  text-align: center;
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .total {
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .combat-preview .derived-only {
+  text-align: center;
+  color: var(--hol-muted);
+}
+
+/* Combat stat table */
+.heroes-of-lite.hol-sheet .stat-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-header,
+.heroes-of-lite.hol-sheet .stat-table .stat-row {
+  display: grid;
+  grid-template-columns: 70px 56px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-header {
+  padding: 0 0.55rem 0.3rem;
+  border-bottom: 1px solid var(--hol-border);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-muted);
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row .total {
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--hol-crimson);
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row input {
+  min-width: 0;
+  text-align: center;
+}
+
+/* Non-combat */
+.heroes-of-lite.hol-sheet .unallocated {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--hol-gold);
+  border-radius: 999px;
+  background: rgba(201, 162, 39, 0.15);
   white-space: nowrap;
 }
 
-.heroes-of-lite.actor-sheet .battle-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+.heroes-of-lite.hol-sheet .unallocated label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-ink-soft);
 }
 
-.heroes-of-lite.actor-sheet .battle-toggle i {
-  margin-right: 0.4rem;
+.heroes-of-lite.hol-sheet .unallocated span {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--hol-navy);
 }
 
-/* =====================================================
-   NORMAL / BATTLE MODE VISIBILITY
-   ===================================================== */
-.heroes-of-lite.actor-sheet .normal-mode-wrapper {
+.heroes-of-lite.hol-sheet .unallocated.over-cap {
+  border-color: var(--hol-danger);
+  background: rgba(179, 54, 44, 0.12);
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row.over-cap {
+  border-color: var(--hol-danger);
+  background: rgba(179, 54, 44, 0.08);
+}
+
+.heroes-of-lite.hol-sheet .derived-tag {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0 0.35rem;
+  border: 1px solid var(--hol-border);
+  border-radius: 999px;
+  background: var(--hol-parchment-dark);
+  color: var(--hol-ink-soft);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+
+/* Charge counter */
+.heroes-of-lite.hol-sheet .charge-counter {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+  min-height: 32px;
+}
+
+.heroes-of-lite.hol-sheet .charge-value {
   flex: 1;
-  overflow: hidden;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .battle-mode-wrapper {
-  display: none;
+/* ==========================================================================
+   Battle mode
+   ========================================================================== */
+
+.heroes-of-lite.hol-sheet .battle-grid {
   flex: 1;
-  overflow: hidden;
-}
-
-.heroes-of-lite.actor-sheet.battle-active .normal-mode-wrapper {
-  display: none;
-}
-
-.heroes-of-lite.actor-sheet.battle-active .battle-mode-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.heroes-of-lite.actor-sheet.battle-active .sheet-header {
-  background: linear-gradient(135deg, #3d2210 0%, #7a5a0f 100%);
-}
-
-/* =====================================================
-   BATTLE MODE - GRID LAYOUT (4 QUADRANTS)
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-grid {
+  min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 2px;
-  flex: 1;
-  overflow: hidden;
-  background: #8b6914;
+  background: var(--hol-gold);
 }
 
-/* Shared quadrant styles */
-.heroes-of-lite.actor-sheet .battle-quadrant {
-  background: #f5e6c8;
-  padding: 0.75rem;
+.heroes-of-lite.hol-sheet .battle-quadrant {
   overflow-y: auto;
+  padding: 0.75rem;
+  background: var(--hol-parchment);
 }
 
-.heroes-of-lite.actor-sheet .battle-quadrant h4 {
-  margin: 0 0 0.5rem 0;
-  color: #4a2c17;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid #c9a227;
+.heroes-of-lite.hol-sheet .battle-quadrant h4 {
+  margin: 0 0 0.5rem;
   padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--hol-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hol-navy);
 }
 
-/* =====================================================
-   BATTLE MODE - TOP LEFT (Character + Stats)
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-tl {
+.heroes-of-lite.hol-sheet .battle-tl,
+.heroes-of-lite.hol-sheet .battle-tr {
   display: flex;
   gap: 0.75rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-char-col {
+.heroes-of-lite.hol-sheet .battle-char-col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   min-width: 140px;
 }
 
-.heroes-of-lite.actor-sheet .battle-portrait {
-  width: 80px;
-  height: 80px;
-  border-radius: 6px;
-  border: 3px solid #c9a227;
+.heroes-of-lite.hol-sheet .battle-portrait {
+  width: 78px;
+  height: 78px;
   object-fit: cover;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--hol-gold);
+  border-radius: var(--hol-radius);
 }
 
-.heroes-of-lite.actor-sheet .battle-name {
+.heroes-of-lite.hol-sheet .battle-name {
+  font-size: 0.95rem;
   font-weight: 700;
-  font-size: 1rem;
-  color: #4a2c17;
   text-align: center;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .battle-level {
-  font-size: 0.8rem;
-  color: #6b3a2c;
-  font-weight: 600;
-}
-
-/* HP Bar */
-.heroes-of-lite.actor-sheet .battle-hp-section {
-  width: 100%;
-  text-align: center;
-}
-
-.heroes-of-lite.actor-sheet .battle-hp-section label {
+.heroes-of-lite.hol-sheet .battle-level {
   font-size: 0.75rem;
-  font-weight: 700;
-  color: #6b3a2c;
-  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--hol-ink-soft);
 }
 
-.heroes-of-lite.actor-sheet .battle-hp-bar {
+.heroes-of-lite.hol-sheet .battle-hp-section {
   width: 100%;
-  height: 14px;
-  background: #d4c4a0;
-  border-radius: 7px;
-  overflow: hidden;
-  border: 1px solid #a89060;
-  margin: 0.15rem 0;
+  text-align: center;
 }
 
-.heroes-of-lite.actor-sheet .battle-hp-fill {
+.heroes-of-lite.hol-sheet .battle-hp-section label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .battle-hp-bar {
+  margin: 0.15rem 0;
+  height: 13px;
+  border: 1px solid var(--hol-border);
+  border-radius: 7px;
+  background: var(--hol-parchment-dark);
+  overflow: hidden;
+}
+
+.heroes-of-lite.hol-sheet .battle-hp-fill {
   height: 100%;
   border-radius: 7px;
+  background-color: var(--hol-success);
   transition: width 0.4s ease, background-color 0.4s ease;
-  background-color: #27ae60;
 }
 
-.heroes-of-lite.actor-sheet .battle-hp-text {
-  font-size: 0.75rem;
+.heroes-of-lite.hol-sheet .battle-hp-text {
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #4a2c17;
+  color: var(--hol-navy);
 }
 
-/* Mini stats (Charge, Gauge, Aid, Con) */
-.heroes-of-lite.actor-sheet .battle-derived-grid {
+.heroes-of-lite.hol-sheet .battle-derived-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.25rem;
@@ -1311,455 +1051,678 @@
   margin-top: 0.25rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-mini-stat {
+.heroes-of-lite.hol-sheet .battle-stats-col,
+.heroes-of-lite.hol-sheet .battle-noncombat-col {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(74, 44, 23, 0.08);
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-mini-stat label {
+.heroes-of-lite.hol-sheet .battle-stats-col {
+  flex: 1;
+}
+
+.heroes-of-lite.hol-sheet .battle-noncombat-col {
+  min-width: 118px;
+}
+
+.heroes-of-lite.hol-sheet .battle-mini-stat,
+.heroes-of-lite.hol-sheet .battle-stat-row,
+.heroes-of-lite.hol-sheet .battle-nc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--hol-radius-sm);
+  background: rgba(27, 45, 68, 0.07);
+}
+
+.heroes-of-lite.hol-sheet .battle-mini-stat label,
+.heroes-of-lite.hol-sheet .battle-stat-row label,
+.heroes-of-lite.hol-sheet .battle-nc-row label {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #6b3a2c;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  color: var(--hol-ink-soft);
 }
 
-.heroes-of-lite.actor-sheet .battle-mini-stat span {
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: #4a2c17;
-}
-
-/* Combat stats column */
-.heroes-of-lite.actor-sheet .battle-stats-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  flex: 1;
-}
-
-.heroes-of-lite.actor-sheet .battle-stat-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.2rem 0.5rem;
-  background: rgba(74, 44, 23, 0.06);
-  border-radius: 3px;
-}
-
-.heroes-of-lite.actor-sheet .battle-stat-row label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #6b3a2c;
-  text-transform: uppercase;
-  min-width: 30px;
-}
-
-.heroes-of-lite.actor-sheet .battle-stat-row span {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #4a2c17;
-}
-
-.heroes-of-lite.actor-sheet .battle-stat-divider {
-  height: 1px;
-  background: #c9a227;
-  margin: 0.15rem 0;
-}
-
-/* =====================================================
-   BATTLE MODE - TOP RIGHT (Inventory + Non-combat)
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-tr {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.heroes-of-lite.actor-sheet .battle-inv-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.heroes-of-lite.actor-sheet .battle-inv-row {
-  padding: 0.3rem 0.5rem;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid #d4c4a0;
-  border-radius: 3px;
-  margin-bottom: 0.2rem;
-  font-size: 0.8rem;
-  color: #3d2b1f;
-}
-
-.heroes-of-lite.actor-sheet .battle-inv-row.equipped {
+.heroes-of-lite.hol-sheet .battle-mini-stat span,
+.heroes-of-lite.hol-sheet .battle-stat-row span,
+.heroes-of-lite.hol-sheet .battle-nc-row span {
+  font-size: 0.92rem;
   font-weight: 800;
-  background: rgba(201, 162, 39, 0.2);
-  border-color: #c9a227;
-  color: #4a2c17;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .battle-inv-row .empty-text {
-  color: #a89060;
-  font-style: italic;
+.heroes-of-lite.hol-sheet .battle-stat-divider {
+  height: 1px;
+  margin: 0.2rem 0;
+  background: var(--hol-gold);
 }
 
-.heroes-of-lite.actor-sheet .battle-inv-col h4 {
-  margin-top: 0.5rem;
-}
-
-.heroes-of-lite.actor-sheet .battle-inv-col h4:first-child {
-  margin-top: 0;
-}
-
-/* Non-combat stats column */
-.heroes-of-lite.actor-sheet .battle-noncombat-col {
-  min-width: 120px;
+.heroes-of-lite.hol-sheet .battle-inv-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-nc-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.2rem 0.4rem;
-  background: rgba(74, 44, 23, 0.06);
-  border-radius: 3px;
+.heroes-of-lite.hol-sheet .battle-inv-col h4:not(:first-child) {
+  margin-top: 0.6rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-nc-row label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #6b3a2c;
-  text-transform: uppercase;
-}
-
-.heroes-of-lite.actor-sheet .battle-nc-row span {
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #4a2c17;
-}
-
-.heroes-of-lite.actor-sheet .battle-gold {
-  margin-top: 0.4rem;
-  background: rgba(201, 162, 39, 0.15);
-  border: 1px solid #c9a227;
-}
-
-.heroes-of-lite.actor-sheet .battle-gold span {
-  color: #8b6914;
-}
-
-/* =====================================================
-   BATTLE MODE - BOTTOM LEFT (Skills)
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-skills-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.3rem;
-}
-
-.heroes-of-lite.actor-sheet .battle-skill-entry {
+.heroes-of-lite.hol-sheet .battle-inv-row,
+.heroes-of-lite.hol-sheet .battle-skill-entry,
+.heroes-of-lite.hol-sheet .battle-support-entry {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.35rem 0.5rem;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid #d4c4a0;
-  border-radius: 3px;
+  margin-bottom: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: rgba(255, 255, 255, 0.7);
   font-size: 0.8rem;
+  color: var(--hol-ink);
 }
 
-.heroes-of-lite.actor-sheet .battle-skill-entry.has-skill {
-  background: rgba(201, 162, 39, 0.12);
-  border-color: #c9a227;
+.heroes-of-lite.hol-sheet .battle-inv-row.equipped,
+.heroes-of-lite.hol-sheet .battle-skill-entry.has-skill {
+  border-color: var(--hol-gold);
+  background: rgba(201, 162, 39, 0.16);
+  font-weight: 700;
 }
 
-.heroes-of-lite.actor-sheet .battle-skill-icon {
-  color: #c9a227;
-  font-size: 0.75rem;
+.heroes-of-lite.hol-sheet .battle-gold {
+  margin-top: 0.4rem;
+  border: 1px solid var(--hol-gold);
+  background: rgba(201, 162, 39, 0.16);
 }
 
-.heroes-of-lite.actor-sheet .battle-skill-icon.empty {
-  color: #a89060;
+.heroes-of-lite.hol-sheet .battle-skills-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.3rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-skill-name {
-  font-weight: 600;
-  color: #4a2c17;
+.heroes-of-lite.hol-sheet .battle-skill-entry {
+  margin-bottom: 0;
 }
 
-.heroes-of-lite.actor-sheet .battle-skill-name.empty {
-  color: #a89060;
+.heroes-of-lite.hol-sheet .battle-skill-icon {
+  font-size: 0.7rem;
+  color: var(--hol-gold);
+}
+
+.heroes-of-lite.hol-sheet .battle-skill-icon.empty,
+.heroes-of-lite.hol-sheet .battle-skill-name.empty {
+  color: var(--hol-muted);
   font-style: italic;
   font-weight: 400;
 }
 
-/* =====================================================
-   BATTLE MODE - BOTTOM RIGHT (Supports + Terrain)
-   ===================================================== */
-.heroes-of-lite.actor-sheet .battle-supports-list {
+.heroes-of-lite.hol-sheet .battle-skill-name {
+  font-weight: 600;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .battle-supports-list {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.6rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-support-entry {
-  display: flex;
+.heroes-of-lite.hol-sheet .battle-support-entry {
   justify-content: space-between;
-  align-items: center;
-  padding: 0.35rem 0.5rem;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid #d4c4a0;
-  border-radius: 3px;
 }
 
-.heroes-of-lite.actor-sheet .support-actor-name {
-  font-weight: 600;
+.heroes-of-lite.hol-sheet .support-actor-name {
   font-size: 0.85rem;
-  color: #4a2c17;
+  font-weight: 600;
+  color: var(--hol-navy);
 }
 
-.heroes-of-lite.actor-sheet .support-rank-badge {
-  background: #c9a227;
-  color: white;
-  padding: 0.15rem 0.5rem;
-  border-radius: 3px;
-  font-weight: 700;
-  font-size: 0.75rem;
+.heroes-of-lite.hol-sheet .support-rank-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-gold);
+  color: var(--hol-navy-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
-.heroes-of-lite.actor-sheet .battle-terrain-section {
+.heroes-of-lite.hol-sheet .battle-terrain-section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.5rem;
 }
 
-.heroes-of-lite.actor-sheet .battle-terrain-section label {
+.heroes-of-lite.hol-sheet .battle-terrain-section label {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #6b3a2c;
-  font-size: 0.85rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--hol-ink-soft);
 }
 
-.heroes-of-lite.actor-sheet .battle-terrain-section select {
-  flex: 1;
-  padding: 0.4rem 0.5rem;
-  border: 1px solid #d4c4a0;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.8);
-  color: #4a2c17;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
+/* --------------------------------------------------------------------------
+   Narrow windows
+   -------------------------------------------------------------------------- */
 
+@media (max-width: 820px) {
+  .heroes-of-lite.hol-sheet .main-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-/* ============================================================
-   v0.1.1 SHEET FIXES: readability, sizing, save-on-change UX
-   ============================================================ */
+  .heroes-of-lite.hol-sheet .left-column {
+    border-right: none;
+    border-bottom: 1px solid var(--hol-border);
+  }
 
-
-/* Foundry's app root <form> for our sheets: let our inner layout breathe */
-.application.heroes-of-lite.actor-sheet,
-form.heroes-of-lite.actor-sheet,
-.heroes-of-lite.actor-sheet {
-  min-width: 0;
-}
-.application.heroes-of-lite.actor-sheet .window-content,
-.heroes-of-lite.actor-sheet .window-content {
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* The outermost wrapper rendered by our template should fill the window */
-.heroes-of-lite.actor-sheet.character-sheet {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Make the main split fill remaining space and allow each column to scroll */
-.heroes-of-lite.actor-sheet .sheet-body {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-.heroes-of-lite.actor-sheet .normal-mode-wrapper {
-  flex: 1;
-  min-height: 0;
-}
-.heroes-of-lite.actor-sheet .main-layout {
-  height: 100%;
-  min-height: 0;
-}
-.heroes-of-lite.actor-sheet .left-column,
-.heroes-of-lite.actor-sheet .right-column {
-  min-height: 0;
-  height: 100%;
-}
-
-/* Bigger, fully visible select fields (Movement, Size, Status, Terrain) */
-.heroes-of-lite.actor-sheet select,
-.heroes-of-lite.actor-sheet .info-field select,
-.heroes-of-lite.actor-sheet .header-content select {
-  height: auto;
-  min-height: 36px;
-  line-height: 1.4;
-  padding: 6px 28px 6px 10px;
-  font-size: 0.95rem;
-  color: #1a1a1a;
-  background-color: #ffffff;
-  background-image:
-    linear-gradient(45deg, transparent 50%, #6b3a2c 50%),
-    linear-gradient(135deg, #6b3a2c 50%, transparent 50%);
-  background-position:
-    right 14px top 50%,
-    right 9px top 50%;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  border: 1px solid #c0a060;
-  border-radius: 4px;
-  box-sizing: border-box;
-  width: 100%;
-}
-.heroes-of-lite.actor-sheet select option {
-  color: #1a1a1a;
-  background: #ffffff;
-}
-
-/* All text/number inputs inside the actor sheet: readable + consistent */
-.heroes-of-lite.actor-sheet input[type="text"],
-.heroes-of-lite.actor-sheet input[type="number"],
-.heroes-of-lite.actor-sheet textarea {
-  color: #1a1a1a;
-  background: #ffffff;
-  border: 1px solid #c0a060;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  box-sizing: border-box;
-}
-.heroes-of-lite.actor-sheet input:focus,
-.heroes-of-lite.actor-sheet select:focus,
-.heroes-of-lite.actor-sheet textarea:focus {
-  outline: none;
-  border-color: #c9a227;
-  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.25);
-}
-
-/* Header inputs: keep light text on the dark gradient but keep them readable */
-.heroes-of-lite.actor-sheet .sheet-header input[type="text"],
-.heroes-of-lite.actor-sheet .sheet-header input[type="number"] {
-  background: rgba(255,255,255,0.95);
-  color: #1a1a1a;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-}
-
-/* Inventory/skill item names: clickable link-style */
-.heroes-of-lite.actor-sheet a.item-name,
-.heroes-of-lite.actor-sheet a.skill-name {
-  color: #1a3a52;
-  text-decoration: none;
-  border-bottom: 1px dashed transparent;
-  cursor: pointer;
-  font-weight: 600;
-  flex: 1;
-}
-.heroes-of-lite.actor-sheet a.item-name:hover,
-.heroes-of-lite.actor-sheet a.skill-name:hover {
-  color: #c9a227;
-  border-bottom-color: #c9a227;
-}
-
-/* Character info grid: 3 columns on wide sheets, 2 otherwise */
-.heroes-of-lite.actor-sheet .character-info-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 1rem;
-}
-@media (min-width: 950px) {
-  .heroes-of-lite.actor-sheet .character-info-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .heroes-of-lite.hol-sheet .battle-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
 }
 
-/* Combat Stats table: shrink to fit so the input columns dont overflow */
-.heroes-of-lite.actor-sheet .stat-header,
-.heroes-of-lite.actor-sheet .stat-row {
-  grid-template-columns: 60px 60px 1fr 1fr 1fr;
-  gap: 0.35rem;
-  padding: 0.35rem 0.5rem;
+/* ==========================================================================
+   Combat forecast
+   ========================================================================== */
+
+.heroes-of-lite.hol-sheet .forecast-inner,
+.heroes-of-lite.hol-sheet .action-menu-inner {
+  padding: 0.9rem;
+  gap: 0.8rem;
 }
-.heroes-of-lite.actor-sheet .stat-row input,
-.heroes-of-lite.actor-sheet .stat-row .total {
-  min-width: 0;
+
+.heroes-of-lite.hol-sheet .forecast-grid {
+  display: grid;
+  grid-template-columns: 1fr 110px 1fr;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.heroes-of-lite.hol-sheet .forecast-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.7rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius);
+  background: var(--hol-surface);
+}
+
+.heroes-of-lite.hol-sheet .forecast-side.attacker {
+  border-color: var(--hol-gold);
+  box-shadow: inset 0 3px 0 var(--hol-gold);
+}
+
+.heroes-of-lite.hol-sheet .forecast-side.inactive {
+  opacity: 0.65;
+}
+
+.heroes-of-lite.hol-sheet .forecast-portrait {
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+  border: 2px solid var(--hol-border);
+  border-radius: var(--hol-radius);
+}
+
+.heroes-of-lite.hol-sheet .forecast-name {
+  font-weight: 800;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .forecast-weapon {
+  font-size: 0.8rem;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .forecast-hp,
+.heroes-of-lite.hol-sheet .action-hp {
+  width: 100%;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .forecast-hp-bar {
+  height: 10px;
+  margin-bottom: 0.2rem;
+  border: 1px solid var(--hol-border);
+  border-radius: 5px;
+  background: var(--hol-parchment-dark);
+  overflow: hidden;
+}
+
+.heroes-of-lite.hol-sheet .forecast-hp-fill {
+  height: 100%;
+  background: var(--hol-success);
+}
+
+.heroes-of-lite.hol-sheet .forecast-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
   width: 100%;
 }
 
-/* Item / skill containers: do not let names get squashed when buttons appear */
-.heroes-of-lite.actor-sheet .item-content {
-  flex-wrap: wrap;
-  row-gap: 4px;
+.heroes-of-lite.hol-sheet .forecast-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3rem 0.2rem;
+  border-radius: var(--hol-radius-sm);
+  background: rgba(27, 45, 68, 0.07);
 }
 
-/* Item sheets (weapon, refine, consumable, skill): readable text everywhere */
-.heroes-of-lite.sheet.item input[type="text"],
-.heroes-of-lite.sheet.item input[type="number"],
-.heroes-of-lite.sheet.item textarea,
-.heroes-of-lite.sheet.item select {
-  color: #1a1a1a;
-  background: #ffffff;
-  border: 1px solid #c0a060;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-.heroes-of-lite.sheet.item select {
-  min-height: 34px;
-}
-
-/* Derived-only marker in preview-rows (no input, only a label and total) */
-.heroes-of-lite.actor-sheet .preview-row .derived-only {
-  text-align: center;
-  color: #8a7a55;
-  font-size: 0.85rem;
-  opacity: 0.7;
-}
-
-/* Inline "auto" hint shown on derived non-combat stats */
-.heroes-of-lite.actor-sheet .derived-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.heroes-of-lite.hol-sheet .forecast-stat label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-left: 0.35rem;
-  padding: 1px 6px;
-  border-radius: 8px;
-  background: #f1e6c4;
-  color: #6b4f1d;
-  border: 1px solid #d6c089;
-  vertical-align: middle;
+  color: var(--hol-ink-soft);
 }
 
-/* Read-only derived inputs (Fate / Finesse / Acrobatics): visually distinct, non-editable */
-.heroes-of-lite.actor-sheet input[readonly][disabled] {
-  background-color: #f5efe0 !important;
-  color: #6b4f1d !important;
-  border-color: #c0a060 !important;
+.heroes-of-lite.hol-sheet .forecast-stat span {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .forecast-stat span.big {
+  font-size: 1.3rem;
+  color: var(--hol-crimson);
+}
+
+.heroes-of-lite.hol-sheet .forecast-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 1.2rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-badge.wta,
+.heroes-of-lite.hol-sheet .hol-badge.adv,
+.heroes-of-lite.hol-sheet .hol-badge.effective {
+  background: var(--hol-success);
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .hol-badge.wtd,
+.heroes-of-lite.hol-sheet .hol-badge.dis {
+  background: var(--hol-danger);
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .hol-badge.muted {
+  background: var(--hol-parchment-dark);
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .forecast-skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 1rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-badge.skill,
+.hol-chat-card .hol-badge.skill {
+  background: var(--hol-navy, #1b2d44);
+  color: #fff;
+  font-weight: 600;
+}
+
+.hol-chat-card .hol-badge.skill.foe {
+  background: #554f44;
+}
+
+.heroes-of-lite.hol-sheet .forecast-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding-top: 1.2rem;
+}
+
+.heroes-of-lite.hol-sheet .forecast-vs {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--hol-crimson);
+  letter-spacing: 0.08em;
+}
+
+.heroes-of-lite.hol-sheet .forecast-distance {
+  font-size: 0.72rem;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .forecast-order {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.heroes-of-lite.hol-sheet .forecast-order li {
+  padding: 0.15rem 0.35rem;
+  border-radius: var(--hol-radius-sm);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--hol-parchment-dark);
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .forecast-order li.order-attacker {
+  background: rgba(201, 162, 39, 0.3);
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .forecast-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--hol-border);
+}
+
+.heroes-of-lite.hol-sheet .forecast-weapon-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.hol-sheet .forecast-weapon-picker label {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .forecast-footer .hol-hint {
+  margin: 0;
+}
+
+.heroes-of-lite.hol-sheet .forecast-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-button.primary {
+  border-color: var(--hol-crimson);
+  background: var(--hol-crimson);
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .hol-button.primary:hover {
+  background: var(--hol-navy);
+  border-color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .hol-button[disabled],
+.heroes-of-lite.hol-sheet .hol-action-button[disabled],
+.heroes-of-lite.hol-sheet .hol-item-button[disabled] {
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.95;
+}
+
+/* ==========================================================================
+   Action menu
+   ========================================================================== */
+
+.heroes-of-lite.hol-sheet .action-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--hol-border);
+}
+
+.heroes-of-lite.hol-sheet .action-portrait {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border: 2px solid var(--hol-gold);
+  border-radius: var(--hol-radius);
+}
+
+.heroes-of-lite.hol-sheet .action-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroes-of-lite.hol-sheet .action-name {
+  font-weight: 800;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .action-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.heroes-of-lite.hol-sheet .action-target {
+  padding: 0.4rem 0.6rem;
+  border: 1px dashed var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  font-size: 0.82rem;
+  color: var(--hol-ink);
+}
+
+.heroes-of-lite.hol-sheet .action-buttons {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius);
+  background: var(--hol-surface);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button:hover:not([disabled]) {
+  border-color: var(--hol-gold);
+  background: rgba(201, 162, 39, 0.12);
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button i {
+  grid-row: 1 / span 2;
+  font-size: 1.1rem;
+  color: var(--hol-navy);
+  text-align: center;
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button.attack i {
+  color: var(--hol-crimson);
+}
+
+.heroes-of-lite.hol-sheet .action-label {
+  font-weight: 700;
+  color: var(--hol-navy);
+}
+
+.heroes-of-lite.hol-sheet .action-sub {
+  font-size: 0.72rem;
+  color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .action-items h3 {
+  margin-top: 0.4rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-item-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.3rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-surface);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.heroes-of-lite.hol-sheet .hol-item-button:hover:not([disabled]) {
+  border-color: var(--hol-gold);
+  background: rgba(201, 162, 39, 0.12);
+}
+
+/* ==========================================================================
+   Combat chat card
+   ========================================================================== */
+
+.hol-chat-card {
+  border: 1px solid #c9a227;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f7f2e6;
+  color: #24211c;
+  font-size: 0.85rem;
+}
+
+.hol-chat-card .hol-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.45rem 0.6rem;
+  background: linear-gradient(135deg, #1b2d44 0%, #8c2f2a 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+.hol-chat-card .hol-chat-combatant {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.hol-chat-card .hol-chat-combatant img {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #e8d49a;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.hol-chat-card .hol-chat-vs {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+.hol-chat-card .hol-chat-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.hol-chat-card .hol-badge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: #c9a227;
+  color: #122030;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.hol-chat-card .hol-chat-strikes {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0 0.6rem;
+}
+
+.hol-chat-card .strike {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0.4rem;
+  margin-bottom: 0.2rem;
+  border-left: 3px solid #d6c9ad;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.hol-chat-card .strike.attacker { border-left-color: #c9a227; }
+.hol-chat-card .strike.is-miss { opacity: 0.6; }
+.hol-chat-card .strike.is-crit { background: #fdf3d4; }
+
+.hol-chat-card .strike-roll {
+  font-size: 0.75rem;
+  color: #554f44;
+}
+
+.hol-chat-card .strike-result {
+  font-weight: 800;
+  color: #8c2f2a;
+}
+
+.hol-chat-card .hol-chat-post {
+  margin: 0;
+  padding: 0 0.6rem 0.4rem 1.6rem;
+  font-size: 0.78rem;
+  color: #554f44;
+}
+
+.hol-chat-card .hol-chat-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-top: 1px solid #d6c9ad;
+  font-weight: 700;
+}
+
+.hol-chat-card .hol-chat-footer .defeated {
+  color: #b3362c;
+  text-decoration: line-through;
+}
+
+.hol-chat-card .hol-chat-ko {
+  padding: 0.35rem 0.6rem;
+  background: #b3362c;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
 }

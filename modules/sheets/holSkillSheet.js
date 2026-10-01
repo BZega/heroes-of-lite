@@ -1,52 +1,40 @@
-export default class HolSkillSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
-    static DEFAULT_OPTIONS = {
-        classes: ["heroes-of-lite", "item-sheet", "skill-sheet"],
-        window: {
-            icon: "fas fa-bolt",
-            resizable: true,
-            contentClasses: ["standard-form"]
-        },
-        position: {
-            width: 600,
-            height: 500
-        },
-        form: {
-            submitOnChange: true,
-            closeOnSubmit: false
-        }
-    };
+import HolItemSheetBase from './holItemSheetBase.js';
+import { sheetTemplate } from '../constants.js';
 
-    static PARTS = {
-        form: {
-            template: "systems/heroes-of-lite/templates/sheets/skill-sheet.html"
-        }
-    };
+/** Split the comma separated prerequisite input back into the array the data model expects. */
+const parsePrerequisites = value => {
+  if (Array.isArray(value)) return value;
+  return String(value ?? '')
+    .split(',')
+    .map(entry => entry.trim())
+    .filter(Boolean);
+};
 
-    async _prepareContext(options) {
-        const context = await super._prepareContext(options);
-        const item = this.document;
+export default class HolSkillSheet extends HolItemSheetBase {
+  static DEFAULT_OPTIONS = {
+    classes: ['skill-sheet'],
+    window: { icon: 'fas fa-bolt' },
+    position: { width: 720, height: 620 }
+  };
 
-        context.name = item.name;
-        context.img = item.img;
-        context.type = item.type;
+  static PARTS = {
+    form: { template: sheetTemplate('skill-sheet.html') }
+  };
 
-        if (!context.system) context.system = item.system;
-        if (!context.system.attributes) context.system.attributes = {};
-        if (!context.system.details) context.system.details = {};
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.system.attributes ??= {};
+    context.system.details ??= {};
+    context.system.details.prerequisite = parsePrerequisites(context.system.details.prerequisite);
+    return context;
+  }
 
-        context.isFromCompendium = !!item.pack;
-
-        return context;
+  _prepareSubmitData(event, form, formData, updateData) {
+    const submitData = super._prepareSubmitData(event, form, formData, updateData);
+    const prerequisite = foundry.utils.getProperty(submitData, 'system.details.prerequisite');
+    if (prerequisite !== undefined) {
+      foundry.utils.setProperty(submitData, 'system.details.prerequisite', parsePrerequisites(prerequisite));
     }
-
-    _onRender(context, options) {
-        super._onRender(context, options);
-
-        if (this.document.pack) {
-            const html = this.element;
-            const inputs = html.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => { input.disabled = true; });
-            html.classList.add('compendium-item-readonly');
-        }
-    }
+    return submitData;
+  }
 }

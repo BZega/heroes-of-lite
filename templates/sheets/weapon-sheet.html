@@ -1,88 +1,99 @@
-<div class="heroes-of-lite sheet item" autocomplete="off">
+<div class="hol-sheet-inner weapon-sheet" autocomplete="off">
     <header class="sheet-header">
-        <div class="header-content">
-            <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
-            <div class="header-info" style="width: 45%;">
-                <h1 ><input type="text" name="name" value="{{name}}" placeholder="Weapon Name"/></h1>
+        <img class="sheet-portrait" src="{{img}}" alt="{{name}}" />
+        <div class="header-info">
+            <h1 class="sheet-title"><input type="text" name="name" value="{{name}}" placeholder="Weapon Name" /></h1>
+            <div class="header-details">
+                <div class="inline-field">
+                    <label>Group</label>
+                    <select name="system.attributes.weaponGroup">
+                        <option value="">--</option>
+                        <option value="sword" {{#if (eq system.attributes.weaponGroup "sword")}}selected{{/if}}>Sword</option>
+                        <option value="lance" {{#if (eq system.attributes.weaponGroup "lance")}}selected{{/if}}>Lance</option>
+                        <option value="axe" {{#if (eq system.attributes.weaponGroup "axe")}}selected{{/if}}>Axe</option>
+                        <option value="bow" {{#if (eq system.attributes.weaponGroup "bow")}}selected{{/if}}>Bow</option>
+                        <option value="dagger" {{#if (eq system.attributes.weaponGroup "dagger")}}selected{{/if}}>Dagger</option>
+                        <option value="anima" {{#if (eq system.attributes.weaponGroup "anima")}}selected{{/if}}>Anima</option>
+                        <option value="light" {{#if (eq system.attributes.weaponGroup "light")}}selected{{/if}}>Light</option>
+                        <option value="dark" {{#if (eq system.attributes.weaponGroup "dark")}}selected{{/if}}>Dark</option>
+                        <option value="staff" {{#if (eq system.attributes.weaponGroup "staff")}}selected{{/if}}>Staff</option>
+                        <option value="strike" {{#if (eq system.attributes.weaponGroup "strike")}}selected{{/if}}>Strike</option>
+                        <option value="talons" {{#if (eq system.attributes.weaponGroup "talons")}}selected{{/if}}>Talons</option>
+                        <option value="breath" {{#if (eq system.attributes.weaponGroup "breath")}}selected{{/if}}>Breath</option>
+                        <option value="shiftingStone" {{#if (eq system.attributes.weaponGroup "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
+                        <option value="curse" {{#if (eq system.attributes.weaponGroup "curse")}}selected{{/if}}>Curse</option>
+                        <option value="siege" {{#if (eq system.attributes.weaponGroup "siege")}}selected{{/if}}>Siege</option>
+                    </select>
+                </div>
+                <div class="inline-field">
+                    <label>Damage</label>
+                    <select name="system.attributes.damageType">
+                        <option value="">--</option>
+                        <option value="physical" {{#if (eq system.attributes.damageType "physical")}}selected{{/if}}>Physical</option>
+                        <option value="magical" {{#if (eq system.attributes.damageType "magical")}}selected{{/if}}>Magical</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
+
+    <nav class="sheet-tabs tabs">
+        <a class="item" data-tab="details">Details</a>
+        <a class="item" data-tab="refines">Refines</a>
+    </nav>
+
     <section class="sheet-body">
-        <div class="data-row">
-            <div class="form-group">
-                <label for="weaponGroup">Weapon Group</label>
-                <select name="system.attributes.weaponGroup">
-                    <option value="">-- Select --</option>
-                    <option value="sword" {{#if (eq system.attributes.weaponGroup "sword")}}selected{{/if}}>Sword</option>
-                    <option value="lance" {{#if (eq system.attributes.weaponGroup "lance")}}selected{{/if}}>Lance</option>
-                    <option value="axe" {{#if (eq system.attributes.weaponGroup "axe")}}selected{{/if}}>Axe</option>
-                    <option value="bow" {{#if (eq system.attributes.weaponGroup "bow")}}selected{{/if}}>Bow</option>
-                    <option value="anima" {{#if (eq system.attributes.weaponGroup "anima")}}selected{{/if}}>Anima</option>
-                    <option value="light" {{#if (eq system.attributes.weaponGroup "light")}}selected{{/if}}>Light</option>
-                    <option value="staff" {{#if (eq system.attributes.weaponGroup "staff")}}selected{{/if}}>Staff</option>
-                    <option value="dagger" {{#if (eq system.attributes.weaponGroup "dagger")}}selected{{/if}}>Dagger</option>
-                    <option value="dark" {{#if (eq system.attributes.weaponGroup "dark")}}selected{{/if}}>Dark</option>
-                    <option value="strike" {{#if (eq system.attributes.weaponGroup "strike")}}selected{{/if}}>Strike</option>
-                    <option value="talons" {{#if (eq system.attributes.weaponGroup "talons")}}selected{{/if}}>Talons</option>
-                    <option value="breath" {{#if (eq system.attributes.weaponGroup "breath")}}selected{{/if}}>Breath</option>
-                    <option value="shiftingStone" {{#if (eq system.attributes.weaponGroup "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
-                    <option value="curse" {{#if (eq system.attributes.weaponGroup "curse")}}selected{{/if}}>Curse</option>
-                    <option value="siege" {{#if (eq system.attributes.weaponGroup "siege")}}selected{{/if}}>Siege</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="damageType">Damage Type</label>
-                <select name="system.attributes.damageType">
-                    <option value="">-- Select --</option>
-                    <option value="physical" {{#if (eq system.attributes.damageType "physical")}}selected{{/if}}>Physical</option>
-                    <option value="magical" {{#if (eq system.attributes.damageType "magical")}}selected{{/if}}>Magical</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="might">Might</label>
-                <input type="number" name="system.details.might" value="{{system.details.might}}" />
-            </div>
-            <div class="form-group">
-                <label for="costG">Cost (G)</label>
-                <input type="number" name="system.details.costG" value="{{system.details.costG}}" />
-            </div>
-            <div class="form-group">
-                <label>Range (Min-Max)</label>
-                <div class="range-inputs">
-                    <input type="number" name="system.details.range.min" value="{{system.details.range.min}}" placeholder="Min" />
-                    <span>-</span>
-                    <input type="number" name="system.details.range.max" value="{{system.details.range.max}}" placeholder="Max" />
+        <div class="tab" data-tab="details">
+            <h3>Statistics</h3>
+            <div class="field-grid">
+                <div class="form-group">
+                    <label>Might</label>
+                    <input type="number" name="system.details.might" value="{{system.details.might}}" />
+                </div>
+                <div class="form-group">
+                    <label>Cost (G)</label>
+                    <input type="number" name="system.details.costG" value="{{system.details.costG}}" />
+                </div>
+                <div class="form-group">
+                    <label>Min Range</label>
+                    <input type="number" name="system.details.range.min" value="{{system.details.range.min}}" placeholder="1" />
+                </div>
+                <div class="form-group">
+                    <label>Max Range</label>
+                    <input type="number" name="system.details.range.max" value="{{system.details.range.max}}" placeholder="1" />
                 </div>
             </div>
-        </div>
 
-        <h3>Innate Attributes</h3>
-        <div class="innate-attributes-container">
-            {{#if innateRefines}}
+            <h3>Innate Attributes</h3>
+            <div class="tag-list">
                 {{#each innateRefines}}
-                    <span class="innate-attribute-tag" data-refine-id="{{this.id}}">{{this.name}}</span>
+                    <span class="hol-tag innate-attribute-tag" data-refine-id="{{this.id}}">{{this.name}}</span>
+                {{else}}
+                    <span class="empty-text">None</span>
                 {{/each}}
-            {{else}}
-                <span class="empty-innate">None</span>
-            {{/if}}
+            </div>
         </div>
 
-        <h3>Refines</h3>
-        <div class="refines-container">
-            {{#each system.details.refines}}
-            <div class="refine-slot" data-slot="{{@index}}" data-dropzone="refine">
-                <div class="refine-item">
-                    {{#if this.name}}
-                        <span class="refine-name">{{this.name}}</span>
-                        <a class="remove-refine" data-slot="{{@index}}">×</a>
-                    {{else}}
-                        <span class="empty-slot">Drop Refine Here</span>
-                    {{/if}}
+        <div class="tab" data-tab="refines">
+            <h3>Applied Refines</h3>
+            <div class="slot-grid two-up">
+                {{#each system.details.refines}}
+                <div class="hol-slot refine-slot" data-slot="{{@index}}" data-dropzone="refine">
+                    <div class="slot-label">Slot {{add @index 1}}</div>
+                    <div class="slot-body">
+                        {{#if this.name}}
+                            <span class="refine-name">{{this.name}}</span>
+                            <button type="button" class="hol-icon-button remove-refine" data-slot="{{@index}}" title="Remove refine">&times;</button>
+                        {{else}}
+                            <span class="empty-slot">Drop Refine Here</span>
+                        {{/if}}
+                    </div>
+                    <input type="hidden" name="system.details.refines.{{@index}}.id" value="{{this.id}}" />
+                    <input type="hidden" name="system.details.refines.{{@index}}.name" value="{{this.name}}" />
                 </div>
-                <input type="hidden" name="system.details.refines.{{@index}}.id" value="{{this.id}}" />
-                <input type="hidden" name="system.details.refines.{{@index}}.name" value="{{this.name}}" />
+                {{/each}}
             </div>
-            {{/each}}
+            <p class="hol-hint">Slot 1 accepts basic refines only. A weapon may carry at most one advanced refine.</p>
         </div>
     </section>
 </div>

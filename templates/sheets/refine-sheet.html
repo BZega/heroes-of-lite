@@ -1,116 +1,75 @@
-<div class="heroes-of-lite sheet item refine-sheet" autocomplete="off">
+<div class="hol-sheet-inner refine-sheet" autocomplete="off">
     <header class="sheet-header">
-        <div class="header-content">
-            <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
-            <div class="header-info">
-                <h1><input type="text" name="name" value="{{name}}" placeholder="Refine Name"/></h1>
-                <div class="header-details">
-                    <div class="form-group inline">
-                        <label for="category">Category:</label>
-                        <select name="system.category">
-                            <option value="basic" {{#if (eq system.category "basic")}}selected{{/if}}>Basic</option>
-                            <option value="advanced" {{#if (eq system.category "advanced")}}selected{{/if}}>Advanced</option>
-                            <option value="gmOnly" {{#if (eq system.category "gmOnly")}}selected{{/if}}>GM Only</option>
-                        </select>
-                    </div>
-                    <div class="form-group inline">
-                        <label for="costG">Cost (G):</label>
-                        <input type="number" name="system.costG" value="{{system.costG}}" />
-                    </div>
+        <img class="sheet-portrait" src="{{img}}" alt="{{name}}" />
+        <div class="header-info">
+            <h1 class="sheet-title"><input type="text" name="name" value="{{name}}" placeholder="Refine Name" /></h1>
+            <div class="header-details">
+                <div class="inline-field">
+                    <label>Category</label>
+                    <select name="system.category">
+                        <option value="basic" {{#if (eq system.category "basic")}}selected{{/if}}>Basic</option>
+                        <option value="advanced" {{#if (eq system.category "advanced")}}selected{{/if}}>Advanced</option>
+                        <option value="gmOnly" {{#if (eq system.category "gmOnly")}}selected{{/if}}>GM Only</option>
+                    </select>
+                </div>
+                <div class="inline-field">
+                    <label>Cost (G)</label>
+                    <input type="number" name="system.costG" value="{{system.costG}}" />
                 </div>
             </div>
         </div>
     </header>
-    
-    <nav class="sheet-tabs tabs" data-group="primary">
+
+    <nav class="sheet-tabs tabs">
         <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="weapon-groups">Weapon Groups</a>
         <a class="item" data-tab="stat-bonuses">Stat Bonuses</a>
     </nav>
 
     <section class="sheet-body">
-        <div class="tab" data-group="primary" data-tab="description">
-            <div class="form-group">
+        <div class="tab" data-tab="description">
+            <div class="form-group stretch">
                 <label>Description</label>
-                <textarea name="system.description" rows="10">{{system.description}}</textarea>
+                <textarea name="system.description" rows="12">{{system.description}}</textarea>
             </div>
         </div>
 
-        <div class="tab" data-group="primary" data-tab="weapon-groups">
+        <div class="tab" data-tab="weapon-groups">
             <h3>Applies to Weapon Groups</h3>
-            <div class="weapon-groups">
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="sword" {{#if (includes system.appliesToWeaponGroups "sword")}}checked{{/if}}> Sword</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="lance" {{#if (includes system.appliesToWeaponGroups "lance")}}checked{{/if}}> Lance</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="axe" {{#if (includes system.appliesToWeaponGroups "axe")}}checked{{/if}}> Axe</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="bow" {{#if (includes system.appliesToWeaponGroups "bow")}}checked{{/if}}> Bow</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dagger" {{#if (includes system.appliesToWeaponGroups "dagger")}}checked{{/if}}> Dagger</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="anima" {{#if (includes system.appliesToWeaponGroups "anima")}}checked{{/if}}> Anima</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="light" {{#if (includes system.appliesToWeaponGroups "light")}}checked{{/if}}> Light</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="dark" {{#if (includes system.appliesToWeaponGroups "dark")}}checked{{/if}}> Dark</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="staff" {{#if (includes system.appliesToWeaponGroups "staff")}}checked{{/if}}> Staff</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="strike" {{#if (includes system.appliesToWeaponGroups "strike")}}checked{{/if}}> Strike</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="talons" {{#if (includes system.appliesToWeaponGroups "talons")}}checked{{/if}}> Talons</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="breath" {{#if (includes system.appliesToWeaponGroups "breath")}}checked{{/if}}> Breath</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="shiftingStone" {{#if (includes system.appliesToWeaponGroups "shiftingStone")}}checked{{/if}}> Shifting Stone</label>
-                <label><input type="checkbox" name="system.appliesToWeaponGroups" value="curse" {{#if (includes system.appliesToWeaponGroups "curse")}}checked{{/if}}> Curse</label>
+            <div class="checkbox-grid">
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="sword" {{#if (includes system.appliesToWeaponGroups "sword")}}checked{{/if}} /> Sword</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="lance" {{#if (includes system.appliesToWeaponGroups "lance")}}checked{{/if}} /> Lance</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="axe" {{#if (includes system.appliesToWeaponGroups "axe")}}checked{{/if}} /> Axe</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="bow" {{#if (includes system.appliesToWeaponGroups "bow")}}checked{{/if}} /> Bow</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="dagger" {{#if (includes system.appliesToWeaponGroups "dagger")}}checked{{/if}} /> Dagger</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="anima" {{#if (includes system.appliesToWeaponGroups "anima")}}checked{{/if}} /> Anima</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="light" {{#if (includes system.appliesToWeaponGroups "light")}}checked{{/if}} /> Light</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="dark" {{#if (includes system.appliesToWeaponGroups "dark")}}checked{{/if}} /> Dark</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="staff" {{#if (includes system.appliesToWeaponGroups "staff")}}checked{{/if}} /> Staff</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="strike" {{#if (includes system.appliesToWeaponGroups "strike")}}checked{{/if}} /> Strike</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="talons" {{#if (includes system.appliesToWeaponGroups "talons")}}checked{{/if}} /> Talons</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="breath" {{#if (includes system.appliesToWeaponGroups "breath")}}checked{{/if}} /> Breath</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="shiftingStone" {{#if (includes system.appliesToWeaponGroups "shiftingStone")}}checked{{/if}} /> Shifting Stone</label>
+                <label class="hol-checkbox"><input type="checkbox" name="system.appliesToWeaponGroups" value="curse" {{#if (includes system.appliesToWeaponGroups "curse")}}checked{{/if}} /> Curse</label>
             </div>
         </div>
 
-        <div class="tab" data-group="primary" data-tab="stat-bonuses">
+        <div class="tab" data-tab="stat-bonuses">
             <h3>Stat Bonuses</h3>
-            <div class="stat-bonuses">
-                <div class="stat-row">
-                    <label>Might</label>
-                    <input type="number" name="system.statBonuses.might" value="{{system.statBonuses.might}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Min Range</label>
-                    <input type="number" name="system.statBonuses.minRange" value="{{system.statBonuses.minRange}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Max Range</label>
-                    <input type="number" name="system.statBonuses.maxRange" value="{{system.statBonuses.maxRange}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Hit</label>
-                    <input type="number" name="system.statBonuses.hit" value="{{system.statBonuses.hit}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Crit</label>
-                    <input type="number" name="system.statBonuses.crit" value="{{system.statBonuses.crit}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Crit Avoid</label>
-                    <input type="number" name="system.statBonuses.critAvoid" value="{{system.statBonuses.critAvoid}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Avoid</label>
-                    <input type="number" name="system.statBonuses.avoid" value="{{system.statBonuses.avoid}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>ATK</label>
-                    <input type="number" name="system.statBonuses.atk" value="{{system.statBonuses.atk}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>DEX</label>
-                    <input type="number" name="system.statBonuses.dex" value="{{system.statBonuses.dex}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>SPD</label>
-                    <input type="number" name="system.statBonuses.spd" value="{{system.statBonuses.spd}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>DEF</label>
-                    <input type="number" name="system.statBonuses.def" value="{{system.statBonuses.def}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>RES</label>
-                    <input type="number" name="system.statBonuses.res" value="{{system.statBonuses.res}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Luck</label>
-                    <input type="number" name="system.statBonuses.luck" value="{{system.statBonuses.luck}}" placeholder="0" />
-                </div>
+            <div class="stat-bonus-grid">
+                <div class="stat-row"><label>Might</label><input type="number" name="system.statBonuses.might" value="{{system.statBonuses.might}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Min Range</label><input type="number" name="system.statBonuses.minRange" value="{{system.statBonuses.minRange}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Max Range</label><input type="number" name="system.statBonuses.maxRange" value="{{system.statBonuses.maxRange}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Hit</label><input type="number" name="system.statBonuses.hit" value="{{system.statBonuses.hit}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Crit</label><input type="number" name="system.statBonuses.crit" value="{{system.statBonuses.crit}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Crit Avoid</label><input type="number" name="system.statBonuses.critAvoid" value="{{system.statBonuses.critAvoid}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Avoid</label><input type="number" name="system.statBonuses.avoid" value="{{system.statBonuses.avoid}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Atk</label><input type="number" name="system.statBonuses.atk" value="{{system.statBonuses.atk}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Dex</label><input type="number" name="system.statBonuses.dex" value="{{system.statBonuses.dex}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Spd</label><input type="number" name="system.statBonuses.spd" value="{{system.statBonuses.spd}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Def</label><input type="number" name="system.statBonuses.def" value="{{system.statBonuses.def}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Res</label><input type="number" name="system.statBonuses.res" value="{{system.statBonuses.res}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Luck</label><input type="number" name="system.statBonuses.luck" value="{{system.statBonuses.luck}}" placeholder="0" /></div>
             </div>
         </div>
     </section>

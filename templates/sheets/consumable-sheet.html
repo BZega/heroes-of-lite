@@ -1,90 +1,57 @@
-<div class="heroes-of-lite sheet item" autocomplete="off">
+<div class="hol-sheet-inner consumable-sheet" autocomplete="off">
     <header class="sheet-header">
-        <div class="header-content">
-            <img class="item-image" src="{{img}}" alt="{{name}}" style="width: 80px; height: 80px;">
-            <div class="header-info" style="flex: 1;">
-                <h1><input type="text" name="name" value="{{name}}" placeholder="Consumable Name"/></h1>
-                <div class="header-details">
-                    <div class="inline-field">
-                        <label>Range</label>
-                        <select name="system.details.range">
-                            <option value="">--</option>
-                            <option value="Self" {{#if (eq system.details.range "Self")}}selected{{/if}}>Self</option>
-                            <option value="1" {{#if (eq system.details.range "1")}}selected{{/if}}>1</option>
-                            <option value="N/A" {{#if (eq system.details.range "N/A")}}selected{{/if}}>N/A</option>
-                        </select>
-                    </div>
-                    <div class="inline-field">
-                        <label>Uses</label>
-                        <input type="number" name="system.details.uses" value="{{system.details.uses}}" min="1" style="width: 60px;" />
-                    </div>
-                    <div class="inline-field">
-                        <label>Cost</label>
-                        <input type="number" name="system.details.costG" value="{{system.details.costG}}" min="0" style="width: 80px;" />
-                    </div>
+        <img class="sheet-portrait" src="{{img}}" alt="{{name}}" />
+        <div class="header-info">
+            <h1 class="sheet-title"><input type="text" name="name" value="{{name}}" placeholder="Consumable Name" /></h1>
+            <div class="header-details">
+                <div class="inline-field">
+                    <label>Range</label>
+                    <select name="system.details.range">
+                        <option value="">--</option>
+                        <option value="Self" {{#if (eq system.details.range "Self")}}selected{{/if}}>Self</option>
+                        <option value="1" {{#if (eq system.details.range "1")}}selected{{/if}}>1</option>
+                        <option value="N/A" {{#if (eq system.details.range "N/A")}}selected{{/if}}>N/A</option>
+                    </select>
+                </div>
+                <div class="inline-field">
+                    <label>Uses</label>
+                    <input type="number" name="system.details.uses" value="{{system.details.uses}}" min="1" />
+                </div>
+                <div class="inline-field">
+                    <label>Cost (G)</label>
+                    <input type="number" name="system.details.costG" value="{{system.details.costG}}" min="0" />
                 </div>
             </div>
         </div>
     </header>
-    <section class="sheet-body">
-        <nav class="sheet-tabs tabs">
-            <a class="item" data-tab="effect">Effect</a>
-            <a class="item" data-tab="stat-bonuses">Temporary Stat Bonuses</a>
-        </nav>
 
+    <nav class="sheet-tabs tabs">
+        <a class="item" data-tab="effect">Effect</a>
+        <a class="item" data-tab="stat-bonuses">Temporary Bonuses</a>
+    </nav>
+
+    <section class="sheet-body">
         <div class="tab" data-tab="effect">
-            <div class="form-group">
-                <label for="effect">Effect Description</label>
-                <textarea name="system.details.effect" rows="6">{{system.details.effect}}</textarea>
+            <div class="form-group stretch">
+                <label>Effect Description</label>
+                <textarea name="system.details.effect" rows="12">{{system.details.effect}}</textarea>
             </div>
         </div>
 
         <div class="tab" data-tab="stat-bonuses">
-            <div class="stat-bonuses-grid">
-                <div class="stat-row">
-                    <label>HP</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.hp" value="{{system.details.temporaryStatBonuses.hp}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Atk</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.atk" value="{{system.details.temporaryStatBonuses.atk}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Spd</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.spd" value="{{system.details.temporaryStatBonuses.spd}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Dex</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.dex" value="{{system.details.temporaryStatBonuses.dex}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Def</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.def" value="{{system.details.temporaryStatBonuses.def}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Res</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.res" value="{{system.details.temporaryStatBonuses.res}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Luck</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.luck" value="{{system.details.temporaryStatBonuses.luck}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Hit</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.hit" value="{{system.details.temporaryStatBonuses.hit}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Avoid</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.avoid" value="{{system.details.temporaryStatBonuses.avoid}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Crit</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.crit" value="{{system.details.temporaryStatBonuses.crit}}" placeholder="0" />
-                </div>
-                <div class="stat-row">
-                    <label>Mov</label>
-                    <input type="number" name="system.details.temporaryStatBonuses.mov" value="{{system.details.temporaryStatBonuses.mov}}" placeholder="0" />
-                </div>
+            <h3>Temporary Stat Bonuses</h3>
+            <div class="stat-bonus-grid">
+                <div class="stat-row"><label>HP</label><input type="number" name="system.details.temporaryStatBonuses.hp" value="{{system.details.temporaryStatBonuses.hp}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Atk</label><input type="number" name="system.details.temporaryStatBonuses.atk" value="{{system.details.temporaryStatBonuses.atk}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Spd</label><input type="number" name="system.details.temporaryStatBonuses.spd" value="{{system.details.temporaryStatBonuses.spd}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Dex</label><input type="number" name="system.details.temporaryStatBonuses.dex" value="{{system.details.temporaryStatBonuses.dex}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Def</label><input type="number" name="system.details.temporaryStatBonuses.def" value="{{system.details.temporaryStatBonuses.def}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Res</label><input type="number" name="system.details.temporaryStatBonuses.res" value="{{system.details.temporaryStatBonuses.res}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Luck</label><input type="number" name="system.details.temporaryStatBonuses.luck" value="{{system.details.temporaryStatBonuses.luck}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Hit</label><input type="number" name="system.details.temporaryStatBonuses.hit" value="{{system.details.temporaryStatBonuses.hit}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Avoid</label><input type="number" name="system.details.temporaryStatBonuses.avoid" value="{{system.details.temporaryStatBonuses.avoid}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Crit</label><input type="number" name="system.details.temporaryStatBonuses.crit" value="{{system.details.temporaryStatBonuses.crit}}" placeholder="0" /></div>
+                <div class="stat-row"><label>Mov</label><input type="number" name="system.details.temporaryStatBonuses.mov" value="{{system.details.temporaryStatBonuses.mov}}" placeholder="0" /></div>
             </div>
         </div>
     </section>

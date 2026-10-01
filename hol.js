@@ -1,496 +1,386 @@
+/**
+ * Heroes of Lite - Main System File
+ * Initializes the Heroes of Lite system for Foundry VTT.
+ */
+
 import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
 import HolRefineSheet from './modules/sheets/holRefineSheet.js';
 import HolConsumableSheet from './modules/sheets/holConsumableSheet.js';
 import HolSkillSheet from './modules/sheets/holSkillSheet.js';
 import HolActorSheet from './modules/sheets/holActorSheet.js';
-/**
- * Heroes of Lite - Main System File
- * Initializes the Heroes of Lite system for Foundry VTT
- */
+import { SYSTEM_ID } from './modules/constants.js';
+import { buildRefineIndex } from './modules/refineIndex.js';
+import { registerTerrainAutomation } from './modules/automation/terrain.js';
+import {
+  registerApi,
+  registerChatCommands,
+  registerKeybindings,
+  registerSceneControls,
+  registerTokenHud,
+  registerTurnAutomation
+} from './modules/automation/register.js';
 
-// Import the system configuration
-// import { heroesOfLite } from './modules/config.js';
+/** Bump when seed data changes so existing worlds re-run the import. */
+const SEED_VERSION = 1;
 
-// Hooks that run once the game is initialized
-Hooks.once('init', async function() {
+/** v13 moved the document collections under the `foundry.documents.collections` namespace. */
+const ActorsCollection = foundry.documents?.collections?.Actors ?? globalThis.Actors;
+const ItemsCollection = foundry.documents?.collections?.Items ?? globalThis.Items;
+
+Hooks.once('init', function () {
   console.log('Heroes of Lite | Initializing system...');
-  
-  // Register Handlebars helpers
-  Handlebars.registerHelper('includes', function(array, value) {
-    return Array.isArray(array) && array.includes(value);
-  });
-  
-  Handlebars.registerHelper('join', function(array, separator) {
-    return Array.isArray(array) ? array.join(separator) : '';
-  });
 
-  Handlebars.registerHelper('eq', function(a, b) {
-    return a === b;
-  });
-  
-  // Register actor sheets by type
-  Actors.registerSheet('heroes-of-lite', HolActorSheet, {
+  Handlebars.registerHelper('includes', (array, value) => Array.isArray(array) && array.includes(value));
+  Handlebars.registerHelper('join', (array, separator) => (Array.isArray(array) ? array.join(separator) : ''));
+  Handlebars.registerHelper('eq', (a, b) => a === b);
+  Handlebars.registerHelper('add', (a, b) => Number(a ?? 0) + Number(b ?? 0));
+
+  ActorsCollection.registerSheet(SYSTEM_ID, HolActorSheet, {
     types: ['unit'],
     makeDefault: true,
-    label: "HoL Character Sheet"
-  });
-  
-  // Register item sheets by type
-  Items.registerSheet('heroes-of-lite', HolWeaponSheet, {
-    types: ['weapon'],
-    makeDefault: true,
-    label: "HoL Weapon Sheet"
-  });
-  
-  Items.registerSheet('heroes-of-lite', HolRefineSheet, {
-    types: ['refine'],
-    makeDefault: true,
-    label: "HoL Refine Sheet"
-  });
-  
-  Items.registerSheet('heroes-of-lite', HolConsumableSheet, {
-    types: ['consumable'],
-    makeDefault: true,
-    label: "HoL Consumable Sheet"
+    label: 'HoL Character Sheet'
   });
 
-  Items.registerSheet('heroes-of-lite', HolSkillSheet, {
-    types: ['skill'],
-    makeDefault: true,
-    label: "HoL Skill Sheet"
+  const itemSheets = [
+    [HolWeaponSheet, 'weapon', 'HoL Weapon Sheet'],
+    [HolRefineSheet, 'refine', 'HoL Refine Sheet'],
+    [HolConsumableSheet, 'consumable', 'HoL Consumable Sheet'],
+    [HolSkillSheet, 'skill', 'HoL Skill Sheet']
+  ];
+  for (const [sheetClass, type, label] of itemSheets) {
+    ItemsCollection.registerSheet(SYSTEM_ID, sheetClass, { types: [type], makeDefault: true, label });
+  }
+
+  game.settings.register(SYSTEM_ID, 'seedVersion', {
+    name: 'Compendium Seed Version',
+    scope: 'world',
+    config: false,
+    type: Number,
+    default: 0
   });
-  
-  // Register system settings if needed
-  // game.settings.register('heroes-of-lite', 'setting-name', { ... });
-  
-  // Register document sheet classes
-  // Actors.unregisterSheet('core', ActorSheet);
-  // Items.unregisterSheet('core', ItemSheet);
+
+  registerKeybindings();
+  registerTokenHud();
+  registerChatCommands();
+  registerSceneControls();
+  registerTerrainAutomation();
+  registerTurnAutomation();
 });
 
-// Hook that runs when the game is fully ready
-Hooks.once('ready', async function() {
+Hooks.once('ready', async function () {
   console.log('Heroes of Lite | System ready!');
-  
-  // Seed weapons, refines, consumables, skills, and actor templates into compendiums on first setup
-  if (game.user.isGM) {
+  registerApi();
+
+  if (!game.user.isGM) {
+    await buildRefineIndex();
+    return;
+  }
+  if (game.settings.get(SYSTEM_ID, 'seedVersion') >= SEED_VERSION) {
+    await buildRefineIndex();
+    return;
+  }
+
+  try {
     await seedWeapons();
     await seedRefines();
     await seedConsumables();
     await seedSkills();
     await seedActorTemplates();
+    await game.settings.set(SYSTEM_ID, 'seedVersion', SEED_VERSION);
+  } catch (error) {
+    console.error('HoL | Compendium seeding aborted:', error);
+    ui.notifications?.error('Heroes of Lite: compendium seeding failed. See the console for details.');
+  } finally {
+    // Combat needs refine tags resolved synchronously, so index them after seeding.
+    await buildRefineIndex();
   }
 });
 
+/* -------------------------------------------- */
+/*  Seeding helpers                              */
+/* -------------------------------------------- */
+
 /**
- * Seed weapons from the seed data file into the hol-weapons compendium
+ * Fetch a JSON seed file bundled with the system.
+ * @param {string} fileName File name inside `data/seed`.
+ * @returns {Promise<Array>} Parsed array of seed records.
  */
-async function seedWeapons() {
-  const pack = game.packs.get('heroes-of-lite.hol-weapons');
-  if (!pack) {
-    console.warn('HoL | hol-weapons compendium pack not found');
-    return;
-  }
+async function loadSeedFile(fileName) {
+  const path = `systems/${SYSTEM_ID}/data/seed/${fileName}`;
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`Unable to read seed file ${path} (HTTP ${response.status})`);
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error(`Seed file ${path} did not contain an array`);
+  return data;
+}
 
-  // Unlock the pack so we can add items
-  const wasLocked = pack.locked;
-  if (wasLocked) {
-    await pack.configure({ locked: false });
-    console.log('HoL | Unlocked hol-weapons pack');
-  }
-
-  // Fetch weapons from seed data
+/**
+ * Run a callback with the given packs temporarily unlocked, always restoring lock state.
+ * @param {CompendiumCollection[]} packs
+ * @param {() => Promise<void>} callback
+ */
+async function withUnlockedPacks(packs, callback) {
+  const previouslyLocked = packs.map(pack => pack.locked);
   try {
-    const response = await fetch('systems/heroes-of-lite/data/seed/weapons.json');
-    const weapons = await response.json();
-    
-    console.log(`HoL | Found ${weapons.length} weapons to seed`);
-    
-    // Get existing items in pack
-    const existingItems = await pack.getDocuments();
-    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
-    
-    for (const weaponData of weapons) {
-      if (existingIds.has(weaponData.id)) {
-        continue;
-      }
-      
-      // Create proper Foundry item document
-      const itemData = {
-        name: weaponData.name,
+    for (const [index, pack] of packs.entries()) {
+      if (previouslyLocked[index]) await pack.configure({ locked: false });
+    }
+    await callback();
+  } finally {
+    for (const [index, pack] of packs.entries()) {
+      if (previouslyLocked[index]) await pack.configure({ locked: true });
+    }
+  }
+}
+
+/**
+ * Collect the `sourceId` flags already present in a pack.
+ * @param {CompendiumCollection} pack
+ * @returns {Promise<Set<string>>}
+ */
+async function getSeededIds(pack) {
+  const documents = await pack.getDocuments();
+  return new Set(documents.map(doc => doc.flags?.[SYSTEM_ID]?.sourceId).filter(Boolean));
+}
+
+/**
+ * Resolve a pack and log a warning if it is missing.
+ * @param {string} name Pack name without the system prefix.
+ * @returns {CompendiumCollection|null}
+ */
+function getPack(name) {
+  const pack = game.packs.get(`${SYSTEM_ID}.${name}`);
+  if (!pack) console.warn(`HoL | ${name} compendium pack not found`);
+  return pack ?? null;
+}
+
+/* -------------------------------------------- */
+/*  Seeders                                      */
+/* -------------------------------------------- */
+
+async function seedWeapons() {
+  const pack = getPack('hol-weapons');
+  if (!pack) return;
+
+  await withUnlockedPacks([pack], async () => {
+    const weapons = await loadSeedFile('weapons.json');
+    const existingIds = await getSeededIds(pack);
+    const itemData = weapons
+      .filter(weapon => !existingIds.has(weapon.id))
+      .map(weapon => ({
+        name: weapon.name,
         type: 'weapon',
         system: {
           attributes: {
-            weaponGroup: weaponData.weaponGroup,
-            damageType: weaponData.damageType
+            weaponGroup: weapon.weaponGroup,
+            damageType: weapon.damageType
           },
           details: {
-            range: weaponData.range,
-            might: weaponData.might,
-            costG: weaponData.costG,
-            innateAttributes: weaponData.innateAttributes || [],
-            attributes: weaponData.attributes || [],
-            attributeRules: weaponData.attributeRules,
-            refines: [{id: '', name: ''}, {id: '', name: ''}]
+            range: weapon.range,
+            might: weapon.might,
+            costG: weapon.costG,
+            innateAttributes: weapon.innateAttributes ?? [],
+            attributes: weapon.attributes ?? [],
+            attributeRules: weapon.attributeRules,
+            refines: [{ id: '', name: '' }, { id: '', name: '' }]
           }
         },
-        flags: {
-          'heroes-of-lite': {
-            sourceId: weaponData.id
-          }
-        }
-      };
-      
-      // Create the document in the pack
-      await Item.create(itemData, {pack: pack.collection});
-    }
-    
-    console.log('HoL | Weapons seeding complete');
-  } catch (error) {
-    console.error('HoL | Error seeding weapons:', error);
-  } finally {
-    // Re-lock the pack if it was locked before
-    if (wasLocked) {
-      await pack.configure({ locked: true });
-      console.log('HoL | Re-locked hol-weapons pack');
-    }
-  }
+        flags: { [SYSTEM_ID]: { sourceId: weapon.id } }
+      }));
+
+    if (!itemData.length) return;
+    await Item.createDocuments(itemData, { pack: pack.collection });
+    console.log(`HoL | Seeded ${itemData.length} weapons`);
+  });
 }
 
-/**
- * Seed refines from the seed data file into separate player and GM compendiums
- */
 async function seedRefines() {
-  const playerPack = game.packs.get('heroes-of-lite.hol-player-refines');
-  const gmPack = game.packs.get('heroes-of-lite.hol-gm-refines');
-  
-  if (!playerPack || !gmPack) {
-    console.warn('HoL | Player or GM refines compendium pack not found');
-    return;
-  }
+  const playerPack = getPack('hol-player-refines');
+  const gmPack = getPack('hol-gm-refines');
+  if (!playerPack || !gmPack) return;
 
-  // Fetch refines from seed data
-  try {
-    const response = await fetch('systems/heroes-of-lite/data/seed/refines.json');
-    const refines = await response.json();
-    
-    console.log(`HoL | Found ${refines.length} refines to seed`);
-    
-    // Seed player refines
-    const playerWasLocked = playerPack.locked;
-    if (playerWasLocked) await playerPack.configure({ locked: false });
-    
-    const existingPlayerItems = await playerPack.getDocuments();
-    const existingPlayerIds = new Set(existingPlayerItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
-    
-    // Seed GM refines
-    const gmWasLocked = gmPack.locked;
-    if (gmWasLocked) await gmPack.configure({ locked: false });
-    
-    const existingGMItems = await gmPack.getDocuments();
-    const existingGMIds = new Set(existingGMItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
-    
-    for (const refineData of refines) {
-      const isGMOnly = refineData.category === 'gmOnly';
-      const targetPack = isGMOnly ? gmPack : playerPack;
-      const existingIds = isGMOnly ? existingGMIds : existingPlayerIds;
-      
-      if (existingIds.has(refineData.id)) {
-        continue;
-      }
-      
-      // Create proper Foundry item document
-      const itemData = {
-        name: refineData.name,
-        type: 'refine',
-        system: {
-          category: refineData.category,
-          costG: refineData.costG,
-          appliesToWeaponGroups: refineData.appliesToWeaponGroups,
-          description: refineData.description,
-          statBonuses: refineData.statBonuses || {},
-          tags: refineData.tags || []
-        },
-        flags: {
-          'heroes-of-lite': {
-            sourceId: refineData.id
-          }
-        }
-      };
-      
-      // Create the document in the appropriate pack
-      await Item.create(itemData, {pack: targetPack.collection});
-    }
-    
-    // Re-lock packs
-    if (playerWasLocked) await playerPack.configure({ locked: true });
-    if (gmWasLocked) await gmPack.configure({ locked: true });
-    
-    console.log('HoL | Refines seeding complete');
-  } catch (error) {
-    console.error('HoL | Error seeding refines:', error);
-  }
+  await withUnlockedPacks([playerPack, gmPack], async () => {
+    const refines = await loadSeedFile('refines.json');
+    const existingPlayerIds = await getSeededIds(playerPack);
+    const existingGMIds = await getSeededIds(gmPack);
+
+    const toItemData = refine => ({
+      name: refine.name,
+      type: 'refine',
+      system: {
+        category: refine.category,
+        costG: refine.costG,
+        appliesToWeaponGroups: refine.appliesToWeaponGroups,
+        description: refine.description,
+        statBonuses: refine.statBonuses ?? {},
+        tags: refine.tags ?? []
+      },
+      flags: { [SYSTEM_ID]: { sourceId: refine.id } }
+    });
+
+    const playerData = refines
+      .filter(refine => refine.category !== 'gmOnly' && !existingPlayerIds.has(refine.id))
+      .map(toItemData);
+    const gmData = refines
+      .filter(refine => refine.category === 'gmOnly' && !existingGMIds.has(refine.id))
+      .map(toItemData);
+
+    if (playerData.length) await Item.createDocuments(playerData, { pack: playerPack.collection });
+    if (gmData.length) await Item.createDocuments(gmData, { pack: gmPack.collection });
+    console.log(`HoL | Seeded ${playerData.length} player and ${gmData.length} GM refines`);
+  });
 }
 
-/**
- * Seed consumables from the seed data file into the hol-consumables compendium
- */
 async function seedConsumables() {
-  const pack = game.packs.get('heroes-of-lite.hol-consumables');
-  if (!pack) {
-    console.warn('HoL | hol-consumables compendium pack not found');
-    return;
-  }
+  const pack = getPack('hol-consumables');
+  if (!pack) return;
 
-  // Unlock the pack so we can add items
-  const wasLocked = pack.locked;
-  if (wasLocked) {
-    await pack.configure({ locked: false });
-    console.log('HoL | Unlocked hol-consumables pack');
-  }
-
-  // Fetch consumables from seed data
-  try {
-    const response = await fetch('systems/heroes-of-lite/data/seed/consumables.json');
-    const consumables = await response.json();
-    
-    console.log(`HoL | Found ${consumables.length} consumables to seed`);
-    
-    // Get existing items in pack
-    const existingItems = await pack.getDocuments();
-    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
-    
-    for (const consumableData of consumables) {
-      if (existingIds.has(consumableData.id)) {
-        continue;
-      }
-      
-      // Create proper Foundry item document
-      const itemData = {
-        name: consumableData.name,
+  await withUnlockedPacks([pack], async () => {
+    const consumables = await loadSeedFile('consumables.json');
+    const existingIds = await getSeededIds(pack);
+    const itemData = consumables
+      .filter(consumable => !existingIds.has(consumable.id))
+      .map(consumable => ({
+        name: consumable.name,
         type: 'consumable',
         system: {
           details: {
-            range: consumableData.range,
-            uses: consumableData.uses,
-            costG: consumableData.costG,
-            effect: consumableData.effect,
-            temporaryStatBonuses: consumableData.temporaryStatBonuses || {},
-            tags: consumableData.tags || []
+            range: consumable.range,
+            uses: consumable.uses,
+            costG: consumable.costG,
+            effect: consumable.effect,
+            temporaryStatBonuses: consumable.temporaryStatBonuses ?? {},
+            tags: consumable.tags ?? []
           }
         },
-        flags: {
-          'heroes-of-lite': {
-            sourceId: consumableData.id
-          }
-        }
-      };
-      
-      // Create the document in the pack
-      await Item.create(itemData, {pack: pack.collection});
-    }
-    
-    console.log('HoL | Consumables seeding complete');
-  } catch (error) {
-    console.error('HoL | Error seeding consumables:', error);
-  } finally {
-    // Re-lock the pack if it was locked before
-    if (wasLocked) {
-      await pack.configure({ locked: true });
-      console.log('HoL | Re-locked hol-consumables pack');
-    }
-  }
+        flags: { [SYSTEM_ID]: { sourceId: consumable.id } }
+      }));
+
+    if (!itemData.length) return;
+    await Item.createDocuments(itemData, { pack: pack.collection });
+    console.log(`HoL | Seeded ${itemData.length} consumables`);
+  });
 }
 
-// Register any custom hooks or event listeners
-Hooks.on('renderActorSheet', (sheet, html, data) => {
-  // Custom actor sheet rendering logic
-});
-
-/**
- * Seed skills from the seed data file into the hol-skills compendium
- */
 async function seedSkills() {
-  const pack = game.packs.get('heroes-of-lite.hol-skills');
-  if (!pack) {
-    console.warn('HoL | hol-skills compendium pack not found');
-    return;
-  }
+  const pack = getPack('hol-skills');
+  if (!pack) return;
 
-  const wasLocked = pack.locked;
-  if (wasLocked) {
-    await pack.configure({ locked: false });
-    console.log('HoL | Unlocked hol-skills pack');
-  }
-
-  try {
-    const response = await fetch('systems/heroes-of-lite/data/seed/skills.json');
-    const skills = await response.json();
-
-    console.log(`HoL | Found ${skills.length} skills to seed`);
-
-    const existingItems = await pack.getDocuments();
-    const existingIds = new Set(existingItems.map(item => item.flags?.['heroes-of-lite']?.sourceId));
-
-    for (const skillData of skills) {
-      if (existingIds.has(skillData.id)) {
-        continue;
-      }
-
-      const itemData = {
-        name: skillData.name,
+  await withUnlockedPacks([pack], async () => {
+    const skills = await loadSeedFile('skills.json');
+    const existingIds = await getSeededIds(pack);
+    const itemData = skills
+      .filter(skill => !existingIds.has(skill.id))
+      .map(skill => ({
+        name: skill.name,
         type: 'skill',
         system: {
           attributes: {
-            id: skillData.id,
-            name: skillData.name,
-            type: skillData.type
+            type: skill.type
           },
           details: {
-            typeGroup: skillData.typeGroup,
-            prerequisite: skillData.prereq || [],
-            requiredCharge: skillData.requiredCharge || '',
-            effect: skillData.effect,
-            statBonuses: skillData.statBonuses || {},
-            tags: skillData.tags || []
+            typeGroup: skill.typeGroup,
+            prerequisite: skill.prereq ?? [],
+            requiredCharge: skill.requiredCharge ?? '',
+            effect: skill.effect,
+            statBonuses: skill.statBonuses ?? {},
+            tags: skill.tags ?? []
           }
         },
-        flags: {
-          'heroes-of-lite': {
-            sourceId: skillData.id
-          }
-        }
-      };
+        // `skillKey` is what prerequisite strings reference, so store it alongside the source id.
+        flags: { [SYSTEM_ID]: { sourceId: skill.id, skillKey: skill.id } }
+      }));
 
-      await Item.create(itemData, {pack: pack.collection});
-    }
-
-    console.log('HoL | Skills seeding complete');
-  } catch (error) {
-    console.error('HoL | Error seeding skills:', error);
-  } finally {
-    if (wasLocked) {
-      await pack.configure({ locked: true });
-      console.log('HoL | Re-locked hol-skills pack');
-    }
-  }
+    if (!itemData.length) return;
+    await Item.createDocuments(itemData, { pack: pack.collection });
+    console.log(`HoL | Seeded ${itemData.length} skills`);
+  });
 }
 
 /**
- * Look up an item by source-id flag across the world and all compendium item packs.
+ * Build a one-time lookup of every Item reachable by its `sourceId` flag.
+ * Scanning each pack once avoids re-reading every compendium per reference.
+ * @returns {Promise<Map<string, Item>>}
  */
-async function findItemBySourceId(sourceId) {
-  if (!sourceId) return null;
-  const worldHit = game.items.find(i => i.flags?.['heroes-of-lite']?.sourceId === sourceId);
-  if (worldHit) return worldHit;
+async function buildItemSourceIndex() {
+  const index = new Map();
+  for (const item of game.items) {
+    const sourceId = item.flags?.[SYSTEM_ID]?.sourceId;
+    if (sourceId && !index.has(sourceId)) index.set(sourceId, item);
+  }
   for (const pack of game.packs) {
     if (pack.documentName !== 'Item') continue;
-    const docs = await pack.getDocuments();
-    const hit = docs.find(d => d.flags?.['heroes-of-lite']?.sourceId === sourceId);
-    if (hit) return hit;
+    for (const doc of await pack.getDocuments()) {
+      const sourceId = doc.flags?.[SYSTEM_ID]?.sourceId;
+      if (sourceId && !index.has(sourceId)) index.set(sourceId, doc);
+    }
   }
-  return null;
+  return index;
 }
 
 /**
- * Seed actor templates from the seed data file into the hol-templates-actors compendium.
- * Resolves compendium-id references in _seedRefs into embedded items and rewrites the
- * actor's inventory/skills arrays to point at the embedded item ids.
+ * Seed actor templates. Compendium-id references in `_seedRefs` are resolved into
+ * embedded items, then the actor's inventory/skills arrays are rewritten to point
+ * at the generated embedded item ids.
  */
 async function seedActorTemplates() {
-  const pack = game.packs.get('heroes-of-lite.hol-templates-actors');
-  if (!pack) {
-    console.warn('HoL | hol-templates-actors compendium pack not found');
-    return;
-  }
+  const pack = getPack('hol-templates-actors');
+  if (!pack) return;
 
-  const wasLocked = pack.locked;
-  if (wasLocked) {
-    await pack.configure({ locked: false });
-    console.log('HoL | Unlocked hol-templates-actors pack');
-  }
-
-  try {
-    const response = await fetch('systems/heroes-of-lite/data/seed/actor-templates.json');
-    const templates = await response.json();
-
-    console.log(`HoL | Found ${templates.length} actor templates to seed`);
-
+  await withUnlockedPacks([pack], async () => {
+    const templates = await loadSeedFile('actor-templates.json');
     const existingActors = await pack.getDocuments();
-    const existingIds = new Set(existingActors.map(a => a.flags?.['heroes-of-lite']?.sourceId));
+    const existingIds = new Set(existingActors.map(actor => actor.flags?.[SYSTEM_ID]?.sourceId));
+    const pending = templates.filter(template => !existingIds.has(template.id));
+    if (!pending.length) return;
 
-    for (const t of templates) {
-      if (existingIds.has(t.id)) continue;
+    const itemIndex = await buildItemSourceIndex();
 
-      // Resolve compendium-id references into embedded item documents
-      const refs = t._seedRefs || { skills: [], weapons: [], items: [], equipped: '' };
+    for (const template of pending) {
+      const refs = template._seedRefs ?? {};
+      const equippedSourceId = refs.equipped ?? '';
       const itemsToEmbed = [];
-      const refToSlot = []; // [{sourceId, slot}]
+      const refToSlot = [];
 
-      for (const skillId of refs.skills || []) {
-        const src = await findItemBySourceId(skillId);
-        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: skillId, slot: 'skills' }); }
-        else console.warn(`HoL | Actor template ${t.id}: skill not found ${skillId}`);
-      }
-      for (const weaponId of refs.weapons || []) {
-        const src = await findItemBySourceId(weaponId);
-        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: weaponId, slot: 'weapons' }); }
-        else console.warn(`HoL | Actor template ${t.id}: weapon not found ${weaponId}`);
-      }
-      for (const itemId of refs.items || []) {
-        const src = await findItemBySourceId(itemId);
-        if (src) { itemsToEmbed.push(src.toObject()); refToSlot.push({ sourceId: itemId, slot: 'items' }); }
-        else console.warn(`HoL | Actor template ${t.id}: item not found ${itemId}`);
-      }
-
-      const actorData = {
-        name: t.name,
-        type: t.type || 'unit',
-        system: t.system,
-        items: itemsToEmbed,
-        flags: {
-          'heroes-of-lite': {
-            sourceId: t.id,
-            notes: t._notes || ''
+      for (const slot of ['skills', 'weapons', 'items']) {
+        for (const sourceId of refs[slot] ?? []) {
+          const source = itemIndex.get(sourceId);
+          if (!source) {
+            console.warn(`HoL | Actor template ${template.id}: ${slot} reference not found - ${sourceId}`);
+            continue;
           }
+          itemsToEmbed.push(source.toObject());
+          refToSlot.push({ sourceId, slot });
         }
-      };
-
-      const created = await Actor.create(actorData, { pack: pack.collection });
-
-      // After creation, map embedded items back to the seed refs and update inventory/skills
-      const skills = [];
-      const weapons = [];
-      const itemsList = [];
-      let equipped = '';
-      const equippedSourceId = refs.equipped || '';
-
-      const embedded = Array.from(created.items);
-      for (let i = 0; i < refToSlot.length; i++) {
-        const ref = refToSlot[i];
-        const emb = embedded[i];
-        if (!emb) continue;
-        if (ref.slot === 'skills')  skills.push(emb.id);
-        if (ref.slot === 'weapons') weapons.push(emb.id);
-        if (ref.slot === 'items')   itemsList.push(emb.id);
-        if (ref.sourceId === equippedSourceId) equipped = emb.id;
       }
+
+      const created = await Actor.create({
+        name: template.name,
+        type: template.type ?? 'unit',
+        system: template.system,
+        items: itemsToEmbed,
+        flags: { [SYSTEM_ID]: { sourceId: template.id, notes: template._notes ?? '' } }
+      }, { pack: pack.collection });
+
+      const slots = { skills: [], weapons: [], items: [] };
+      let equipped = '';
+      const embedded = Array.from(created.items);
+
+      refToSlot.forEach((ref, index) => {
+        const embeddedItem = embedded[index];
+        if (!embeddedItem) return;
+        slots[ref.slot].push(embeddedItem.id);
+        if (ref.sourceId === equippedSourceId) equipped = embeddedItem.id;
+      });
 
       await created.update({
-        'system.skills': skills,
-        'system.inventory.weapons': weapons,
-        'system.inventory.items': itemsList,
+        'system.skills': slots.skills,
+        'system.inventory.weapons': slots.weapons,
+        'system.inventory.items': slots.items,
         'system.inventory.equipped': equipped
       });
     }
 
-    console.log('HoL | Actor templates seeding complete');
-  } catch (error) {
-    console.error('HoL | Error seeding actor templates:', error);
-  } finally {
-    if (wasLocked) {
-      await pack.configure({ locked: true });
-      console.log('HoL | Re-locked hol-templates-actors pack');
-    }
-  }
+    console.log(`HoL | Seeded ${pending.length} actor templates`);
+  });
 }

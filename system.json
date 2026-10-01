@@ -15,13 +15,24 @@
   "esmodules": ["hol.js"],
   "scripts": [],
   "styles": ["hol.css"],
-  
+
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+
   "documentTypes": {
     "Actor": {
-      "base": "Actor"
+      "unit": {}
     },
     "Item": {
-      "base": "Item"
+      "weapon": {},
+      "skill": {},
+      "refine": {},
+      "consumable": {}
     }
   },
 
@@ -87,5 +98,5 @@
   "readme": "README.md",
   "url": "https://github.com/BZega/heroes-of-lite",
   "manifest": "https://raw.githubusercontent.com/BZega/heroes-of-lite/main/system.json",
-  "download": ""
+  "download": "https://github.com/BZega/heroes-of-lite/archive/refs/heads/main.zip"
 }

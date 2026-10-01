@@ -1,474 +1,270 @@
-export default class HolWeaponSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
-    static DEFAULT_OPTIONS = {
-        classes: ["heroes-of-lite", "item-sheet", "weapon-sheet"],
-        window: {
-            icon: "fas fa-sword",
-            resizable: true,
-            contentClasses: ["standard-form"]
-        },
-        position: {
-            width: 800,
-            height: 560
-        },
-        form: {
-            submitOnChange: true,
-            closeOnSubmit: false
-        },
-        actions: {
-            removeRefine: HolWeaponSheet.onRemoveRefine,
-            dropRefine: HolWeaponSheet.onDropRefine
-        }
-    };
+import HolItemSheetBase from './holItemSheetBase.js';
+import { sheetTemplate } from '../constants.js';
+import { findRefineById, getDragEventData, toNumber } from '../helpers.js';
 
-    static PARTS = {
-        form: {
-            template: "systems/heroes-of-lite/templates/sheets/weapon-sheet.html"
-        }
-    };
+const WEAPON_TYPE_NAMES = {
+  sword: 'Sword',
+  lance: 'Lance',
+  axe: 'Axe',
+  bow: 'Bow',
+  dagger: 'Dagger',
+  anima: 'Anima',
+  light: 'Light',
+  dark: 'Dark',
+  staff: 'Heal',
+  strike: 'Strike',
+  talons: 'Talons',
+  breath: 'Breath',
+  shiftingStone: 'Shifting Stone',
+  curse: 'Curse',
+  siege: 'Siege'
+};
 
-    async _prepareContext(options) {
-        const context = await super._prepareContext(options);
-        const item = this.document;
+export default class HolWeaponSheet extends HolItemSheetBase {
+  static DEFAULT_OPTIONS = {
+    classes: ['weapon-sheet'],
+    window: { icon: 'fas fa-khanda' },
+    position: { width: 720, height: 620 }
+  };
 
-        // Add item properties to context for template access
-        context.name = item.name;
-        context.img = item.img;
-        context.type = item.type;
-        
-        // Ensure system data is accessible
-        if (!context.system) {
-            context.system = item.system;
-        }
+  static PARTS = {
+    form: { template: sheetTemplate('weapon-sheet.html') }
+  };
 
-        // Check if this item is from a compendium (read-only)
-        context.isFromCompendium = !!item.pack;
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
 
-        // Ensure system structure exists
-        if (!context.system.details) {
-            context.system.details = {};
-        }
-        if (!context.system.attributes) {
-            context.system.attributes = {};
-        }
+    context.system.attributes ??= {};
+    context.system.details ??= {};
+    context.system.details.range ??= { min: 1, max: 1 };
+    context.system.details.refines ??= [{ id: '', name: '' }, { id: '', name: '' }];
 
-        // Ensure refines array exists
-        if (!context.system.details.refines) {
-            context.system.details.refines = [{id: '', name: ''}, {id: '', name: ''}];
-        }
-
-        context.innateRefines = [];
-        if (context.system.details.innateAttributes && Array.isArray(context.system.details.innateAttributes)) {
-            for (const refineId of context.system.details.innateAttributes) {
-                const refineItem = await this._getRefineById(refineId);
-                if (refineItem) {
-                    context.innateRefines.push({
-                        id: refineItem.id,
-                        name: refineItem.name,
-                        _document: refineItem // Keep reference to full document
-                    });
-                }
-            }
-        }
-
-        return context;
+    context.innateRefines = [];
+    for (const refineId of context.system.details.innateAttributes ?? []) {
+      const refine = await findRefineById(refineId);
+      if (refine) context.innateRefines.push({ id: refine.id, name: refine.name });
     }
 
-    _onRender(context, options) {
-        super._onRender(context, options);
+    return context;
+  }
 
-        const html = this.element;
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const html = this.element;
 
-        // Make refine names clickable to open refine sheet (allow for both compendium and non-compendium)
-        const refineNames = html.querySelectorAll('.refine-name');
-        refineNames.forEach(nameEl => {
-            nameEl.addEventListener('click', this._onRefineNameClick.bind(this));
-        });
+    html.querySelectorAll('.refine-name').forEach(el => {
+      el.addEventListener('click', this._onRefineNameClick.bind(this));
+    });
+    html.querySelectorAll('.innate-attribute-tag').forEach(el => {
+      el.addEventListener('click', this._onInnateAttributeClick.bind(this));
+    });
 
-        // Make innate attribute tags clickable to open refine sheet (allow for both compendium and non-compendium)
-        const innateAttributeTags = html.querySelectorAll('.innate-attribute-tag');
-        innateAttributeTags.forEach(tag => {
-            tag.addEventListener('click', this._onInnateAttributeClick.bind(this));
-        });
+    // Compendium documents are read-only, so skip the editing affordances entirely.
+    if (this.document.pack) return;
 
-        // Don't allow editing of compendium items
-        if (this.document.pack) {
-            const inputs = html.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.disabled = true;
-            });
-            html.classList.add('compendium-item-readonly');
-            return;
-        }
+    html.querySelectorAll('[data-dropzone="refine"]').forEach(slot => {
+      slot.addEventListener('dragover', this._onDragOver.bind(this));
+      slot.addEventListener('dragleave', this._onDragLeave.bind(this));
+      slot.addEventListener('drop', this._onDropRefine.bind(this));
+    });
+    html.querySelectorAll('.remove-refine').forEach(button => {
+      button.addEventListener('click', this._onRemoveRefine.bind(this));
+    });
+  }
 
-        // Handle drag and drop for refine slots (only for non-compendium items)
-        const refineSlots = html.querySelectorAll('[data-dropzone="refine"]');
-        refineSlots.forEach(slot => {
-            slot.addEventListener('dragover', this._onDragOver.bind(this));
-            slot.addEventListener('drop', this._onDropRefine.bind(this));
-        });
+  /* ---------------------------------------- */
+  /*  Navigation                               */
+  /* ---------------------------------------- */
 
-        const removeButtons = html.querySelectorAll('.remove-refine');
-        removeButtons.forEach(btn => {
-            btn.addEventListener('click', this._onRemoveRefine.bind(this));
-        });
+  async _onInnateAttributeClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const refine = await findRefineById(event.currentTarget.dataset.refineId);
+    if (refine) refine.sheet.render(true);
+    else console.warn('HoL | Could not resolve innate refine:', event.currentTarget.dataset.refineId);
+  }
+
+  async _onRefineNameClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const slotIndex = Number(event.currentTarget.closest('.refine-slot')?.dataset.slot);
+    if (!Number.isInteger(slotIndex)) return;
+    const refine = await findRefineById(this.document.system.details.refines?.[slotIndex]?.id);
+    if (refine) refine.sheet.render(true);
+  }
+
+  /* ---------------------------------------- */
+  /*  Refine drag & drop                       */
+  /* ---------------------------------------- */
+
+  _onDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.add('drag-over');
+  }
+
+  _onDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over');
+  }
+
+  async _onDropRefine(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // `currentTarget` is cleared once the handler awaits, so capture it up front.
+    const slot = event.currentTarget;
+    slot.classList.remove('drag-over');
+
+    if (this.document.pack) {
+      ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
+      return;
     }
 
-    async _onInnateAttributeClick(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    const slotIndex = Number(slot.dataset.slot);
+    if (!Number.isInteger(slotIndex)) return;
 
-        const refineId = event.currentTarget.dataset.refineId;
-        
-        if (!refineId) {
-            console.warn('HoL | No refineId found on clicked element');
-            return;
-        }
+    const dropData = getDragEventData(event);
+    if (dropData.type !== 'Item') return;
 
-        // Find the refine item
-        const refineItem = await this._getRefineById(refineId);
-        
-        if (refineItem) {
-            refineItem.sheet.render(true);
-        } else {
-            console.warn('HoL | Could not find refine item with ID:', refineId);
-        }
+    const droppedItem = await Item.implementation.fromDropData(dropData);
+    if (!droppedItem || droppedItem.type !== 'refine') {
+      ui.notifications.warn('Only Refine items can be dropped here.');
+      return;
     }
 
-    async _onRefineNameClick(event) {
-        event.preventDefault();
-        event.stopPropagation();
+    const details = this.document.system.details ?? {};
+    const currentRefines = details.refines ?? [{}, {}];
+    const weaponGroup = this.document.system.attributes?.weaponGroup ?? '';
+    const validGroups = droppedItem.system?.appliesToWeaponGroups ?? [];
 
-        const slotIndex = parseInt(event.currentTarget.closest('.refine-slot')?.dataset.slot);
-        const refineId = this.document.system.details.refines?.[slotIndex]?.id;
-
-        if (!refineId) return;
-
-        // Find the refine item
-        let refineItem = game.items.get(refineId);
-        
-        if (!refineItem) {
-            for (const pack of game.packs) {
-                if (pack.documentName === 'Item') {
-                    refineItem = await pack.getDocument(refineId);
-                    if (refineItem) break;
-                }
-            }
-        }
-
-        if (refineItem) {
-            refineItem.sheet.render(true);
-        }
+    if (validGroups.length && !validGroups.includes(weaponGroup)) {
+      ui.notifications.warn(`This refine cannot be applied to ${weaponGroup || 'untyped'} weapons.`);
+      return;
+    }
+    if (currentRefines.some(refine => refine?.name && refine.name === droppedItem.name)) {
+      ui.notifications.warn('This refine is already applied to the weapon.');
+      return;
     }
 
-    _onDragOver(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.currentTarget.classList.add('drag-over');
+    const category = droppedItem.system?.category;
+    const isAdvanced = category === 'advanced';
+    const isGMOnly = category === 'gmOnly';
+
+    if (isGMOnly && !game.user.isGM) {
+      ui.notifications.warn('Only the Game Master can use GM-only refines.');
+      return;
+    }
+    if (slotIndex === 0 && isAdvanced && !isGMOnly) {
+      ui.notifications.warn('Slot 1 only accepts basic refines. Use Slot 2 for advanced refines.');
+      return;
+    }
+    if (isAdvanced && !isGMOnly && await this._isAdvancedRefine(currentRefines[slotIndex === 0 ? 1 : 0])) {
+      ui.notifications.warn('Only one advanced refine can be applied to a weapon.');
+      return;
     }
 
-    async _onDropRefine(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.currentTarget.classList.remove('drag-over');
+    const refines = foundry.utils.deepClone(currentRefines);
+    refines[slotIndex] = { id: droppedItem.id, name: droppedItem.name };
 
-        if (this.document.pack) {
-            ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
-            return;
-        }
+    const bonuses = droppedItem.system?.statBonuses ?? {};
+    const range = weaponGroup === 'staff'
+      ? await this._calculateStaffRange(refines)
+      : {
+        min: toNumber(details.range?.min) + toNumber(bonuses.minRange),
+        max: toNumber(details.range?.max) + toNumber(bonuses.maxRange)
+      };
 
-        const data = event.dataTransfer.getData('text/plain');
-        let dropData;
-        
-        try {
-            dropData = JSON.parse(data);
-        } catch (e) {
-            console.error('Invalid drop data:', e);
-            return;
-        }
+    await this.document.update({
+      name: this._generateWeaponName(refines),
+      'system.details.refines': refines,
+      'system.details.might': toNumber(details.might) + toNumber(bonuses.might),
+      'system.details.range': range,
+      'system.details.costG': toNumber(details.costG) + toNumber(droppedItem.system?.costG)
+    });
+  }
 
-        if (dropData.type !== 'Item') return;
+  async _onRemoveRefine(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-        const droppedItem = await Item.implementation.fromDropData(dropData);
-        if (!droppedItem || droppedItem.type !== 'refine') {
-            ui.notifications.warn('Only Refine items can be dropped here');
-            return;
-        }
-
-        const weaponGroup = this.document.system.attributes?.weaponGroup;
-        const validGroups = droppedItem.system?.appliesToWeaponGroups || [];
-        if (validGroups.length > 0 && !validGroups.includes(weaponGroup)) {
-            ui.notifications.warn(`This refine cannot be applied to ${weaponGroup} weapons.`);
-            return;
-        }
-
-        const currentRefines = this.document.system.details.refines || [{}, {}];
-        if (currentRefines.some(r => r.name === droppedItem.name)) {
-            ui.notifications.warn('This refine is already applied to the weapon.');
-            return;
-        }
-
-        const slotElement = event.currentTarget.closest('.data-slot') || event.currentTarget;
-        const slotIndex = parseInt(slotElement.dataset?.slot);
-        const isDroppedAdvanced = droppedItem.system?.category === 'advanced';
-        const isDroppedGMOnly = droppedItem.system?.category === 'gmOnly';
-        
-        // gmOnly refines can only be placed by Game Masters
-        if (isDroppedGMOnly && !game.user.isGM) {
-            ui.notifications.warn('Only the Game Master can use GM-only refines.');
-            return;
-        }
-        
-        // Slot 0 can only accept basic refines (unless gmOnly and user is GM)
-        if (slotIndex === 0 && isDroppedAdvanced && !isDroppedGMOnly) {
-            ui.notifications.warn('Slot 1 only accepts basic refines. Use Slot 2 for advanced refines.');
-            return;
-        }
-        
-        // Check if the other slot has an advanced refine
-        const otherSlotIndex = slotIndex === 0 ? 1 : 0;
-        const otherRefine = currentRefines[otherSlotIndex];
-        
-        if (isDroppedAdvanced && otherRefine?.id && !isDroppedGMOnly) {
-            const otherIsAdvanced = await this._checkIfAdvanced(otherRefine);
-            if (otherIsAdvanced) {
-                ui.notifications.warn('Only one advanced refine can be applied to a weapon.');
-                return;
-            }
-        }
-
-        let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
-        
-        refines[slotIndex] = {
-            id: droppedItem.id,
-            name: droppedItem.name
-        };
-
-        const newName = this._generateWeaponName(refines);
-
-        const mightModifier = droppedItem.system?.statBonuses.might || 0;
-        const rangeMinModifier = droppedItem.system?.statBonuses.minRange || 0;
-        const rangeMaxModifier = droppedItem.system?.statBonuses.maxRange || 0;
-        const costModifier = droppedItem.system?.costG || 0;
-
-        let newMight = this.document.system.details.might + mightModifier;
-        let newRange;
-        
-        // Staff weapons use highest range from all refines, not additive
-        if (this.document.system.attributes.weaponGroup === 'staff') {
-            newRange = await this._calculateStaffRange(refines);
-        } else {
-            // Other weapons add range bonuses
-            let newRangeMin = this.document.system.details.range.min + rangeMinModifier;
-            let newRangeMax = this.document.system.details.range.max + rangeMaxModifier;
-            newRange = {
-                min: newRangeMin,
-                max: newRangeMax
-            };
-        }
-        
-        let newCostG = this.document.system.details.costG + costModifier;
-
-        await this.document.update({
-            'name': newName,
-            'system.details.refines': refines,
-            'system.details.might': newMight,
-            'system.details.range': newRange,
-            'system.details.costG': newCostG
-        });
-
-        console.log(`HoL | Added ${droppedItem.name} to refine slot ${slotIndex}, updated name to ${newName}`);
+    if (this.document.pack) {
+      ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
+      return;
     }
 
-    async _checkIfAdvanced(refine) {
-        if (!refine.id) {
-            return false; 
-        }
-        let refineItem = game.items.get(refine.id);
-        if (!refineItem) {
-            for (const pack of game.packs) {
-                if (pack.documentName === 'Item') {
-                    refineItem = await pack.getDocument(refine.id);
-                    if (refineItem) break;
-                }
-            }
-        }
-        if (refineItem.system?.category === 'advanced') {
-            return true;
-        }
-        return false;
+    const slotIndex = Number(event.currentTarget.dataset.slot);
+    if (!Number.isInteger(slotIndex)) return;
+
+    const details = this.document.system.details ?? {};
+    const refineId = details.refines?.[slotIndex]?.id;
+    if (!refineId) {
+      ui.notifications.warn('No refine to remove in this slot.');
+      return;
     }
 
-    async _calculateStaffRange(refines) {
-        // For staffs, range is based on highest range from all refines
-        let maxRangeMin = 1;
-        let maxRangeMax = 1;
+    const refineItem = await findRefineById(refineId);
+    const bonuses = refineItem?.system?.statBonuses ?? {};
 
-        for (const refine of refines) {
-            if (!refine.id) continue;
+    const refines = foundry.utils.deepClone(details.refines ?? [{}, {}]);
+    refines[slotIndex] = { id: '', name: '' };
 
-            let refineItem = game.items.get(refine.id);
-            if (!refineItem) {
-                for (const pack of game.packs) {
-                    if (pack.documentName === 'Item') {
-                        refineItem = await pack.getDocument(refine.id);
-                        if (refineItem) break;
-                    }
-                }
-            }
+    const range = this.document.system.attributes?.weaponGroup === 'staff'
+      ? await this._calculateStaffRange(refines)
+      : {
+        min: toNumber(details.range?.min) - toNumber(bonuses.minRange),
+        max: toNumber(details.range?.max) - toNumber(bonuses.maxRange)
+      };
 
-            if (refineItem) {
-                const minRange = refineItem.system?.statBonuses?.minRange || 0;
-                const maxRange = refineItem.system?.statBonuses?.maxRange || 0;
-                
-                if (maxRange > maxRangeMax) {
-                    maxRangeMin = minRange;
-                    maxRangeMax = maxRange;
-                }
-            }
-        }
+    await this.document.update({
+      name: this._generateWeaponName(refines),
+      'system.details.refines': refines,
+      'system.details.might': toNumber(details.might) - toNumber(bonuses.might),
+      'system.details.range': range,
+      'system.details.costG': toNumber(details.costG) - toNumber(refineItem?.system?.costG)
+    });
+  }
 
-        return { min: maxRangeMin, max: maxRangeMax };
+  /* ---------------------------------------- */
+  /*  Derivations                              */
+  /* ---------------------------------------- */
+
+  /** @returns {Promise<boolean>} Whether the referenced refine is categorised as advanced. */
+  async _isAdvancedRefine(refine) {
+    if (!refine?.id) return false;
+    const refineItem = await findRefineById(refine.id);
+    return refineItem?.system?.category === 'advanced';
+  }
+
+  /** Staves take the single longest range among their refines rather than summing them. */
+  async _calculateStaffRange(refines) {
+    let best = { min: 1, max: 1 };
+    for (const refine of refines) {
+      if (!refine?.id) continue;
+      const refineItem = await findRefineById(refine.id);
+      if (!refineItem) continue;
+      const max = toNumber(refineItem.system?.statBonuses?.maxRange);
+      if (max > best.max) best = { min: toNumber(refineItem.system?.statBonuses?.minRange), max };
     }
+    return best;
+  }
 
-    _generateWeaponName(refines) {
-        const weaponGroup = this.document.system.attributes?.weaponGroup;
-        
-        const weaponTypeMap = {
-            'sword': 'Sword',
-            'lance': 'Lance',
-            'axe': 'Axe',
-            'bow': 'Bow',
-            'dagger': 'Dagger',
-            'anima': 'Anima',
-            'light': 'Light',
-            'dark': 'Dark',
-            'staff': 'Heal',
-            'strike': 'Strike',
-            'talons': 'Talons',
-            'breath': 'Breath',
-            'shiftingStone': 'Shifting Stone',
-            'curse': 'Curse'
-        };
-        
-        let weaponType = weaponTypeMap[weaponGroup] || 'Weapon';
-        
-        const baseName = this.document.name;
-        for (const [key, displayName] of Object.entries(weaponTypeMap)) {
-            if (baseName.includes(displayName)) {
-                weaponType = displayName;
-                break;
-            }
-        }
-        if (weaponGroup === 'staff' && refines[0]?.name === '' && refines[1]?.name === '') {
-            weaponType = 'Heal';
-        } else if (weaponGroup === 'dark' && refines[0]?.name === '' && refines[1]?.name === '') {
-            weaponType = 'Flux';
-        }
-        
-        const parts = [];
-        
-        if (refines[0]?.name) {
-            parts.push(refines[0].name);
-        }
-        
-        if (refines[1]?.name) {
-            parts.push(refines[1].name);
-        }
+  /**
+   * Build the display name as `[Refine 1] [Refine 2] [Weapon Type]`.
+   * Staves drop the type suffix once they carry a refine (a Mend staff is just "Mend").
+   */
+  _generateWeaponName(refines) {
+    const weaponGroup = this.document.system.attributes?.weaponGroup ?? '';
+    const refineNames = refines.map(refine => refine?.name).filter(Boolean);
+    const hasRefines = refineNames.length > 0;
 
-        if ((weaponGroup !== 'staff' || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'staff')) || (refines[0]?.name === '' && refines[1]?.name === '' && weaponGroup === 'dark')) {
-            parts.push(weaponType);
-        }
-        return parts.join(' ');
+    let weaponType = WEAPON_TYPE_NAMES[weaponGroup];
+    if (!weaponType) {
+      weaponType = Object.values(WEAPON_TYPE_NAMES).find(name => this.document.name.includes(name)) ?? 'Weapon';
     }
+    if (weaponGroup === 'dark' && !hasRefines) weaponType = 'Flux';
 
-    async _onRemoveRefine(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (this.document.pack) {
-            ui.notifications.warn('Compendium items cannot be modified. Create a copy first.');
-            return;
-        }
-
-        const slotIndex = parseInt(event.currentTarget.dataset.slot);
-        const refineId = this.document.system.details.refines[slotIndex]?.id;
-
-        if (!refineId) {
-            ui.notifications.warn('No refine to remove in this slot.');
-            return;
-        }
-        
-        let refineItem = game.items.get(refineId);
-        
-        if (!refineItem) {
-            for (const pack of game.packs) {
-                if (pack.documentName === 'Item'){
-                    refineItem = await pack.getDocument(refineId);
-                    if (refineItem) break;
-                }
-            }
-        }
-
-        const mightModifier = refineItem?.system?.statBonuses.might || 0;
-        const rangeMinModifier = refineItem?.system?.statBonuses.minRange || 0;
-        const rangeMaxModifier = refineItem?.system?.statBonuses.maxRange || 0;
-        const costModifier = refineItem?.system?.costG || 0;
-
-        let newMight = this.document.system.details.might - mightModifier;
-        let newCostG = this.document.system.details.costG - costModifier;
-
-        // Clone and remove the refine first
-        let refines = foundry.utils.deepClone(this.document.system.details.refines || [{}, {}]);
-        refines[slotIndex] = {
-            id: '',
-            name: ''
-        };
-
-        // Calculate range based on remaining refines
-        let newRange;
-        if (this.document.system.attributes.weaponGroup === 'staff') {
-            // For staffs, recalculate from remaining refines
-            newRange = await this._calculateStaffRange(refines);
-        } else {
-            // For other weapons, subtract the range modifier
-            let newRangeMin = this.document.system.details.range.min - rangeMinModifier;
-            let newRangeMax = this.document.system.details.range.max - rangeMaxModifier;
-            newRange = {
-                min: newRangeMin,
-                max: newRangeMax
-            };
-        }
-
-        const newName = this._generateWeaponName(refines);
-
-
-
-        await this.document.update({
-            'name': newName,
-            'system.details.refines': refines,
-            'system.details.might': newMight,
-            'system.details.range': newRange,
-            'system.details.costG': newCostG
-        });
-
-        console.log(`HoL | Removed refine from slot ${slotIndex}, updated name to ${newName}`);
-    }
-
-    async _getRefineById(refineId) {
-        let refineItem = game.items.get(refineId);
-        if (!refineItem) {
-            for (const pack of game.packs) {
-                if (pack.documentName === 'Item') {
-                    const items = await pack.getDocuments();
-                    refineItem = items.find(i => {
-                        const matchesId = i.id === refineId;
-                        const matchesSourceId = i.flags?.['heroes-of-lite']?.sourceId === refineId;
-                        return matchesId || matchesSourceId;
-                    });
-                    if (refineItem) break;
-                }
-            }
-        }
-        return refineItem;
-    }
+    const parts = [...refineNames];
+    if (weaponGroup !== 'staff' || !hasRefines) parts.push(weaponType);
+    return parts.join(' ');
+  }
 }

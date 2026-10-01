@@ -28,6 +28,10 @@ npm-debug.log*
 .cache/
 temp/
 
+# Generated sheet preview harness output
+tools/preview/out/
+tools/preview/screenshots/
+
 # LevelDB files in packs (Foundry VTT compendium database files)
 packs/**/CURRENT
 packs/**/LOCK

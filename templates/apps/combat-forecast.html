@@ -1,0 +1,85 @@
+<div class="hol-sheet-inner forecast-inner">
+    <div class="forecast-grid">
+        <div class="forecast-side attacker {{#unless attacker.canAct}}inactive{{/unless}}">
+            <img class="forecast-portrait" src="{{attacker.img}}" alt="{{attacker.name}}" />
+            <div class="forecast-name">{{attacker.name}}</div>
+            <div class="forecast-weapon">{{attacker.weapon}}</div>
+            <div class="forecast-hp">
+                <div class="forecast-hp-bar"><div class="forecast-hp-fill" style="width: {{attacker.hpPercent}}%"></div></div>
+                <span>{{attacker.hp}} / {{attacker.maxHp}}</span>
+            </div>
+            <div class="forecast-stats">
+                <div class="forecast-stat"><label>Dmg</label><span class="big">{{attacker.damage}}{{#if (eq attacker.attackCount 2)}} &times;2{{/if}}{{#if (eq attacker.attackCount 4)}} &times;4{{/if}}</span></div>
+                <div class="forecast-stat"><label>Hit</label><span>{{attacker.hitChance}}</span></div>
+                <div class="forecast-stat"><label>Crit</label><span>{{attacker.critChance}}</span></div>
+            </div>
+            <div class="forecast-badges">
+                {{#if attacker.effective}}<span class="hol-badge effective">Effective</span>{{/if}}
+                {{#if attacker.effectiveNegated}}<span class="hol-badge muted">Effect. blocked</span>{{/if}}
+                {{#if (eq attacker.triangle "advantage")}}<span class="hol-badge wta">WTA</span>{{/if}}
+                {{#if (eq attacker.triangle "disadvantage")}}<span class="hol-badge wtd">WTD</span>{{/if}}
+                {{#if (eq attacker.mode "advantage")}}<span class="hol-badge adv">Advantage</span>{{/if}}
+                {{#if (eq attacker.mode "disadvantage")}}<span class="hol-badge dis">Disadvantage</span>{{/if}}
+            </div>
+            <div class="forecast-skills">
+                {{#each attacker.skills}}<span class="hol-badge skill">{{this}}</span>{{/each}}
+            </div>
+        </div>
+
+        <div class="forecast-middle">
+            <div class="forecast-vs">VS</div>
+            <div class="forecast-distance">{{distance}} tile{{#unless (eq distance 1)}}s{{/unless}}</div>
+            <ol class="forecast-order">
+                {{#each order}}
+                <li class="order-{{this.side}}">{{this.label}}</li>
+                {{/each}}
+            </ol>        </div>
+
+        <div class="forecast-side defender {{#unless defender.canAct}}inactive{{/unless}}">
+            <img class="forecast-portrait" src="{{defender.img}}" alt="{{defender.name}}" />
+            <div class="forecast-name">{{defender.name}}</div>
+            <div class="forecast-weapon">{{defender.weapon}}</div>
+            <div class="forecast-hp">
+                <div class="forecast-hp-bar"><div class="forecast-hp-fill" style="width: {{defender.hpPercent}}%"></div></div>
+                <span>{{defender.hp}} / {{defender.maxHp}}</span>
+            </div>
+            <div class="forecast-stats">
+                <div class="forecast-stat"><label>Dmg</label><span class="big">{{#if defender.canAct}}{{defender.damage}}{{else}}&mdash;{{/if}}</span></div>
+                <div class="forecast-stat"><label>Hit</label><span>{{#if defender.canAct}}{{defender.hitChance}}{{else}}&mdash;{{/if}}</span></div>
+                <div class="forecast-stat"><label>Crit</label><span>{{#if defender.canAct}}{{defender.critChance}}{{else}}&mdash;{{/if}}</span></div>
+            </div>
+            <div class="forecast-badges">
+                {{#unless defender.canAct}}<span class="hol-badge muted">No counter</span>{{/unless}}
+                {{#if defender.effective}}<span class="hol-badge effective">Effective</span>{{/if}}
+                {{#if (eq defender.triangle "advantage")}}<span class="hol-badge wta">WTA</span>{{/if}}
+                {{#if (eq defender.triangle "disadvantage")}}<span class="hol-badge wtd">WTD</span>{{/if}}
+                {{#if defender.canAct}}
+                    {{#if (eq defender.mode "advantage")}}<span class="hol-badge adv">Advantage</span>{{/if}}
+                    {{#if (eq defender.mode "disadvantage")}}<span class="hol-badge dis">Disadvantage</span>{{/if}}
+                {{/if}}
+                {{#if defender.staffCounter}}<span class="hol-badge muted">Staff (Atk only)</span>{{/if}}
+            </div>
+            <div class="forecast-skills">
+                {{#each defender.skills}}<span class="hol-badge skill">{{this}}</span>{{/each}}
+            </div>
+        </div>
+    </div>
+
+    <div class="forecast-footer">
+        <div class="forecast-weapon-picker">
+            <label>Weapon</label>
+            <select class="forecast-weapon-select">
+                {{#each weapons}}
+                <option value="{{this.id}}" {{#if this.equipped}}selected{{/if}}>{{this.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <p class="hol-hint">{{rangeHint}}</p>
+        <div class="forecast-buttons">
+            <button type="button" class="hol-button" data-action="cancel">Cancel</button>
+            <button type="button" class="hol-button primary" data-action="fight" {{#if outOfRange}}disabled{{/if}}>
+                <i class="fas fa-khanda"></i> Fight
+            </button>
+        </div>
+    </div>
+</div>

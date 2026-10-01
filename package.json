@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "description": "System support content for the Heroes of Lite homebrew",
   "type": "module",
+  "private": true,
   "scripts": {
-    "build": "node scripts/build.js",
-    "dev": "node scripts/build.js && echo 'Watching for changes...' && node scripts/watch.js"
+    "preview": "node tools/preview/render.js",
+    "test:ui": "node tools/preview/check.js",
+    "test:rules": "node tools/rules-check.js",
+    "test:combat": "node tools/combat-check.js",
+    "test": "node tools/rules-check.js && node tools/combat-check.js && node tools/preview/check.js"
   },
   "keywords": [
     "foundry",
@@ -13,5 +17,9 @@
     "heroes-of-lite"
   ],
   "author": "BZega",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "handlebars": "^4.7.8",
+    "playwright": "^1.49.0"
+  }
 }
