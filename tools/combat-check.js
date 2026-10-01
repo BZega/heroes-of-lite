@@ -4,9 +4,9 @@
  */
 
 import assert from 'node:assert/strict';
-import { buildForecast, resolveCombat, accuracyMode, rollChance, requiredRoll, effectiveMultiplier } from '../modules/combat/engine.js';
-import { diceNeeded } from '../modules/combat/apply.js';
-import { triangleRelation } from '../modules/rules.js';
+import { buildForecast, resolveCombat, accuracyMode, rollChance, requiredRoll, effectiveMultiplier } from '../modules/combat/engine.ts';
+import { diceNeeded } from '../modules/combat/apply.ts';
+import { triangleRelation } from '../modules/rules.ts';
 
 /** Minimal stand-in for `buildUnitProfile` output. */
 function profile({

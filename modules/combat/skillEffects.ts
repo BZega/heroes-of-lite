@@ -7,34 +7,56 @@
  * read the same numbers.
  */
 
+import type { CombatSide, SkillModifiers, StatKey, UnitProfile } from '../../types/hol.ts';
+
+export type { SkillModifiers };
+
 const SIGNED = /^([+-]?\d+(?:\.\d+)?)$/;
 
+/** A single stat or modifier adjustment granted by a tag. */
+interface Grant {
+  key: string;
+  value: number;
+}
+
 /** Parse `grant:hit:+3` into `{ key: 'hit', value: 3 }`. */
-function parseGrant(tag) {
+function parseGrant(tag: string): Grant | null {
   const parts = tag.split(':');
   if (parts.length !== 3 || parts[0] !== 'grant') return null;
-  const match = SIGNED.exec(parts[2]);
-  return match ? { key: parts[1], value: Number(match[1]) } : null;
+  const match = SIGNED.exec(parts[2]!);
+  return match ? { key: parts[1]!, value: Number(match[1]) } : null;
 }
 
 /** Parse `condition:foeDamageType:physical:hit+1` into its grant half. */
-function parseInlineGrant(tail) {
+function parseInlineGrant(tail: string): Grant | null {
   const match = /^([a-zA-Z]+)([+-]\d+)$/.exec(tail);
-  return match ? { key: match[1], value: Number(match[2]) } : null;
+  return match ? { key: match[1]!, value: Number(match[2]) } : null;
 }
 
-const hpFraction = profile => {
+const hpFraction = (profile: UnitProfile): number => {
   const max = profile.totals.hp;
   return max > 0 ? profile.currentHP / max : 0;
 };
 
+/** The matchup a skill is being evaluated against. */
+export interface SkillContext {
+  self: UnitProfile;
+  foe: UnitProfile;
+  role: CombatSide;
+  distance: number;
+  turn: number;
+  selfTerrainActive: boolean;
+  rematch?: boolean;
+  rescuing?: boolean;
+  /** Board query, absent outside a live scene. */
+  alliesWithin?: (range: number) => number;
+}
+
 /**
  * Evaluate one `condition:*` tag.
- * @param {string} tag
- * @param {object} ctx Matchup context.
- * @returns {boolean|{grant: object}} True/false, or an inline grant when the tag carries one.
+ * @returns True/false, or an inline grant when the tag carries one.
  */
-function evaluateCondition(tag, ctx) {
+function evaluateCondition(tag: string, ctx: SkillContext): boolean | { grant: Grant } {
   const body = tag.slice('condition:'.length);
   const { self, foe } = ctx;
 
@@ -45,7 +67,6 @@ function evaluateCondition(tag, ctx) {
     const fraction = hpFraction(self);
     return hpMatch[1] === '>=' ? fraction >= threshold : fraction <= threshold;
   }
-
   if (body.startsWith('foeWeapon:')) {
     return foe.equipped?.group === body.slice('foeWeapon:'.length);
   }
@@ -94,17 +115,16 @@ function evaluateCondition(tag, ctx) {
 }
 
 /** Skills whose tags only make sense once the unit is actually attacking. */
-const ROLE_TAGS = { 'requires:initiator': 'attacker', 'requires:defender': 'defender' };
+const ROLE_TAGS: Record<string, CombatSide> = {
+  'requires:initiator': 'attacker',
+  'requires:defender': 'defender'
+};
 
-/**
- * Collect every modifier a unit's skills contribute to one matchup.
- *
- * @param {object} profile Unit profile for the skill owner.
- * @param {object} ctx `{ self, foe, role, distance, turn, selfTerrainActive, ... }`
- * @returns {object} Aggregated modifiers plus the list of skills that fired.
- */
-export function evaluateSkills(profile, ctx) {
-  const result = {
+/** Everything a unit's skills contribute to one matchup. */
+
+/** Collect every modifier a unit's skills contribute to one matchup. */
+export function evaluateSkills(profile: UnitProfile, ctx: SkillContext): SkillModifiers {
+  const result: SkillModifiers = {
     stats: { atk: 0, spd: 0, dex: 0, def: 0, res: 0, luck: 0, hp: 0 },
     hit: 0,
     avoid: 0,
@@ -138,7 +158,7 @@ export function evaluateSkills(profile, ctx) {
     active: []
   };
 
-  const STAT_KEYS = new Set(Object.keys(result.stats));
+  const STAT_KEYS = new Set<string>(Object.keys(result.stats));
 
   for (const skill of profile.skillList ?? []) {
     const tags = skill.tags ?? [];
@@ -150,13 +170,13 @@ export function evaluateSkills(profile, ctx) {
     const roleTag = tags.find(tag => ROLE_TAGS[tag]);
     if (roleTag && ROLE_TAGS[roleTag] !== ctx.role) continue;
 
-    const inlineGrants = [];
+    const inlineGrants: Grant[] = [];
     let conditionsMet = true;
     for (const tag of tags) {
       if (!tag.startsWith('condition:')) continue;
       const outcome = evaluateCondition(tag, ctx);
       if (outcome === false) { conditionsMet = false; break; }
-      if (outcome && outcome.grant) inlineGrants.push(outcome.grant);
+      if (outcome !== true && outcome.grant) inlineGrants.push(outcome.grant);
     }
     if (!conditionsMet) continue;
 
@@ -164,8 +184,8 @@ export function evaluateSkills(profile, ctx) {
     if (tags.some(tag => tag.startsWith('aura:'))) continue;
 
     let fired = false;
-    const apply = ({ key, value }) => {
-      if (STAT_KEYS.has(key)) result.stats[key] += value;
+    const apply = ({ key, value }: Grant): void => {
+      if (STAT_KEYS.has(key)) result.stats[key as StatKey] += value;
       else if (key === 'hit') result.hit += value;
       else if (key === 'avoid') result.avoid += value;
       else if (key === 'movement') result.movement += value;
@@ -226,12 +246,8 @@ export function evaluateSkills(profile, ctx) {
   return result;
 }
 
-/**
- * Hardy Bearing shuts off priority and frequency skills for *both* sides (p.33).
- * @param {object} selfMods
- * @param {object} foeMods
- */
-export function applyMutualDisables(selfMods, foeMods) {
+/** Hardy Bearing shuts off priority and frequency skills for *both* sides (p.33). */
+export function applyMutualDisables(selfMods: SkillModifiers, foeMods: SkillModifiers): void {
   const priorityOff = selfMods.disablePrioritySkills || foeMods.disablePrioritySkills;
   const frequencyOff = selfMods.disableFrequencySkills || foeMods.disableFrequencySkills;
 

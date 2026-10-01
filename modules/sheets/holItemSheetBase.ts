@@ -1,4 +1,4 @@
-import { activateSheetTabs } from '../helpers.js';
+import { activateSheetTabs } from '../helpers.ts';
 
 /**
  * Shared behaviour for every Heroes of Lite item sheet: identical window chrome,
@@ -7,7 +7,7 @@ import { activateSheetTabs } from '../helpers.js';
 export default class HolItemSheetBase extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.sheets.ItemSheetV2
 ) {
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS: Record<string, any> = {
     classes: ['heroes-of-lite', 'hol-sheet', 'item-sheet'],
     window: {
       icon: 'fas fa-scroll',
@@ -24,30 +24,30 @@ export default class HolItemSheetBase extends foundry.applications.api.Handlebar
     }
   };
 
-  async _prepareContext(options) {
+  override async _prepareContext(options: Record<string, unknown>): Promise<Record<string, any>> {
     const context = await super._prepareContext(options);
-    const item = this.document;
+    const item = this.document as Item;
 
-    context.name = item.name;
-    context.img = item.img;
-    context.type = item.type;
-    context.system ??= item.system;
-    context.isFromCompendium = !!item.pack;
+    context['name'] = item.name;
+    context['img'] = item.img;
+    context['type'] = item.type;
+    context['system'] ??= item.system;
+    context['isFromCompendium'] = !!item.pack;
 
     return context;
   }
 
-  _onRender(context, options) {
+  override _onRender(context: Record<string, any>, options: Record<string, unknown>): void {
     super._onRender(context, options);
     this._applyCompendiumLock();
     activateSheetTabs(this);
   }
 
   /** Compendium documents are not editable in place, so disable every control. */
-  _applyCompendiumLock() {
+  _applyCompendiumLock(): void {
     if (!this.document.pack) return;
     const html = this.element;
-    html.querySelectorAll('input, select, textarea, button[data-action]').forEach(el => {
+    html.querySelectorAll<HTMLInputElement>('input, select, textarea, button[data-action]').forEach(el => {
       el.disabled = true;
     });
     html.classList.add('compendium-item-readonly');

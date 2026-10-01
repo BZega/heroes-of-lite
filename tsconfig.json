@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": false,
+
+    // Sources import with .ts extensions so Node can run them directly via type
+    // stripping; tsc rewrites those to .js for the browser build.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+
+    // Node's type stripping only handles syntax that erases cleanly.
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["hol.ts", "modules/**/*.ts", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "tools"]
+}

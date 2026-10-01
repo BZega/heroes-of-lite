@@ -6,26 +6,34 @@
    ========================================================================== */
 
 .heroes-of-lite.hol-sheet {
-  --hol-navy: #1b2d44;
-  --hol-navy-dark: #122030;
-  --hol-crimson: #8c2f2a;
-  --hol-gold: #c9a227;
-  --hol-gold-soft: #e8d49a;
-  --hol-parchment: #f7f2e6;
-  --hol-parchment-dark: #ece3cf;
-  --hol-surface: #ffffff;
-  --hol-ink: #24211c;
-  --hol-ink-soft: #554f44;
-  --hol-muted: #8a8172;
-  --hol-border: #d6c9ad;
-  --hol-danger: #b3362c;
-  --hol-success: #27824f;
+  /* Palette lifted from the Fire Emblem GBA status screen: parchment panels,
+     burnt-umber label cells, tan lettering, crimson and forest accents. */
+  --hol-navy: #6b3410;
+  --hol-navy-dark: #4a2208;
+  --hol-crimson: #b01713;
+  --hol-gold: #8a6d10;
+  --hol-gold-soft: #d9a441;
 
-  --hol-radius: 6px;
-  --hol-radius-sm: 4px;
-  --hol-gap: 0.75rem;
-  --hol-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
-  --hol-header: linear-gradient(135deg, var(--hol-navy) 0%, var(--hol-crimson) 100%);
+  --hol-parchment: #fce8a8;
+  --hol-parchment-dark: #f3d98c;
+  --hol-surface: #fdf0c4;
+
+  --hol-brown: #7a3d0e;
+  --hol-brown-dark: #5a2a07;
+  --hol-tan: #f0c080;
+
+  --hol-ink: #2b1a08;
+  --hol-ink-soft: #6b4a22;
+  --hol-muted: #9c7c4c;
+  --hol-border: #8a5a28;
+  --hol-danger: #b01713;
+  --hol-success: #1f7a2e;
+
+  --hol-radius: 3px;
+  --hol-radius-sm: 2px;
+  --hol-gap: 0.5rem;
+  --hol-shadow: 0 2px 0 rgba(74, 34, 8, 0.35);
+  --hol-header: linear-gradient(180deg, #7a3d0e 0%, #5a2a07 100%);
 }
 
 /* --------------------------------------------------------------------------
@@ -459,6 +467,72 @@
 
 .heroes-of-lite.hol-sheet .innate-attribute-tag:hover {
   background: var(--hol-crimson);
+}
+
+/* ---- Status track ---- */
+
+.heroes-of-lite.hol-sheet .hol-status-group {
+  grid-column: 1 / -1;
+}
+
+.heroes-of-lite.hol-sheet .hol-status-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.2rem 0.5rem;
+  width: auto;
+  border: 1px solid var(--hol-border);
+  border-radius: var(--hol-radius-sm);
+  background: var(--hol-parchment-dark);
+  color: var(--hol-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.heroes-of-lite.hol-sheet .hol-status-chip:hover {
+  border-color: var(--hol-gold);
+  color: var(--hol-ink);
+}
+
+.heroes-of-lite.hol-sheet .hol-status-chip.is-active {
+  background: var(--hol-crimson);
+  border-color: var(--hol-navy-dark);
+  color: #fff;
+}
+
+/* The remaining-turn counter only appears while the status is active. */
+.heroes-of-lite.hol-sheet .hol-status-turns {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.heroes-of-lite.hol-sheet .hol-hint {
+  margin: 0 0 0.6rem;
+  color: var(--hol-ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.heroes-of-lite.hol-sheet .support-entry.is-active-support {
+  border-color: var(--hol-gold);
+  box-shadow: inset 0 0 0 1px var(--hol-gold-soft);
 }
 
 .heroes-of-lite.hol-sheet .hol-badge {
@@ -1721,8 +1795,345 @@
 
 .hol-chat-card .hol-chat-ko {
   padding: 0.35rem 0.6rem;
-  background: #b3362c;
+  background: #b01713;
   color: #fff;
   font-weight: 800;
   text-align: center;
 }
+
+/* ==========================================================================
+   Fire Emblem status-screen treatment
+   Label cells are filled umber with tan lettering; values sit on parchment.
+   ========================================================================== */
+
+.heroes-of-lite.hol-sheet .sheet-header {
+  border-bottom: 2px solid var(--hol-brown-dark);
+}
+
+.heroes-of-lite.hol-sheet .sheet-portrait,
+.heroes-of-lite.hol-sheet .battle-portrait,
+.heroes-of-lite.hol-sheet .action-portrait,
+.heroes-of-lite.hol-sheet .forecast-portrait {
+  border-color: var(--hol-tan);
+  border-radius: var(--hol-radius-sm);
+}
+
+/* Section titles: bold italic and underlined, as on the status screen. */
+.heroes-of-lite.hol-sheet h3,
+.heroes-of-lite.hol-sheet .battle-quadrant h4 {
+  color: var(--hol-brown-dark);
+  font-style: italic;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: 2px solid var(--hol-brown);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Every stat label becomes a filled cell. */
+.heroes-of-lite.hol-sheet .stat-table .stat-row label,
+.heroes-of-lite.hol-sheet .derived-stat label,
+.heroes-of-lite.hol-sheet .combat-preview .preview-row label,
+.heroes-of-lite.hol-sheet .battle-stat-row label,
+.heroes-of-lite.hol-sheet .battle-nc-row label,
+.heroes-of-lite.hol-sheet .battle-mini-stat label,
+.heroes-of-lite.hol-sheet .battle-terrain-section label,
+.heroes-of-lite.hol-sheet .hp-display > label {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--hol-radius-sm);
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.heroes-of-lite.hol-sheet .form-group > label,
+.heroes-of-lite.hol-sheet .stat-bonus-grid .stat-row label {
+  color: var(--hol-brown-dark);
+  font-weight: 800;
+}
+
+/* Totals read as the bright figures on the reference sheet. */
+.heroes-of-lite.hol-sheet .stat-table .stat-row .total,
+.heroes-of-lite.hol-sheet .combat-preview .total,
+.heroes-of-lite.hol-sheet .derived-stat span,
+.heroes-of-lite.hol-sheet .battle-stat-row span,
+.heroes-of-lite.hol-sheet .battle-nc-row span,
+.heroes-of-lite.hol-sheet .battle-mini-stat span {
+  color: var(--hol-ink);
+  font-weight: 800;
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-row,
+.heroes-of-lite.hol-sheet .derived-stat,
+.heroes-of-lite.hol-sheet .battle-stat-row,
+.heroes-of-lite.hol-sheet .battle-nc-row,
+.heroes-of-lite.hol-sheet .battle-mini-stat {
+  background: var(--hol-parchment);
+  border: 1px solid var(--hol-border);
+}
+
+/* HP block: black field with a crimson maximum. */
+.heroes-of-lite.hol-sheet .hp-display {
+  background: var(--hol-parchment);
+  border-color: var(--hol-border);
+}
+
+.heroes-of-lite.hol-sheet .hp-display > label {
+  background: #1b1208;
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .max-hp {
+  color: var(--hol-crimson);
+}
+
+.heroes-of-lite.hol-sheet .hp-values input {
+  border-color: var(--hol-border);
+}
+
+/* Tabs sit as umber chips until selected. */
+.heroes-of-lite.hol-sheet .sheet-tabs {
+  background: var(--hol-brown-dark);
+  border-bottom-color: var(--hol-brown-dark);
+  padding: 0.2rem 0.3rem 0;
+  gap: 0.2rem;
+}
+
+.heroes-of-lite.hol-sheet .sheet-tabs .item {
+  background: var(--hol-brown);
+  color: #fbe0b8;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+.heroes-of-lite.hol-sheet .sheet-tabs .item:hover {
+  background: var(--hol-gold-soft);
+  color: var(--hol-brown-dark);
+  text-shadow: none;
+}
+
+.heroes-of-lite.hol-sheet .sheet-tabs .item.active {
+  background: var(--hol-parchment);
+  color: var(--hol-brown-dark);
+  box-shadow: none;
+  font-style: italic;
+  text-shadow: none;
+}
+
+/* Column headings sit centred over the fields they describe. */
+.heroes-of-lite.hol-sheet .stat-table .stat-header {
+  padding: 0 0.55rem 0.3rem;
+  border-bottom-color: var(--hol-brown);
+  color: var(--hol-brown-dark);
+  text-align: center;
+}
+
+.heroes-of-lite.hol-sheet .stat-table .stat-header span:first-child {
+  text-align: left;
+}
+
+/* Tags, badges and slots pick up the umber frame. */
+.heroes-of-lite.hol-sheet .hol-tag {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+  border-radius: var(--hol-radius-sm);
+}
+
+.heroes-of-lite.hol-sheet .hol-badge {
+  background: var(--hol-gold-soft);
+  color: var(--hol-brown-dark);
+  border-radius: var(--hol-radius-sm);
+}
+
+.heroes-of-lite.hol-sheet .hol-badge.skill {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+}
+
+.heroes-of-lite.hol-sheet .hol-slot,
+.heroes-of-lite.hol-sheet .hol-checkbox,
+.heroes-of-lite.hol-sheet .stat-bonus-grid .stat-row,
+.heroes-of-lite.hol-sheet .charge-counter,
+.heroes-of-lite.hol-sheet .hol-panel {
+  background: var(--hol-parchment);
+  border-color: var(--hol-border);
+}
+
+.heroes-of-lite.hol-sheet .left-column {
+  background: var(--hol-parchment-dark);
+  border-right-color: var(--hol-brown);
+}
+
+.heroes-of-lite.hol-sheet .right-column,
+.heroes-of-lite.hol-sheet .sheet-body,
+.heroes-of-lite.hol-sheet .window-content,
+.heroes-of-lite.hol-sheet .hol-sheet-inner {
+  background: var(--hol-surface);
+}
+
+.heroes-of-lite.hol-sheet input[type="text"],
+.heroes-of-lite.hol-sheet input[type="number"],
+.heroes-of-lite.hol-sheet textarea,
+.heroes-of-lite.hol-sheet select {
+  background: var(--hol-parchment);
+  border-color: var(--hol-border);
+  font-weight: 600;
+}
+
+.heroes-of-lite.hol-sheet .item-name,
+.heroes-of-lite.hol-sheet .refine-name {
+  color: var(--hol-brown-dark);
+  font-weight: 700;
+}
+
+.heroes-of-lite.hol-sheet .item-name:hover,
+.heroes-of-lite.hol-sheet .refine-name:hover {
+  color: var(--hol-crimson);
+  border-bottom-color: var(--hol-crimson);
+}
+
+/* Gold reads olive, as on the reference sheet. */
+.heroes-of-lite.hol-sheet .battle-gold {
+  border-color: var(--hol-gold);
+  background: rgba(138, 109, 16, 0.18);
+}
+
+.heroes-of-lite.hol-sheet .battle-gold span {
+  color: var(--hol-gold);
+}
+
+.heroes-of-lite.hol-sheet .battle-grid {
+  background: var(--hol-brown-dark);
+}
+
+.heroes-of-lite.hol-sheet .battle-quadrant {
+  background: var(--hol-parchment);
+}
+
+.heroes-of-lite.hol-sheet.battle-active .sheet-header {
+  background: linear-gradient(180deg, #5a2a07 0%, #3a1a04 100%);
+}
+
+/* Combat windows follow the same frame. */
+.heroes-of-lite.hol-sheet .forecast-side {
+  background: var(--hol-parchment);
+  border-color: var(--hol-border);
+}
+
+.heroes-of-lite.hol-sheet .forecast-side.attacker {
+  border-color: var(--hol-brown);
+  box-shadow: inset 0 3px 0 var(--hol-brown);
+}
+
+.heroes-of-lite.hol-sheet .forecast-stat {
+  background: rgba(122, 61, 14, 0.12);
+}
+
+.heroes-of-lite.hol-sheet .forecast-stat label {
+  color: var(--hol-brown-dark);
+}
+
+.heroes-of-lite.hol-sheet .forecast-vs {
+  color: var(--hol-crimson);
+  font-style: italic;
+}
+
+.heroes-of-lite.hol-sheet .forecast-order li.order-attacker {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button,
+.heroes-of-lite.hol-sheet .hol-item-button,
+.heroes-of-lite.hol-sheet .hol-button,
+.heroes-of-lite.hol-sheet .hol-icon-button {
+  background: var(--hol-parchment);
+  border-color: var(--hol-border);
+  color: var(--hol-brown-dark);
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button:hover:not([disabled]),
+.heroes-of-lite.hol-sheet .hol-item-button:hover:not([disabled]),
+.heroes-of-lite.hol-sheet .hol-button:hover {
+  background: var(--hol-gold-soft);
+  border-color: var(--hol-brown);
+}
+
+.heroes-of-lite.hol-sheet .hol-button.primary {
+  background: var(--hol-crimson);
+  border-color: var(--hol-brown-dark);
+  color: #fff;
+}
+
+.heroes-of-lite.hol-sheet .hol-button.primary:hover {
+  background: var(--hol-brown);
+  border-color: var(--hol-brown-dark);
+  color: var(--hol-tan);
+}
+
+.heroes-of-lite.hol-sheet .hol-action-button i,
+.heroes-of-lite.hol-sheet .action-label,
+.heroes-of-lite.hol-sheet .action-name,
+.heroes-of-lite.hol-sheet .forecast-name,
+.heroes-of-lite.hol-sheet .battle-name,
+.heroes-of-lite.hol-sheet .charge-value,
+.heroes-of-lite.hol-sheet .battle-skill-name,
+.heroes-of-lite.hol-sheet .support-actor-name {
+  color: var(--hol-brown-dark);
+}
+
+.heroes-of-lite.hol-sheet .support-rank-badge,
+.heroes-of-lite.hol-sheet .battle-skill-icon {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+}
+
+.heroes-of-lite.hol-sheet .battle-skill-icon {
+  background: none;
+  color: var(--hol-brown);
+}
+
+.heroes-of-lite.hol-sheet .unallocated {
+  border-color: var(--hol-brown);
+  background: rgba(138, 109, 16, 0.18);
+}
+
+.heroes-of-lite.hol-sheet .derived-tag {
+  background: var(--hol-brown);
+  color: var(--hol-tan);
+  border-color: var(--hol-brown-dark);
+}
+
+/* Chat card matches the sheets. */
+.hol-chat-card {
+  border-color: var(--hol-brown, #7a3d0e);
+  background: #fce8a8;
+  color: #2b1a08;
+}
+
+.hol-chat-card .hol-chat-header {
+  background: linear-gradient(180deg, #7a3d0e 0%, #5a2a07 100%);
+  color: #f0c080;
+}
+
+.hol-chat-card .hol-badge {
+  background: #d9a441;
+  color: #4a2208;
+}
+
+.hol-chat-card .hol-badge.skill {
+  background: #7a3d0e;
+  color: #f0c080;
+}
+
+.hol-chat-card .strike {
+  background: #fdf0c4;
+  border-left-color: #8a5a28;
+}
+
+.hol-chat-card .strike.attacker { border-left-color: #7a3d0e; }
+.hol-chat-card .strike.is-crit { background: #f3d98c; }
+.hol-chat-card .strike-result { color: #b01713; }
+.hol-chat-card .hol-chat-footer { border-top-color: #8a5a28; }

@@ -6,18 +6,18 @@
             <div class="header-details">
                 <div class="inline-field">
                     <label>Type</label>
-                    <select name="system.attributes.type">
+                    <select name="system.type">
                         <option value="">--</option>
-                        <option value="technique" {{#if (eq system.attributes.type "technique")}}selected{{/if}}>Technique</option>
-                        <option value="action" {{#if (eq system.attributes.type "action")}}selected{{/if}}>Action</option>
-                        <option value="strategy" {{#if (eq system.attributes.type "strategy")}}selected{{/if}}>Strategy</option>
-                        <option value="reflex" {{#if (eq system.attributes.type "reflex")}}selected{{/if}}>Reflex</option>
-                        <option value="passive" {{#if (eq system.attributes.type "passive")}}selected{{/if}}>Passive</option>
+                        <option value="technique" {{#if (eq system.type "technique")}}selected{{/if}}>Technique</option>
+                        <option value="action" {{#if (eq system.type "action")}}selected{{/if}}>Action</option>
+                        <option value="strategy" {{#if (eq system.type "strategy")}}selected{{/if}}>Strategy</option>
+                        <option value="reflex" {{#if (eq system.type "reflex")}}selected{{/if}}>Reflex</option>
+                        <option value="passive" {{#if (eq system.type "passive")}}selected{{/if}}>Passive</option>
                     </select>
                 </div>
                 <div class="inline-field">
                     <label>Charge</label>
-                    <input type="text" name="system.details.requiredCharge" value="{{system.details.requiredCharge}}" placeholder="None" />
+                    <input type="number" name="system.requiredCharge" value="{{system.requiredCharge}}" min="0" placeholder="0" />
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="tab" data-tab="effect">
             <div class="form-group stretch">
                 <label>Effect</label>
-                <textarea name="system.details.effect" rows="12">{{system.details.effect}}</textarea>
+                <textarea name="system.effect" rows="12">{{system.effect}}</textarea>
             </div>
         </div>
 
@@ -41,16 +41,16 @@
             <div class="field-grid">
                 <div class="form-group">
                     <label>Type Group</label>
-                    <input type="text" name="system.details.typeGroup" value="{{system.details.typeGroup}}" placeholder="all-access" />
+                    <input type="text" name="system.typeGroup" value="{{system.typeGroup}}" placeholder="all-access" />
                 </div>
             </div>
             <h3>Prerequisites</h3>
             <div class="form-group">
                 <label>Comma separated</label>
-                <input type="text" name="system.details.prerequisite" value="{{join system.details.prerequisite ', '}}" placeholder="level:5, weapon:sword|lance|axe" />
+                <input type="text" name="system.prerequisite" value="{{join system.prerequisite ', '}}" placeholder="level:5, weapon:sword|lance|axe" />
             </div>
             <div class="tag-list">
-                {{#each system.details.prerequisite}}
+                {{#each system.prerequisite}}
                     <span class="hol-tag">{{this}}</span>
                 {{else}}
                     <span class="empty-text">No prerequisites</span>

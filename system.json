@@ -8,11 +8,11 @@
   ],
 
   "compatibility": {
-    "minimum": "11",
-    "verified": "13"
+    "minimum": "14",
+    "verified": "14.368"
   },
 
-  "esmodules": ["hol.js"],
+  "esmodules": ["dist/hol.js"],
   "scripts": [],
   "styles": ["hol.css"],
 

@@ -5,16 +5,24 @@
  * style preview numbers. `resolveCombat` then rolls that forecast out strike by strike.
  */
 
-import { triangleRelation, EFFECTIVE_TAGS } from '../rules.js';
-import { evaluateSkills, applyMutualDisables } from './skillEffects.js';
+import { triangleRelation, EFFECTIVE_TAGS } from '../rules.ts';
+import { isStatusKey } from '../effects/statuses.ts';
+import { evaluateSkills, applyMutualDisables } from './skillEffects.ts';
+import type {
+  AccuracyMode, CombatContext, CombatForecast, CombatLogEntry, CombatResult,
+  CombatSide, CombatState, ForecastSide, PostCombatEntry, SkillModifiers,
+  StatBlock, StatKey, StatusKey, StrikeOrderEntry, TriangleRelation, UnitProfile
+} from '../../types/hol.ts';
+
+export type { AccuracyMode };
 
 /** A d20 roll needs to beat Avoid outright; ties go to the defender (rules p.23). */
-export function requiredRoll(hit, avoid) {
+export function requiredRoll(hit: number, avoid: number): number {
   return avoid - hit + 1;
 }
 
 /** Probability that a d20 meets or beats `needed`, honouring advantage/disadvantage. */
-export function rollChance(needed, mode = 'normal') {
+export function rollChance(needed: number, mode: AccuracyMode = 'normal'): number {
   const single = Math.min(1, Math.max(0, (21 - needed) / 20));
   if (mode === 'advantage') return 1 - (1 - single) ** 2;
   if (mode === 'disadvantage') return single ** 2;
@@ -25,7 +33,11 @@ export function rollChance(needed, mode = 'normal') {
  * Advantage comes from out-ranging the foe's Avoid; disadvantage from trailing it
  * by 8 or more. Having both cancels out (rules p.23).
  */
-export function accuracyMode(hit, avoid, { forceAdvantage = false, forceDisadvantage = false } = {}) {
+export function accuracyMode(
+  hit: number,
+  avoid: number,
+  { forceAdvantage = false, forceDisadvantage = false } = {}
+): AccuracyMode {
   const advantage = forceAdvantage || hit > avoid;
   const disadvantage = forceDisadvantage || hit <= avoid - 8;
   if (advantage && disadvantage) return 'normal';
@@ -35,7 +47,7 @@ export function accuracyMode(hit, avoid, { forceAdvantage = false, forceDisadvan
 }
 
 /** Slaying refines triple Might against the matching Trait, and do not stack. */
-export function effectiveMultiplier(tags, defenderTraits) {
+export function effectiveMultiplier(tags: Set<string>, defenderTraits: Iterable<string>): number {
   const traits = new Set(defenderTraits);
   for (const [tag, trait] of Object.entries(EFFECTIVE_TAGS)) {
     if (tags.has(tag) && traits.has(trait)) return 3;
@@ -43,7 +55,7 @@ export function effectiveMultiplier(tags, defenderTraits) {
   return 1;
 }
 
-function numericTag(tags, prefix) {
+function numericTag(tags: Set<string>, prefix: string): number | null {
   for (const tag of tags) {
     if (tag.startsWith(prefix)) {
       const value = Number(tag.slice(prefix.length));
@@ -54,40 +66,42 @@ function numericTag(tags, prefix) {
 }
 
 /** Maps a Shield skill's immunity onto the refine tag it negates. */
-const IMMUNITY_TAGS = {
+const IMMUNITY_TAGS: Record<string, string> = {
   scalerending: 'effective:scaled',
   furflaying: 'effective:furred',
   wingclipping: 'effective:winged',
   fiendslaying: 'effective:fiendish'
 };
 
-/**
- * Build one side's attacking profile against the other.
- * @returns {object} Power, damage, accuracy and crit figures for a single strike.
- */
-function buildSide(profile, foeProfile, { isInitiator, mods, foeMods }) {
+interface SideOptions {
+  isInitiator: boolean;
+  mods: SkillModifiers;
+  foeMods: SkillModifiers;
+}
+
+/** Build one side's attacking profile against the other. */
+function buildSide(profile: UnitProfile, foeProfile: UnitProfile, { isInitiator, mods, foeMods }: SideOptions): ForecastSide {
   const weapon = profile.equipped;
-  const tags = weapon?.tags ?? new Set();
+  const tags = weapon?.tags ?? new Set<string>();
   const armed = !!weapon;
 
   // Skill stat grants sit on top of the profile totals and ignore stat caps (p.15).
-  const totals = {};
-  for (const [key, value] of Object.entries(profile.totals)) {
-    totals[key] = value + (mods.stats[key] ?? 0);
-  }
-  const foeTotals = {};
-  for (const [key, value] of Object.entries(foeProfile.totals)) {
-    foeTotals[key] = value + (foeMods.stats[key] ?? 0);
-  }
+  const addStats = (base: StatBlock, bonuses: Record<StatKey, number>): StatBlock => {
+    const out = { ...base };
+    for (const key of Object.keys(out) as StatKey[]) out[key] = base[key] + (bonuses[key] ?? 0);
+    return out;
+  };
+  const totals = addStats(profile.totals, mods.stats);
+  const foeTotals = addStats(foeProfile.totals, foeMods.stats);
 
-  let triangle = triangleRelation(weapon?.group, foeProfile.equipped?.group, tags);
+  let triangle: TriangleRelation = triangleRelation(weapon?.group ?? '', foeProfile.equipped?.group ?? '', tags);
   // Cancel Affinity switches the triangle off for both combatants (p.33).
   if (mods.cancelTriangle || foeMods.cancelTriangle) triangle = 'neutral';
 
   // Shields deny effectiveness against the matching slaying attribute.
   const immune = [...foeMods.immuneEffective].some(kind => {
     const tag = IMMUNITY_TAGS[kind];
-    return tag && tags.has(tag);
+    return !!tag && tags.has(tag);
   });
   const multiplier = armed && !immune ? effectiveMultiplier(tags, foeProfile.traits) : 1;
 
@@ -95,7 +109,7 @@ function buildSide(profile, foeProfile, { isInitiator, mods, foeMods }) {
   // Wrathful Staff, which lets it be used like any other weapon (rules p.10/p.37).
   const wrathfulStaff = mods.staffInitiate || (profile.skills?.has('wrathful-staff') ?? false);
   const staffCounter = weapon?.group === 'staff' && !isInitiator && !wrathfulStaff;
-  const might = !armed || staffCounter ? 0 : weapon.might * multiplier;
+  const might = !armed || staffCounter ? 0 : weapon!.might * multiplier;
 
   let power = totals.atk + might + profile.powerBonus;
   const tri = Math.floor(power / 5);
@@ -103,7 +117,7 @@ function buildSide(profile, foeProfile, { isInitiator, mods, foeMods }) {
   if (triangle === 'disadvantage') power -= tri;
 
   // Blessed Strike targets the softer of Def/Res; Sorcery Blade forces Res.
-  const mitigationStat = mods.damageUsesLowerDefRes
+  const mitigationStat: StatKey = mods.damageUsesLowerDefRes
     ? (foeTotals.def <= foeTotals.res ? 'def' : 'res')
     : mods.damageVsRes || weapon?.damageType === 'magical' ? 'res' : 'def';
   const mitigation = foeTotals[mitigationStat];
@@ -169,37 +183,41 @@ function buildSide(profile, foeProfile, { isInitiator, mods, foeMods }) {
     lifesteal: foeMods.reverseLifesteal ? -(numericTag(tags, 'lifesteal:') ?? 0) : (numericTag(tags, 'lifesteal:') ?? 0),
     postCombatDamage: (numericTag(tags, 'effect:postCombatDamage:') ?? 0) + mods.postCombatDamage,
     halvesRemainingHP: tags.has('effect:replaceDamage:halveRemainingHP'),
-    activeSkills: mods.active
+    activeSkills: mods.active,
+
+    // Settled once both sides are known.
+    canAct: false,
+    strikesPerAttack: 1,
+    attackCount: 0
   };
 }
 
 /** Status refines only land when the tagged conditions are met. */
-function statusFromTags(tags) {
-  const statuses = new Set(['poisoned', 'silenced', 'berserk', 'broken', 'shocked', 'injured']);
-  const aliases = { shock: 'shocked', break: 'broken' };
+function statusFromTags(tags: Set<string>): { status: StatusKey; requiresInitiator: boolean; requiresHit: boolean } | null {
+  const aliases: Record<string, string> = { shock: 'shocked', break: 'broken' };
   for (const tag of tags) {
     if (!tag.startsWith('status:')) continue;
     const raw = tag.slice(7);
     const key = aliases[raw] ?? raw;
-    if (statuses.has(key)) {
+    if (isStatusKey(key)) {
       return { status: key, requiresInitiator: tags.has('requires:initiator'), requiresHit: tags.has('requires:hit') };
     }
   }
   return null;
 }
 
-/**
- * Produce the full combat preview between two units.
- *
- * @param {object} args
- * @param {object} args.attacker Unit profile from `buildUnitProfile`.
- * @param {object} args.defender Unit profile from `buildUnitProfile`.
- * @param {number} args.distance Tiles between the combatants.
- * @param {number} [args.turn] Current combat turn, for parity skills.
- * @param {object} [args.context] Extra matchup facts (rematch, terrain, ally counts).
- * @returns {object} Forecast with per-side figures and the ordered strike list.
- */
-export function buildForecast({ attacker, defender, distance = 1, turn = 1, context = {} }) {
+export interface ForecastArgs {
+  attacker: UnitProfile;
+  defender: UnitProfile;
+  /** Tiles between the combatants. */
+  distance?: number;
+  /** Current combat turn, for parity skills. */
+  turn?: number;
+  context?: CombatContext;
+}
+
+/** Produce the full combat preview between two units. */
+export function buildForecast({ attacker, defender, distance = 1, turn = 1, context = {} }: ForecastArgs): CombatForecast {
   const shared = { distance, turn, ...context };
 
   const attackerMods = evaluateSkills(attacker, {
@@ -250,8 +268,8 @@ export function buildForecast({ attacker, defender, distance = 1, turn = 1, cont
   a.strikesPerAttack = a.tags.has('effect:brave') ? 2 : 1;
   d.strikesPerAttack = 1;
 
-  const order = [];
-  const push = (side, count, label) => {
+  const order: StrikeOrderEntry[] = [];
+  const push = (side: CombatSide, count: number, label: string): void => {
     for (let i = 0; i < count; i++) order.push({ side, label });
   };
 
@@ -287,26 +305,26 @@ export function buildForecast({ attacker, defender, distance = 1, turn = 1, cont
 }
 
 /** A unit benefits from terrain unless it is a flier or standing on neutral ground. */
-function hasTerrainEffect(profile) {
+function hasTerrainEffect(profile: UnitProfile): boolean {
   if (profile.ignoresTerrain) return false;
-  const terrain = profile.terrain ?? {};
-  return !!(terrain.avoid || terrain.def || terrain.hpStart);
+  const terrain = profile.terrain;
+  return !!(terrain?.avoid || terrain?.def || terrain?.hpStart);
 }
 
 /**
  * Roll out a forecast.
- *
- * @param {object} forecast Result of `buildForecast`.
- * @param {object} state `{ attacker: {hp}, defender: {hp} }` starting hit points.
- * @param {() => number} [rng] Injectable d20 source, used by the tests.
- * @returns {object} Strike log, final HP and post-combat effects.
+ * @param rng Injectable d20 source, used by the tests.
  */
-export function resolveCombat(forecast, state, rng = () => Math.ceil(Math.random() * 20)) {
-  const hp = { attacker: state.attacker.hp, defender: state.defender.hp };
-  const maxHp = { attacker: state.attacker.maxHp, defender: state.defender.maxHp };
-  const log = [];
+export function resolveCombat(
+  forecast: CombatForecast,
+  state: CombatState,
+  rng: () => number = () => Math.ceil(Math.random() * 20)
+): CombatResult {
+  const hp: Record<CombatSide, number> = { attacker: state.attacker.hp, defender: state.defender.hp };
+  const maxHp: Record<CombatSide, number> = { attacker: state.attacker.maxHp, defender: state.defender.maxHp };
+  const log: CombatLogEntry[] = [];
 
-  const rollD20 = mode => {
+  const rollD20 = (mode: AccuracyMode): { value: number; dice: number[] } => {
     const first = rng();
     if (mode === 'normal') return { value: first, dice: [first] };
     const second = rng();
@@ -359,9 +377,9 @@ export function resolveCombat(forecast, state, rng = () => Math.ceil(Math.random
     });
   }
 
-  const postCombat = [];
-  for (const side of ['attacker', 'defender']) {
-    const foe = side === 'attacker' ? 'defender' : 'attacker';
+  const postCombat: PostCombatEntry[] = [];
+  for (const side of ['attacker', 'defender'] as CombatSide[]) {
+    const foe: CombatSide = side === 'attacker' ? 'defender' : 'attacker';
     const profile = forecast[side];
     if (!profile.canAct) continue;
 

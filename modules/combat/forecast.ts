@@ -3,18 +3,29 @@
  * numbers that matter, then rolls the whole exchange on confirmation.
  */
 
-import { appTemplate } from '../constants.js';
-import { buildUnitProfile } from '../rules.js';
-import { weaponTags } from '../refineIndex.js';
-import { buildForecast, resolveCombat } from './engine.js';
-import { applyCombatResult, diceNeeded, rollDicePool, tokenDistance } from './apply.js';
+import { appTemplate } from '../constants.ts';
+import { buildUnitProfile } from '../rules.ts';
+import { weaponTags } from '../refineIndex.ts';
+import { buildForecast, resolveCombat } from './engine.ts';
+import { applyCombatResult, diceNeeded, rollDicePool, tokenDistance } from './apply.ts';
+import type { CombatForecast, ForecastSide, UnitProfile } from '../../types/hol.ts';
 
-const percent = value => `${Math.round(value * 100)}%`;
+const percent = (value: number): string => `${Math.round(value * 100)}%`;
+
+interface ForecastSnapshot {
+  attacker: UnitProfile;
+  defender: UnitProfile;
+  forecast: CombatForecast;
+}
 
 export default class HolCombatForecast extends foundry.applications.api.HandlebarsApplicationMixin(
   foundry.applications.api.ApplicationV2
 ) {
-  static DEFAULT_OPTIONS = {
+  declare attackerToken: Token;
+  declare defenderToken: Token;
+  private _lastForecast: ForecastSnapshot | null = null;
+
+  static override DEFAULT_OPTIONS = {
     id: 'hol-combat-forecast',
     classes: ['heroes-of-lite', 'hol-sheet', 'combat-forecast'],
     tag: 'div',
@@ -26,50 +37,46 @@ export default class HolCombatForecast extends foundry.applications.api.Handleba
     }
   };
 
-  static PARTS = {
+  static override PARTS = {
     body: { template: appTemplate('combat-forecast.html') }
   };
 
-  /**
-   * @param {Token} attackerToken
-   * @param {Token} defenderToken
-   */
-  constructor(attackerToken, defenderToken, options = {}) {
+  constructor(attackerToken: Token, defenderToken: Token, options: Record<string, unknown> = {}) {
     super(options);
     this.attackerToken = attackerToken;
     this.defenderToken = defenderToken;
   }
 
   /** Open a forecast for the given tokens, validating the pairing first. */
-  static async open(attackerToken, defenderToken) {
+  static async open(attackerToken?: Token | null, defenderToken?: Token | null): Promise<HolCombatForecast | null> {
     if (!attackerToken || !defenderToken) {
-      ui.notifications.warn('Select your unit and target an enemy first.');
+      ui.notifications?.warn('Select your unit and target an enemy first.');
       return null;
     }
     if (attackerToken.id === defenderToken.id) {
-      ui.notifications.warn('A unit cannot attack itself.');
+      ui.notifications?.warn('A unit cannot attack itself.');
       return null;
     }
     if (!attackerToken.actor?.isOwner) {
-      ui.notifications.warn('You do not control that unit.');
+      ui.notifications?.warn('You do not control that unit.');
       return null;
     }
     const app = new this(attackerToken, defenderToken);
-    return app.render({ force: true });
+    return app.render({ force: true }) as Promise<HolCombatForecast>;
   }
 
   /** Recompute the forecast from the live documents. */
-  computeForecast() {
-    const attacker = buildUnitProfile(this.attackerToken.actor, { weaponTags });
-    const defender = buildUnitProfile(this.defenderToken.actor, { weaponTags });
+  computeForecast(): ForecastSnapshot & { distance: number } {
+    const attacker = buildUnitProfile(this.attackerToken.actor!, { weaponTags });
+    const defender = buildUnitProfile(this.defenderToken.actor!, { weaponTags });
     const distance = tokenDistance(this.attackerToken, this.defenderToken);
     return { attacker, defender, distance, forecast: buildForecast({ attacker, defender, distance }) };
   }
 
-  async _prepareContext() {
+  override async _prepareContext(): Promise<Record<string, any>> {
     const { attacker, defender, distance, forecast } = this.computeForecast();
     this._lastForecast = { attacker, defender, forecast };
-    const sideContext = (token, profile, side) => ({
+    const sideContext = (token: Token, profile: UnitProfile, side: ForecastSide) => ({
       name: token.name,
       img: token.document?.texture?.src ?? token.actor?.img,
       hp: profile.currentHP,
@@ -91,13 +98,13 @@ export default class HolCombatForecast extends foundry.applications.api.Handleba
       potential: side.damage * side.attackCount
     });
 
-    const weapons = (this.attackerToken.actor.system.inventory?.weapons ?? [])
-      .map(id => this.attackerToken.actor.items.get(id))
-      .filter(item => item?.type === 'weapon')
+    const weapons = ((this.attackerToken.actor?.system.inventory?.weapons ?? []) as string[])
+      .map(id => this.attackerToken.actor?.items.get(id))
+      .filter((item): item is Item => item?.type === 'weapon')
       .map(item => ({
         id: item.id,
         name: item.name,
-        equipped: item.id === this.attackerToken.actor.system.inventory?.equipped
+        equipped: item.id === this.attackerToken.actor?.system.inventory?.equipped
       }));
 
     return {
@@ -117,22 +124,23 @@ export default class HolCombatForecast extends foundry.applications.api.Handleba
   }
 
   /** Swapping weapons re-runs the whole forecast, so listen for `change` not `click`. */
-  _onRender(context, options) {
+  override _onRender(context: Record<string, any>, options: Record<string, unknown>): void {
     super._onRender(context, options);
     this.element.querySelector('.forecast-weapon-select')?.addEventListener('change', async event => {
-      await this.attackerToken.actor.update({ 'system.inventory.equipped': event.currentTarget.value });
-      this.render();
+      const select = event.currentTarget as HTMLSelectElement;
+      await this.attackerToken.actor?.update({ 'system.inventory.equipped': select.value });
+      void this.render();
     });
   }
 
-  static async _onCancel() {
-    this.close();
+  static async _onCancel(this: HolCombatForecast): Promise<void> {
+    await this.close();
   }
 
-  static async _onFight() {
+  static async _onFight(this: HolCombatForecast): Promise<void> {
     const { attacker, defender, forecast } = this._lastForecast ?? this.computeForecast();
     if (!forecast.attacker.canAct) {
-      ui.notifications.warn('That target is out of range for the equipped weapon.');
+      ui.notifications?.warn('That target is out of range for the equipped weapon.');
       return;
     }
 
@@ -150,9 +158,10 @@ export default class HolCombatForecast extends foundry.applications.api.Handleba
       attackerToken: this.attackerToken,
       defenderToken: this.defenderToken,
       forecast,
+      profiles: { attacker, defender },
       result,
       roll
     });
-    this.close();
+    await this.close();
   }
 }

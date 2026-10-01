@@ -6,31 +6,31 @@
             <div class="header-details">
                 <div class="inline-field">
                     <label>Group</label>
-                    <select name="system.attributes.weaponGroup">
+                    <select name="system.weaponGroup">
                         <option value="">--</option>
-                        <option value="sword" {{#if (eq system.attributes.weaponGroup "sword")}}selected{{/if}}>Sword</option>
-                        <option value="lance" {{#if (eq system.attributes.weaponGroup "lance")}}selected{{/if}}>Lance</option>
-                        <option value="axe" {{#if (eq system.attributes.weaponGroup "axe")}}selected{{/if}}>Axe</option>
-                        <option value="bow" {{#if (eq system.attributes.weaponGroup "bow")}}selected{{/if}}>Bow</option>
-                        <option value="dagger" {{#if (eq system.attributes.weaponGroup "dagger")}}selected{{/if}}>Dagger</option>
-                        <option value="anima" {{#if (eq system.attributes.weaponGroup "anima")}}selected{{/if}}>Anima</option>
-                        <option value="light" {{#if (eq system.attributes.weaponGroup "light")}}selected{{/if}}>Light</option>
-                        <option value="dark" {{#if (eq system.attributes.weaponGroup "dark")}}selected{{/if}}>Dark</option>
-                        <option value="staff" {{#if (eq system.attributes.weaponGroup "staff")}}selected{{/if}}>Staff</option>
-                        <option value="strike" {{#if (eq system.attributes.weaponGroup "strike")}}selected{{/if}}>Strike</option>
-                        <option value="talons" {{#if (eq system.attributes.weaponGroup "talons")}}selected{{/if}}>Talons</option>
-                        <option value="breath" {{#if (eq system.attributes.weaponGroup "breath")}}selected{{/if}}>Breath</option>
-                        <option value="shiftingStone" {{#if (eq system.attributes.weaponGroup "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
-                        <option value="curse" {{#if (eq system.attributes.weaponGroup "curse")}}selected{{/if}}>Curse</option>
-                        <option value="siege" {{#if (eq system.attributes.weaponGroup "siege")}}selected{{/if}}>Siege</option>
+                        <option value="sword" {{#if (eq system.weaponGroup "sword")}}selected{{/if}}>Sword</option>
+                        <option value="lance" {{#if (eq system.weaponGroup "lance")}}selected{{/if}}>Lance</option>
+                        <option value="axe" {{#if (eq system.weaponGroup "axe")}}selected{{/if}}>Axe</option>
+                        <option value="bow" {{#if (eq system.weaponGroup "bow")}}selected{{/if}}>Bow</option>
+                        <option value="dagger" {{#if (eq system.weaponGroup "dagger")}}selected{{/if}}>Dagger</option>
+                        <option value="anima" {{#if (eq system.weaponGroup "anima")}}selected{{/if}}>Anima</option>
+                        <option value="light" {{#if (eq system.weaponGroup "light")}}selected{{/if}}>Light</option>
+                        <option value="dark" {{#if (eq system.weaponGroup "dark")}}selected{{/if}}>Dark</option>
+                        <option value="staff" {{#if (eq system.weaponGroup "staff")}}selected{{/if}}>Staff</option>
+                        <option value="strike" {{#if (eq system.weaponGroup "strike")}}selected{{/if}}>Strike</option>
+                        <option value="talons" {{#if (eq system.weaponGroup "talons")}}selected{{/if}}>Talons</option>
+                        <option value="breath" {{#if (eq system.weaponGroup "breath")}}selected{{/if}}>Breath</option>
+                        <option value="shiftingStone" {{#if (eq system.weaponGroup "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
+                        <option value="curse" {{#if (eq system.weaponGroup "curse")}}selected{{/if}}>Curse</option>
+                        <option value="siege" {{#if (eq system.weaponGroup "siege")}}selected{{/if}}>Siege</option>
                     </select>
                 </div>
                 <div class="inline-field">
                     <label>Damage</label>
-                    <select name="system.attributes.damageType">
-                        <option value="">--</option>
-                        <option value="physical" {{#if (eq system.attributes.damageType "physical")}}selected{{/if}}>Physical</option>
-                        <option value="magical" {{#if (eq system.attributes.damageType "magical")}}selected{{/if}}>Magical</option>
+                    <select name="system.damageType">
+                        <option value="">—</option>
+                        <option value="physical" {{#if (eq system.damageType "physical")}}selected{{/if}}>Physical</option>
+                        <option value="magical" {{#if (eq system.damageType "magical")}}selected{{/if}}>Magical</option>
                     </select>
                 </div>
             </div>
@@ -48,19 +48,19 @@
             <div class="field-grid">
                 <div class="form-group">
                     <label>Might</label>
-                    <input type="number" name="system.details.might" value="{{system.details.might}}" />
+                    <input type="number" name="system.might" value="{{system.might}}" />
                 </div>
                 <div class="form-group">
                     <label>Cost (G)</label>
-                    <input type="number" name="system.details.costG" value="{{system.details.costG}}" />
+                    <input type="number" name="system.costG" value="{{system.costG}}" />
                 </div>
                 <div class="form-group">
                     <label>Min Range</label>
-                    <input type="number" name="system.details.range.min" value="{{system.details.range.min}}" placeholder="1" />
+                    <input type="number" name="system.range.min" value="{{system.range.min}}" placeholder="1" />
                 </div>
                 <div class="form-group">
                     <label>Max Range</label>
-                    <input type="number" name="system.details.range.max" value="{{system.details.range.max}}" placeholder="1" />
+                    <input type="number" name="system.range.max" value="{{system.range.max}}" placeholder="1" />
                 </div>
             </div>
 
@@ -77,7 +77,7 @@
         <div class="tab" data-tab="refines">
             <h3>Applied Refines</h3>
             <div class="slot-grid two-up">
-                {{#each system.details.refines}}
+                {{#each system.refines}}
                 <div class="hol-slot refine-slot" data-slot="{{@index}}" data-dropzone="refine">
                     <div class="slot-label">Slot {{add @index 1}}</div>
                     <div class="slot-body">
@@ -88,8 +88,8 @@
                             <span class="empty-slot">Drop Refine Here</span>
                         {{/if}}
                     </div>
-                    <input type="hidden" name="system.details.refines.{{@index}}.id" value="{{this.id}}" />
-                    <input type="hidden" name="system.details.refines.{{@index}}.name" value="{{this.name}}" />
+                    <input type="hidden" name="system.refines.{{@index}}.id" value="{{this.id}}" />
+                    <input type="hidden" name="system.refines.{{@index}}.name" value="{{this.name}}" />
                 </div>
                 {{/each}}
             </div>

@@ -112,6 +112,21 @@ async function run() {
             el => el.classList.contains('active') && el.offsetParent !== null
           );
           if (!isActive) failures.push(`${win.slug}: tab "${tabId}" did not activate`);
+
+          // The selected tab must be visually distinguishable from the rest.
+          const contrast = await page.evaluate(selected => {
+            const items = [...document.querySelectorAll('.sheet-tabs .item')]
+              .filter(el => el.offsetParent !== null);
+            const active = items.filter(el => el.classList.contains('active'));
+            if (active.length !== 1) return `${active.length} tabs marked active`;
+            const activeBg = getComputedStyle(active[0]).backgroundColor;
+            const sameAsInactive = items
+              .filter(el => !el.classList.contains('active'))
+              .some(el => getComputedStyle(el).backgroundColor === activeBg);
+            return sameAsInactive ? `tab "${selected}" looks identical to inactive tabs` : null;
+          }, tabId);
+          if (contrast) failures.push(`${win.slug}: ${contrast}`);
+
           await page.screenshot({ path: path.join(shotDir, `${win.slug}-${index}-${tabId}.png`) });
         }
       } else {

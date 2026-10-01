@@ -130,6 +130,11 @@ export const WINDOWS = [
 /** Minimal stand-in for the parts of Foundry's application frame our CSS relies on. */
 const HARNESS_CSS = `
   * { box-sizing: border-box; }
+  /* Freeze transitions so screenshots capture settled state, not mid-animation. */
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
   body {
     margin: 0;
     padding: 24px;
@@ -188,7 +193,7 @@ ${body}
 </div>
 <script type="module">
   // Exercise the real tab controller rather than a copy of it.
-  import { activateSheetTabs } from '/modules/helpers.js';
+  import { activateSheetTabs } from '/dist/modules/helpers.js';
   const root = document.querySelector('.hol-sheet');
   activateSheetTabs({ element: root });
 

@@ -28,18 +28,23 @@ export const actorContext = {
     trait: 'Noble',
     movementType: 'cavalry',
     weaponProficiency: 'lance',
-    currentHP: 21,    combatStats: { hp: 31, atk: 12, spd: 11, dex: 10, def: 9, res: 6, luck: 8 },
-    tempStats: { hp: 0, atk: 2, spd: 0, dex: 0, def: 0, res: 0, luck: 0 },
-    bonusStats: { hp: 0, atk: 0, spd: 1, dex: 0, def: 0, res: 0, luck: 0 },
-    bonuses: { power: 0, tri: 0, hit: 2, avoid: 0 },
-    nonCombatStats: {
-      strength: 2, intellect: 1, perception: 1, charisma: 2,
-      fate: 1, finesse: 2, acrobatics: 2
-    },
-    derivedStats: {
-      hit: 4, avoid: 8, crit: 0, critAvoid: 23, power: 23, tri: 4,
-      size: 2, con: 2, aid: 6, move: 7, charge: 2, gauge: 1
-    }
+    resources: { hp: { value: 21 } },
+    stats: { hp: 31, atk: 12, spd: 11, dex: 10, def: 9, res: 6, luck: 8 },
+    temp: { hp: 0, atk: 2, spd: 0, dex: 0, def: 0, res: 0, luck: 0 },
+    bonuses: { hp: 0, atk: 0, spd: 1, dex: 0, def: 0, res: 0, luck: 0 },
+    modifiers: { power: 0, tri: 0, hit: 2, avoid: 0, crit: 0 },
+    nonCombat: { strength: 2, intellect: 1, perception: 1, charisma: 2 },
+    charge: 2,
+    gauge: 1
+  },
+  currentHP: 21,
+  nonCombat: {
+    strength: 2, intellect: 1, perception: 1, charisma: 2,
+    fate: 1, finesse: 2, acrobatics: 2
+  },
+  derived: {
+    hit: 4, avoid: 8, crit: 0, critAvoid: 23, power: 23, tri: 4,
+    size: 2, con: 2, aid: 6, move: 7, charge: 2, gauge: 1
   },
   combatStatTotals: { hp: 31, atk: 14, spd: 12, dex: 10, def: 10, res: 6, luck: 8 },
   statCaps: { hp: 30, stat: 12 },
@@ -48,6 +53,15 @@ export const actorContext = {
   traits: ['Furred', 'Noble'],
   showGauge: false,
   isTransformed: false,
+  statusSummary: 'Poisoned, Broken',
+  statusList: [
+    { key: 'poisoned', label: 'Poisoned', img: '', description: 'Loses 4 HP at the start of their phase.', active: true, remaining: 2, sourceName: 'Bandit Chief' },
+    { key: 'silenced', label: 'Silenced', img: '', description: 'Cannot use Magical weapons or Staff Effects.', active: false, remaining: 0, sourceName: '' },
+    { key: 'berserk', label: 'Berserk', img: '', description: 'Attacks nearby units regardless of affiliation.', active: false, remaining: 0, sourceName: '' },
+    { key: 'broken', label: 'Broken', img: '', description: 'Cannot counterattack.', active: true, remaining: 1, sourceName: 'Bandit Chief' },
+    { key: 'shocked', label: 'Shocked', img: '', description: 'Cannot move. Avoid becomes 0 and Critical Avoid 15.', active: false, remaining: 0, sourceName: '' },
+    { key: 'injured', label: 'Injured', img: '', description: '-3 Attack, Speed, Defense and Resistance. Cannot be healed.', active: false, remaining: 0, sourceName: '' }
+  ],
   combatStatRows: [
     { key: 'hp', label: 'HP', total: 31, base: 31, temp: 0, bonus: 0, min: 15, max: 30, overCap: true },
     { key: 'atk', label: 'Atk', total: 14, base: 12, temp: 2, bonus: 0, min: 3, max: 12, overCap: false },
@@ -76,9 +90,10 @@ export const actorContext = {
     { item: weaponItem('s3', 'Heritor of Furs') },
     { item: null }, { item: null }, { item: null }, { item: null }, { item: null }
   ],
+  isInfantry: false,
   supportList: [
-    { id: 'a1', name: 'Rowan Vale', level: 'B' },
-    { id: 'a2', name: 'Mira Thorne', level: 'C' }
+    { id: 'a1', name: 'Rowan Vale', level: 'B', isActive: true, mutual: true, bonusText: 'DEF +1, RES +1' },
+    { id: 'a2', name: 'Mira Thorne', level: 'C', isActive: false, mutual: false, bonusText: 'SPD +1' }
   ],
   terrainOptions: {
     '': 'None',
@@ -102,17 +117,16 @@ export const weaponContext = {
   name: 'Killer Lance',
   img: PORTRAIT,
   system: {
-    attributes: { weaponGroup: 'lance', damageType: 'physical' },
-    details: {
-      might: 11,
-      costG: 3200,
-      range: { min: 1, max: 1 },
-      innateAttributes: ['refine.killer'],
-      refines: [
-        { id: 'refine.steel', name: 'Steel' },
-        { id: '', name: '' }
-      ]
-    }
+    weaponGroup: 'lance',
+    damageType: 'physical',
+    might: 11,
+    costG: 3200,
+    range: { min: 1, max: 1 },
+    innateAttributes: ['refine.killer'],
+    refines: [
+      { id: 'refine.steel', name: 'Steel' },
+      { id: '', name: '' }
+    ]
   },
   innateRefines: [{ id: 'refine.killer', name: 'Killer' }]
 };
@@ -136,15 +150,13 @@ export const consumableContext = {
   name: 'Elixir',
   img: PORTRAIT,
   system: {
-    details: {
-      range: 'Self',
-      uses: 3,
-      costG: 2000,
-      effect: 'Restores all HP to the user and removes one negative status effect.',
-      temporaryStatBonuses: {
-        hp: 0, atk: 0, spd: 0, dex: 0, def: 0, res: 0,
-        luck: 0, hit: 0, avoid: 0, crit: 0, mov: 0
-      }
+    range: 'Self',
+    uses: 3,
+    costG: 2000,
+    effect: 'Restores all HP to the user and removes one negative status effect.',
+    temporaryStatBonuses: {
+      hp: 0, atk: 0, spd: 0, dex: 0, def: 0, res: 0,
+      luck: 0, hit: 0, avoid: 0, crit: 0, mov: 0
     }
   }
 };
@@ -153,13 +165,11 @@ export const skillContext = {
   name: 'Luna',
   img: PORTRAIT,
   system: {
-    attributes: { type: 'technique' },
-    details: {
-      typeGroup: 'combat',
-      requiredCharge: '2',
-      prerequisite: ['level:10', 'weapon:sword|lance|axe'],
-      effect: 'Halve the target\'s Def or Res (whichever applies) for this attack.'
-    }
+    type: 'technique',
+    typeGroup: 'combat',
+    requiredCharge: 2,
+    prerequisite: ['level:10', 'weapon:sword|lance|axe'],
+    effect: 'Halve the target\'s Def or Res (whichever applies) for this attack.'
   }
 };
 

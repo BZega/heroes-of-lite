@@ -37,7 +37,7 @@
                     <div class="hol-panel hp-display">
                         <label>HP</label>
                         <div class="hp-values">
-                            <input type="number" name="system.currentHP" value="{{system.currentHP}}" min="0" max="{{combatStatTotals.hp}}" />
+                            <input type="number" name="system.resources.hp.value" value="{{currentHP}}" min="0" max="{{combatStatTotals.hp}}" />
                             <span class="hp-separator">/</span>
                             <span class="max-hp">{{combatStatTotals.hp}}</span>
                         </div>
@@ -46,19 +46,19 @@
                     <div class="derived-row">
                         <div class="derived-stat">
                             <label>Move</label>
-                            <span>{{system.derivedStats.move}}</span>
+                            <span>{{derived.move}}</span>
                         </div>
                         <div class="derived-stat">
                             <label>Con</label>
-                            <span>{{system.derivedStats.con}}</span>
+                            <span>{{derived.con}}</span>
                         </div>
                         <div class="derived-stat">
                             <label>Aid</label>
-                            <span>{{system.derivedStats.aid}}</span>
+                            <span>{{derived.aid}}</span>
                         </div>
                         <div class="derived-stat">
                             <label>Gauge</label>
-                            <span>{{system.derivedStats.gauge}}</span>
+                            <span>{{derived.gauge}}</span>
                         </div>
                     </div>
 
@@ -71,28 +71,28 @@
                         </div>
                         <div class="preview-row">
                             <label>Power</label>
-                            <input type="number" name="system.bonuses.power" value="{{system.bonuses.power}}" placeholder="0" />
-                            <span class="total">{{system.derivedStats.power}}</span>
+                            <input type="number" name="system.modifiers.power" value="{{system.modifiers.power}}" placeholder="0" />
+                            <span class="total">{{derived.power}}</span>
                         </div>
                         <div class="preview-row">
                             <label>Tri</label>
-                            <input type="number" name="system.bonuses.tri" value="{{system.bonuses.tri}}" placeholder="0" />
-                            <span class="total">{{system.derivedStats.tri}}</span>
+                            <input type="number" name="system.modifiers.tri" value="{{system.modifiers.tri}}" placeholder="0" />
+                            <span class="total">{{derived.tri}}</span>
                         </div>
                         <div class="preview-row">
                             <label>Hit</label>
-                            <input type="number" name="system.bonuses.hit" value="{{system.bonuses.hit}}" placeholder="0" />
-                            <span class="total">{{system.derivedStats.hit}}</span>
+                            <input type="number" name="system.modifiers.hit" value="{{system.modifiers.hit}}" placeholder="0" />
+                            <span class="total">{{derived.hit}}</span>
                         </div>
                         <div class="preview-row">
                             <label>Avoid</label>
-                            <input type="number" name="system.bonuses.avoid" value="{{system.bonuses.avoid}}" placeholder="0" />
-                            <span class="total">{{system.derivedStats.avoid}}</span>
+                            <input type="number" name="system.modifiers.avoid" value="{{system.modifiers.avoid}}" placeholder="0" />
+                            <span class="total">{{derived.avoid}}</span>
                         </div>
                         <div class="preview-row">
                             <label>Crit Avd</label>
                             <span class="derived-only" title="Avoid + 15 (or 15 if Shocked)">&mdash;</span>
-                            <span class="total">{{system.derivedStats.critAvoid}}</span>
+                            <span class="total">{{derived.critAvoid}}</span>
                         </div>
                     </div>
                 </aside>
@@ -150,17 +150,21 @@
                                     <option value="extraLarge" {{#if (eq system.size "extraLarge")}}selected{{/if}}>Extra Large</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group hol-status-group">
                                 <label>Status</label>
-                                <select name="system.status">
-                                    <option value="healthy" {{#if (eq system.status "healthy")}}selected{{/if}}>Healthy</option>
-                                    <option value="poisoned" {{#if (eq system.status "poisoned")}}selected{{/if}}>Poisoned</option>
-                                    <option value="silenced" {{#if (eq system.status "silenced")}}selected{{/if}}>Silenced</option>
-                                    <option value="berserk" {{#if (eq system.status "berserk")}}selected{{/if}}>Berserk</option>
-                                    <option value="broken" {{#if (eq system.status "broken")}}selected{{/if}}>Broken</option>
-                                    <option value="shocked" {{#if (eq system.status "shocked")}}selected{{/if}}>Shocked</option>
-                                    <option value="injured" {{#if (eq system.status "injured")}}selected{{/if}}>Injured</option>
-                                </select>
+                                <div class="hol-status-track">
+                                    {{#each statusList}}
+                                    <button type="button"
+                                            class="hol-status-chip{{#if this.active}} is-active{{/if}}"
+                                            data-action="toggleStatus"
+                                            data-status="{{this.key}}"
+                                            data-active="{{this.active}}"
+                                            title="{{this.description}}{{#if this.sourceName}} (from {{this.sourceName}}){{/if}}">
+                                        <span class="hol-status-name">{{this.label}}</span>
+                                        {{#if this.active}}<span class="hol-status-turns">{{this.remaining}}</span>{{/if}}
+                                    </button>
+                                    {{/each}}
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Terrain</label>
@@ -171,14 +175,14 @@
                             {{#if showGauge}}
                             <div class="form-group">
                                 <label>Gauge <span class="derived-tag" title="Starts at 4 on Transforming, -1 each turn to a minimum of 1">shifter</span></label>
-                                <input type="number" name="system.derivedStats.gauge" value="{{system.derivedStats.gauge}}" min="0" max="4" />
+                                <input type="number" name="system.gauge" value="{{system.gauge}}" min="0" max="4" />
                             </div>
                             {{/if}}
                             <div class="form-group">
                                 <label>Charge</label>
                                 <div class="charge-counter">
                                     <button type="button" class="hol-icon-button" data-action="decrementCharge" title="Spend charge">&minus;</button>
-                                    <span class="charge-value">{{system.derivedStats.charge}}</span>
+                                    <span class="charge-value">{{system.charge}}</span>
                                     <button type="button" class="hol-icon-button" data-action="incrementCharge" title="Gain charge">&plus;</button>
                                 </div>
                             </div>
@@ -214,9 +218,9 @@
                             <div class="stat-row {{#if this.overCap}}over-cap{{/if}}">
                                 <label>{{this.label}}</label>
                                 <span class="total">{{this.total}}</span>
-                                <input type="number" name="system.tempStats.{{this.key}}" value="{{this.temp}}" placeholder="0" />
-                                <input type="number" name="system.bonusStats.{{this.key}}" value="{{this.bonus}}" placeholder="0" />
-                                <input type="number" name="system.combatStats.{{this.key}}" value="{{this.base}}" min="{{this.min}}" max="{{this.max}}" title="Base {{this.min}}-{{this.max}} at this level" />
+                                <input type="number" name="system.temp.{{this.key}}" value="{{this.temp}}" placeholder="0" />
+                                <input type="number" name="system.bonuses.{{this.key}}" value="{{this.bonus}}" placeholder="0" />
+                                <input type="number" name="system.stats.{{this.key}}" value="{{this.base}}" min="{{this.min}}" max="{{this.max}}" title="Base {{this.min}}-{{this.max}} at this level" />
                             </div>
                             {{/each}}
                         </div>
@@ -234,31 +238,31 @@
                         <div class="field-grid">
                             <div class="form-group">
                                 <label>Strength</label>
-                                <input type="number" name="system.nonCombatStats.strength" value="{{system.nonCombatStats.strength}}" min="0" max="3" />
+                                <input type="number" name="system.nonCombat.strength" value="{{system.nonCombat.strength}}" min="0" max="3" />
                             </div>
                             <div class="form-group">
                                 <label>Intellect</label>
-                                <input type="number" name="system.nonCombatStats.intellect" value="{{system.nonCombatStats.intellect}}" min="0" max="3" />
+                                <input type="number" name="system.nonCombat.intellect" value="{{system.nonCombat.intellect}}" min="0" max="3" />
                             </div>
                             <div class="form-group">
                                 <label>Perception</label>
-                                <input type="number" name="system.nonCombatStats.perception" value="{{system.nonCombatStats.perception}}" min="0" max="3" />
+                                <input type="number" name="system.nonCombat.perception" value="{{system.nonCombat.perception}}" min="0" max="3" />
                             </div>
                             <div class="form-group">
                                 <label>Charisma</label>
-                                <input type="number" name="system.nonCombatStats.charisma" value="{{system.nonCombatStats.charisma}}" min="0" max="3" />
+                                <input type="number" name="system.nonCombat.charisma" value="{{system.nonCombat.charisma}}" min="0" max="3" />
                             </div>
                             <div class="form-group">
                                 <label>Fate <span class="derived-tag" title="Derived: min(3, floor(Luck / 5))">auto</span></label>
-                                <input type="number" value="{{system.nonCombatStats.fate}}" readonly disabled tabindex="-1" />
+                                <input type="number" value="{{nonCombat.fate}}" readonly disabled tabindex="-1" />
                             </div>
                             <div class="form-group">
                                 <label>Finesse <span class="derived-tag" title="Derived: min(3, floor(Dex / 5))">auto</span></label>
-                                <input type="number" value="{{system.nonCombatStats.finesse}}" readonly disabled tabindex="-1" />
+                                <input type="number" value="{{nonCombat.finesse}}" readonly disabled tabindex="-1" />
                             </div>
                             <div class="form-group">
                                 <label>Acrobatics <span class="derived-tag" title="Derived: min(3, floor(Spd / 5))">auto</span></label>
-                                <input type="number" value="{{system.nonCombatStats.acrobatics}}" readonly disabled tabindex="-1" />
+                                <input type="number" value="{{nonCombat.acrobatics}}" readonly disabled tabindex="-1" />
                             </div>
                         </div>
                     </div>
@@ -321,9 +325,24 @@
 
                     <div class="tab" data-tab="supports">
                         <h3>Support Partners</h3>
+                        <p class="hol-hint">
+                            One support may be active per map. The pairing must be mutual, and the
+                            bonus only applies while both units are within 2 tiles of each other.
+                        </p>
+                        {{#if isInfantry}}
+                        <div class="form-group">
+                            <label>Bonus Line Granted to Partner</label>
+                            <select name="system.supportLine">
+                                <option value="" {{#if (eq system.supportLine "")}}selected{{/if}}>— not chosen —</option>
+                                <option value="cavalry" {{#if (eq system.supportLine "cavalry")}}selected{{/if}}>Cavalry (Attack)</option>
+                                <option value="flier" {{#if (eq system.supportLine "flier")}}selected{{/if}}>Flier (Speed)</option>
+                                <option value="armor" {{#if (eq system.supportLine "armor")}}selected{{/if}}>Armor (Defense / Resistance)</option>
+                            </select>
+                        </div>
+                        {{/if}}
                         <div class="slot-grid">
                             {{#each supportList}}
-                            <div class="hol-slot support-entry">
+                            <div class="hol-slot support-entry{{#if this.isActive}} is-active-support{{/if}}">
                                 <div class="slot-body">
                                     <span class="item-name">{{this.name}}</span>
                                     <select name="system.supports.{{this.id}}">
@@ -332,6 +351,17 @@
                                         <option value="A" {{#if (eq this.level "A")}}selected{{/if}}>A</option>
                                         <option value="S" {{#if (eq this.level "S")}}selected{{/if}}>S</option>
                                     </select>
+                                    <button type="button"
+                                            class="hol-status-chip{{#if this.isActive}} is-active{{/if}}"
+                                            data-action="setActiveSupport"
+                                            data-support-id="{{this.id}}"
+                                            data-active="{{this.isActive}}"
+                                            title="{{#if this.mutual}}Mutual{{else}}{{this.name}} has not chosen this unit back{{/if}}">
+                                        {{#if this.isActive}}Active{{else}}Set Active{{/if}}
+                                    </button>
+                                    {{#if this.isActive}}
+                                    <span class="hol-tag">{{this.bonusText}}</span>
+                                    {{/if}}
                                 </div>
                             </div>
                             {{/each}}
@@ -359,13 +389,13 @@
                         <div class="battle-hp-bar">
                             <div class="battle-hp-fill" data-hp-percent="{{hpPercent}}"></div>
                         </div>
-                        <span class="battle-hp-text">{{system.currentHP}} / {{combatStatTotals.hp}}</span>
+                        <span class="battle-hp-text">{{currentHP}} / {{combatStatTotals.hp}}</span>
                     </div>
                     <div class="battle-derived-grid">
-                        <div class="battle-mini-stat"><label>Charge</label><span>{{system.derivedStats.charge}}</span></div>
-                        <div class="battle-mini-stat"><label>Gauge</label><span>{{system.derivedStats.gauge}}</span></div>
-                        <div class="battle-mini-stat"><label>Aid</label><span>{{system.derivedStats.aid}}</span></div>
-                        <div class="battle-mini-stat"><label>Con</label><span>{{system.derivedStats.con}}</span></div>
+                        <div class="battle-mini-stat"><label>Charge</label><span>{{derived.charge}}</span></div>
+                        <div class="battle-mini-stat"><label>Gauge</label><span>{{derived.gauge}}</span></div>
+                        <div class="battle-mini-stat"><label>Aid</label><span>{{derived.aid}}</span></div>
+                        <div class="battle-mini-stat"><label>Con</label><span>{{derived.con}}</span></div>
                     </div>
                 </div>
                 <div class="battle-stats-col">
@@ -376,10 +406,10 @@
                     <div class="battle-stat-row"><label>Res</label><span>{{combatStatTotals.res}}</span></div>
                     <div class="battle-stat-row"><label>Lck</label><span>{{combatStatTotals.luck}}</span></div>
                     <div class="battle-stat-divider"></div>
-                    <div class="battle-stat-row"><label>Mov</label><span>{{system.derivedStats.move}}</span></div>
-                    <div class="battle-stat-row"><label>Tri</label><span>{{system.derivedStats.tri}}</span></div>
-                    <div class="battle-stat-row"><label>Hit</label><span>{{system.derivedStats.hit}}</span></div>
-                    <div class="battle-stat-row"><label>Avd</label><span>{{system.derivedStats.avoid}}</span></div>
+                    <div class="battle-stat-row"><label>Mov</label><span>{{derived.move}}</span></div>
+                    <div class="battle-stat-row"><label>Tri</label><span>{{derived.tri}}</span></div>
+                    <div class="battle-stat-row"><label>Hit</label><span>{{derived.hit}}</span></div>
+                    <div class="battle-stat-row"><label>Avd</label><span>{{derived.avoid}}</span></div>
                 </div>
             </div>
 
@@ -401,13 +431,13 @@
                 </div>
                 <div class="battle-noncombat-col">
                     <h4>Non-Combat</h4>
-                    <div class="battle-nc-row"><label>Str</label><span>{{system.nonCombatStats.strength}}</span></div>
-                    <div class="battle-nc-row"><label>Int</label><span>{{system.nonCombatStats.intellect}}</span></div>
-                    <div class="battle-nc-row"><label>Perc</label><span>{{system.nonCombatStats.perception}}</span></div>
-                    <div class="battle-nc-row"><label>Cha</label><span>{{system.nonCombatStats.charisma}}</span></div>
-                    <div class="battle-nc-row"><label>Acro</label><span>{{system.nonCombatStats.acrobatics}}</span></div>
-                    <div class="battle-nc-row"><label>Fin</label><span>{{system.nonCombatStats.finesse}}</span></div>
-                    <div class="battle-nc-row"><label>Fate</label><span>{{system.nonCombatStats.fate}}</span></div>
+                    <div class="battle-nc-row"><label>Str</label><span>{{nonCombat.strength}}</span></div>
+                    <div class="battle-nc-row"><label>Int</label><span>{{nonCombat.intellect}}</span></div>
+                    <div class="battle-nc-row"><label>Perc</label><span>{{nonCombat.perception}}</span></div>
+                    <div class="battle-nc-row"><label>Cha</label><span>{{nonCombat.charisma}}</span></div>
+                    <div class="battle-nc-row"><label>Acro</label><span>{{nonCombat.acrobatics}}</span></div>
+                    <div class="battle-nc-row"><label>Fin</label><span>{{nonCombat.finesse}}</span></div>
+                    <div class="battle-nc-row"><label>Fate</label><span>{{nonCombat.fate}}</span></div>
                     <div class="battle-nc-row battle-gold"><label>Gold</label><span>{{system.money}} G</span></div>
                 </div>
             </div>

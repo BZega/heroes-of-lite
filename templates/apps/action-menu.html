@@ -21,6 +21,7 @@
     <div class="action-context">
         <span class="hol-tag">{{status}}</span>
         <span class="hol-tag">{{terrain}}</span>
+        <span class="hol-tag">Footing {{terrainCost}}{{#unless (eq terrainRule "standard")}} &middot; {{terrainRule}}{{/unless}}</span>
         {{#each traits}}<span class="hol-tag">{{this}}</span>{{/each}}
     </div>
 

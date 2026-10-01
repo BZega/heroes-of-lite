@@ -3,14 +3,21 @@
  * Initializes the Heroes of Lite system for Foundry VTT.
  */
 
-import HolWeaponSheet from './modules/sheets/holWeaponSheet.js';
-import HolRefineSheet from './modules/sheets/holRefineSheet.js';
-import HolConsumableSheet from './modules/sheets/holConsumableSheet.js';
-import HolSkillSheet from './modules/sheets/holSkillSheet.js';
-import HolActorSheet from './modules/sheets/holActorSheet.js';
-import { SYSTEM_ID } from './modules/constants.js';
-import { buildRefineIndex } from './modules/refineIndex.js';
-import { registerTerrainAutomation } from './modules/automation/terrain.js';
+import HolWeaponSheet from './modules/sheets/holWeaponSheet.ts';
+import HolRefineSheet from './modules/sheets/holRefineSheet.ts';
+import HolConsumableSheet from './modules/sheets/holConsumableSheet.ts';
+import HolSkillSheet from './modules/sheets/holSkillSheet.ts';
+import HolActorSheet from './modules/sheets/holActorSheet.ts';
+import { SYSTEM_ID } from './modules/constants.ts';
+import { buildRefineIndex } from './modules/refineIndex.ts';
+import UnitData from './modules/data/unitData.ts';
+import { WeaponData, SkillData, RefineData, ConsumableData } from './modules/data/itemData.ts';
+import HeroesOfLiteActor from './modules/documents/holActor.ts';
+import HeroesOfLiteItem from './modules/documents/holItem.ts';
+import { SCHEMA_VERSION, migrateIfNeeded } from './modules/migration.ts';
+import { statusEffectConfig } from './modules/effects/statuses.ts';
+import { registerTerrainAutomation } from './modules/automation/terrain.ts';
+import { registerSupportAutomation } from './modules/automation/supports.ts';
 import {
   registerApi,
   registerChatCommands,
@@ -18,24 +25,40 @@ import {
   registerSceneControls,
   registerTokenHud,
   registerTurnAutomation
-} from './modules/automation/register.js';
+} from './modules/automation/register.ts';
 
 /** Bump when seed data changes so existing worlds re-run the import. */
 const SEED_VERSION = 1;
 
-/** v13 moved the document collections under the `foundry.documents.collections` namespace. */
-const ActorsCollection = foundry.documents?.collections?.Actors ?? globalThis.Actors;
-const ItemsCollection = foundry.documents?.collections?.Items ?? globalThis.Items;
+/** The inventory slots an actor template can reference. */
+const SEED_SLOTS = ['skills', 'weapons', 'items'] as const;
+type SeedSlot = typeof SEED_SLOTS[number];
 
 Hooks.once('init', function () {
   console.log('Heroes of Lite | Initializing system...');
+
+  CONFIG.Actor.documentClass = HeroesOfLiteActor;
+  CONFIG.Item.documentClass = HeroesOfLiteItem;
+  CONFIG.Actor.dataModels = { unit: UnitData };
+  CONFIG.Item.dataModels = {
+    weapon: WeaponData,
+    skill: SkillData,
+    refine: RefineData,
+    consumable: ConsumableData
+  };
+
+  // Replace Foundry's generic conditions with the statuses from the rules (p.29).
+  CONFIG.statusEffects = statusEffectConfig();
+  CONFIG.specialStatusEffects.DEFEATED = 'injured';
 
   Handlebars.registerHelper('includes', (array, value) => Array.isArray(array) && array.includes(value));
   Handlebars.registerHelper('join', (array, separator) => (Array.isArray(array) ? array.join(separator) : ''));
   Handlebars.registerHelper('eq', (a, b) => a === b);
   Handlebars.registerHelper('add', (a, b) => Number(a ?? 0) + Number(b ?? 0));
 
-  ActorsCollection.registerSheet(SYSTEM_ID, HolActorSheet, {
+  const { Actors, Items } = foundry.documents.collections;
+
+  Actors.registerSheet(SYSTEM_ID, HolActorSheet, {
     types: ['unit'],
     makeDefault: true,
     label: 'HoL Character Sheet'
@@ -48,11 +71,19 @@ Hooks.once('init', function () {
     [HolSkillSheet, 'skill', 'HoL Skill Sheet']
   ];
   for (const [sheetClass, type, label] of itemSheets) {
-    ItemsCollection.registerSheet(SYSTEM_ID, sheetClass, { types: [type], makeDefault: true, label });
+    Items.registerSheet(SYSTEM_ID, sheetClass, { types: [type], makeDefault: true, label });
   }
 
   game.settings.register(SYSTEM_ID, 'seedVersion', {
     name: 'Compendium Seed Version',
+    scope: 'world',
+    config: false,
+    type: Number,
+    default: 0
+  });
+
+  game.settings.register(SYSTEM_ID, 'schemaVersion', {
+    name: 'World Schema Version',
     scope: 'world',
     config: false,
     type: Number,
@@ -65,6 +96,7 @@ Hooks.once('init', function () {
   registerSceneControls();
   registerTerrainAutomation();
   registerTurnAutomation();
+  registerSupportAutomation();
 });
 
 Hooks.once('ready', async function () {
@@ -75,10 +107,12 @@ Hooks.once('ready', async function () {
     await buildRefineIndex();
     return;
   }
-  if (game.settings.get(SYSTEM_ID, 'seedVersion') >= SEED_VERSION) {
-    await buildRefineIndex();
-    return;
-  }
+
+  // Refines must be indexed before migration so weapon tags resolve during derivation.
+  await buildRefineIndex();
+  await migrateIfNeeded();
+
+  if (game.settings.get(SYSTEM_ID, 'seedVersion') >= SEED_VERSION) return;
 
   try {
     await seedWeapons();
@@ -91,7 +125,6 @@ Hooks.once('ready', async function () {
     console.error('HoL | Compendium seeding aborted:', error);
     ui.notifications?.error('Heroes of Lite: compendium seeding failed. See the console for details.');
   } finally {
-    // Combat needs refine tags resolved synchronously, so index them after seeding.
     await buildRefineIndex();
   }
 });
@@ -101,11 +134,8 @@ Hooks.once('ready', async function () {
 /* -------------------------------------------- */
 
 /**
- * Fetch a JSON seed file bundled with the system.
- * @param {string} fileName File name inside `data/seed`.
- * @returns {Promise<Array>} Parsed array of seed records.
- */
-async function loadSeedFile(fileName) {
+/** Fetch a JSON seed file bundled with the system. */
+async function loadSeedFile(fileName: string): Promise<Record<string, any>[]> {
   const path = `systems/${SYSTEM_ID}/data/seed/${fileName}`;
   const response = await fetch(path);
   if (!response.ok) throw new Error(`Unable to read seed file ${path} (HTTP ${response.status})`);
@@ -114,12 +144,8 @@ async function loadSeedFile(fileName) {
   return data;
 }
 
-/**
- * Run a callback with the given packs temporarily unlocked, always restoring lock state.
- * @param {CompendiumCollection[]} packs
- * @param {() => Promise<void>} callback
- */
-async function withUnlockedPacks(packs, callback) {
+/** Run a callback with the given packs temporarily unlocked, always restoring lock state. */
+async function withUnlockedPacks(packs: CompendiumCollection[], callback: () => Promise<void>): Promise<void> {
   const previouslyLocked = packs.map(pack => pack.locked);
   try {
     for (const [index, pack] of packs.entries()) {
@@ -133,22 +159,18 @@ async function withUnlockedPacks(packs, callback) {
   }
 }
 
-/**
- * Collect the `sourceId` flags already present in a pack.
- * @param {CompendiumCollection} pack
- * @returns {Promise<Set<string>>}
- */
-async function getSeededIds(pack) {
+/** Collect the `sourceId` flags already present in a pack. */
+async function getSeededIds(pack: CompendiumCollection): Promise<Set<string>> {
   const documents = await pack.getDocuments();
-  return new Set(documents.map(doc => doc.flags?.[SYSTEM_ID]?.sourceId).filter(Boolean));
+  return new Set(
+    documents
+      .map(doc => doc.flags?.[SYSTEM_ID]?.['sourceId'] as string | undefined)
+      .filter((id): id is string => !!id)
+  );
 }
 
-/**
- * Resolve a pack and log a warning if it is missing.
- * @param {string} name Pack name without the system prefix.
- * @returns {CompendiumCollection|null}
- */
-function getPack(name) {
+/** Resolve a pack and log a warning if it is missing. */
+function getPack(name: string): CompendiumCollection | null {
   const pack = game.packs.get(`${SYSTEM_ID}.${name}`);
   if (!pack) console.warn(`HoL | ${name} compendium pack not found`);
   return pack ?? null;
@@ -171,19 +193,14 @@ async function seedWeapons() {
         name: weapon.name,
         type: 'weapon',
         system: {
-          attributes: {
-            weaponGroup: weapon.weaponGroup,
-            damageType: weapon.damageType
-          },
-          details: {
-            range: weapon.range,
-            might: weapon.might,
-            costG: weapon.costG,
-            innateAttributes: weapon.innateAttributes ?? [],
-            attributes: weapon.attributes ?? [],
-            attributeRules: weapon.attributeRules,
-            refines: [{ id: '', name: '' }, { id: '', name: '' }]
-          }
+          weaponGroup: weapon.weaponGroup,
+          damageType: weapon.damageType,
+          range: weapon.range,
+          might: weapon.might,
+          costG: weapon.costG,
+          innateAttributes: weapon.innateAttributes ?? [],
+          attributeRules: weapon.attributeRules,
+          refines: [{ id: '', name: '' }, { id: '', name: '' }]
         },
         flags: { [SYSTEM_ID]: { sourceId: weapon.id } }
       }));
@@ -204,7 +221,7 @@ async function seedRefines() {
     const existingPlayerIds = await getSeededIds(playerPack);
     const existingGMIds = await getSeededIds(gmPack);
 
-    const toItemData = refine => ({
+    const toItemData = (refine: Record<string, any>) => ({
       name: refine.name,
       type: 'refine',
       system: {
@@ -244,14 +261,12 @@ async function seedConsumables() {
         name: consumable.name,
         type: 'consumable',
         system: {
-          details: {
-            range: consumable.range,
-            uses: consumable.uses,
-            costG: consumable.costG,
-            effect: consumable.effect,
-            temporaryStatBonuses: consumable.temporaryStatBonuses ?? {},
-            tags: consumable.tags ?? []
-          }
+          range: consumable.range,
+          uses: consumable.uses,
+          costG: consumable.costG,
+          effect: consumable.effect,
+          temporaryStatBonuses: consumable.temporaryStatBonuses ?? {},
+          tags: consumable.tags ?? []
         },
         flags: { [SYSTEM_ID]: { sourceId: consumable.id } }
       }));
@@ -275,17 +290,13 @@ async function seedSkills() {
         name: skill.name,
         type: 'skill',
         system: {
-          attributes: {
-            type: skill.type
-          },
-          details: {
-            typeGroup: skill.typeGroup,
-            prerequisite: skill.prereq ?? [],
-            requiredCharge: skill.requiredCharge ?? '',
-            effect: skill.effect,
-            statBonuses: skill.statBonuses ?? {},
-            tags: skill.tags ?? []
-          }
+          type: skill.type,
+          typeGroup: skill.typeGroup,
+          prerequisite: skill.prereq ?? [],
+          requiredCharge: Number(skill.requiredCharge) || 0,
+          effect: skill.effect,
+          statBonuses: skill.statBonuses ?? {},
+          tags: skill.tags ?? []
         },
         // `skillKey` is what prerequisite strings reference, so store it alongside the source id.
         flags: { [SYSTEM_ID]: { sourceId: skill.id, skillKey: skill.id } }
@@ -337,13 +348,13 @@ async function seedActorTemplates() {
     const itemIndex = await buildItemSourceIndex();
 
     for (const template of pending) {
-      const refs = template._seedRefs ?? {};
-      const equippedSourceId = refs.equipped ?? '';
-      const itemsToEmbed = [];
-      const refToSlot = [];
+      const refs = template['_seedRefs'] ?? {};
+      const equippedSourceId: string = refs.equipped ?? '';
+      const itemsToEmbed: Record<string, any>[] = [];
+      const refToSlot: { sourceId: string; slot: SeedSlot }[] = [];
 
-      for (const slot of ['skills', 'weapons', 'items']) {
-        for (const sourceId of refs[slot] ?? []) {
+      for (const slot of SEED_SLOTS) {
+        for (const sourceId of (refs[slot] ?? []) as string[]) {
           const source = itemIndex.get(sourceId);
           if (!source) {
             console.warn(`HoL | Actor template ${template.id}: ${slot} reference not found - ${sourceId}`);
@@ -354,15 +365,16 @@ async function seedActorTemplates() {
         }
       }
 
-      const created = await Actor.create({
+      const [created] = await Actor.createDocuments([{
         name: template.name,
         type: template.type ?? 'unit',
         system: template.system,
         items: itemsToEmbed,
-        flags: { [SYSTEM_ID]: { sourceId: template.id, notes: template._notes ?? '' } }
-      }, { pack: pack.collection });
+        flags: { [SYSTEM_ID]: { sourceId: template.id, notes: template['_notes'] ?? '' } }
+      }], { pack: pack.collection });
+      if (!created) continue;
 
-      const slots = { skills: [], weapons: [], items: [] };
+      const slots: Record<SeedSlot, string[]> = { skills: [], weapons: [], items: [] };
       let equipped = '';
       const embedded = Array.from(created.items);
 

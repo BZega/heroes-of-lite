@@ -3,30 +3,33 @@
  * keybinding, chat commands, scene control tool and the `game.heroesOfLite` API.
  */
 
-import { SYSTEM_ID } from '../constants.js';
-import HolActionMenu from '../combat/actionMenu.js';
-import HolCombatForecast from '../combat/forecast.js';
-import { runPhaseStart } from '../combat/actions.js';
-import { promptRegionTerrain, syncSceneTerrain } from './terrain.js';
+import { SYSTEM_ID } from '../constants.ts';
+import HolActionMenu from '../combat/actionMenu.ts';
+import HolCombatForecast from '../combat/forecast.ts';
+import { runPhaseStart } from '../combat/actions.ts';
+import { advanceStatusPhase } from '../effects/statuses.ts';
+import { clearTonics } from '../effects/buffs.ts';
+import { promptRegionTerrain, reportMovement, syncSceneTerrain } from './terrain.ts';
 
 /** Open the forecast for the controlled token against the single target. */
-async function quickAttack() {
+async function quickAttack(): Promise<void> {
   const attacker = canvas?.tokens?.controlled?.[0] ?? game.user.character?.getActiveTokens()?.[0];
   const targets = Array.from(game.user.targets);
   if (targets.length !== 1) {
-    ui.notifications.warn('Target exactly one enemy to attack.');
+    ui.notifications?.warn('Target exactly one enemy to attack.');
     return;
   }
   await HolCombatForecast.open(attacker, targets[0]);
 }
 
-export function registerApi() {
+export function registerApi(): void {
   game.heroesOfLite = {
-    openActions: token => HolActionMenu.open(token),
-    attack: (attacker, defender) => HolCombatForecast.open(attacker, defender),
+    openActions: (token: Token) => HolActionMenu.open(token),
+    attack: (attacker: Token, defender: Token) => HolCombatForecast.open(attacker, defender),
     quickAttack,
     tagRegionTerrain: promptRegionTerrain,
     syncTerrain: syncSceneTerrain,
+    movementReport: reportMovement,
     runPhaseStart
   };
 }
@@ -108,12 +111,60 @@ export function registerSceneControls() {
   });
 }
 
+/**
+ * Count down every status inflicted by the side whose phase is starting.
+ *
+ * This is deliberately combat-wide rather than per-combatant: a status counts
+ * down on the phase of whoever *inflicted* it (rules p.29), so when the Enemy
+ * Phase begins, every status an enemy inflicted ticks, wherever it landed.
+ */
+async function advancePhaseStatuses(combat: Combat, phaseOwner: number): Promise<void> {
+  const reported: string[] = [];
+  const seen = new Set<string>();
+
+  for (const combatant of combat.combatants) {
+    const actor = combatant.actor;
+    if (actor?.type !== 'unit' || seen.has(actor.id)) continue;
+    seen.add(actor.id);
+
+    const expired = await advanceStatusPhase(actor, phaseOwner);
+    if (expired.length) reported.push(`<strong>${actor.name}</strong> recovered from ${expired.join(', ')}`);
+  }
+
+  if (reported.length) {
+    await ChatMessage.create({ content: `<p class="hol-chat-line">${reported.join('; ')}.</p>` });
+  }
+}
+
+/**
+ * Tonics last until the end of the map and Charge resets at the start of one
+ * (rules p.20, p.37), so ending the encounter clears both.
+ */
+async function endOfMapCleanup(combat: Combat): Promise<void> {
+  const seen = new Set<string>();
+  for (const combatant of combat.combatants) {
+    const actor = combatant.actor;
+    if (actor?.type !== 'unit' || seen.has(actor.id)) continue;
+    seen.add(actor.id);
+
+    await clearTonics(actor);
+    if (actor.system.charge) await actor.update({ 'system.charge': 0 });
+  }
+}
+
 /** Run start-of-phase bookkeeping when the combat turn advances. */
 export function registerTurnAutomation() {
   Hooks.on('combatTurnChange', async (combat, previous, current) => {
     if (!game.users.activeGM?.isSelf) return;
-    const actor = combat.combatants.get(current?.combatantId)?.actor;
+    const combatant = combat.combatants.get(current?.combatantId);
+    const actor = combatant?.actor;
     if (actor?.type !== 'unit') return;
+
+    const previousDisposition = combat.combatants.get(previous?.combatantId)?.token?.disposition ?? null;
+    const disposition = combatant.token?.disposition ?? null;
+    if (disposition !== null && previousDisposition !== disposition) {
+      await advancePhaseStatuses(combat, disposition);
+    }
 
     const notes = await runPhaseStart(actor);
     if (notes.length) {
@@ -122,5 +173,10 @@ export function registerTurnAutomation() {
         content: `<p class="hol-chat-line"><strong>${actor.name}</strong> phase start: ${notes.join(', ')}.</p>`
       });
     }
+  });
+
+  Hooks.on('deleteCombat', async combat => {
+    if (!game.users.activeGM?.isSelf) return;
+    await endOfMapCleanup(combat);
   });
 }

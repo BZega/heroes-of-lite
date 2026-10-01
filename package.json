@@ -5,11 +5,17 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "preview": "node tools/preview/render.js",
-    "test:ui": "node tools/preview/check.js",
+    "test:ui": "npm run build && node tools/preview/check.js",
     "test:rules": "node tools/rules-check.js",
     "test:combat": "node tools/combat-check.js",
-    "test": "node tools/rules-check.js && node tools/combat-check.js && node tools/preview/check.js"
+    "test:prereq": "node tools/prereq-check.js",
+    "test:migration": "node tools/migration-check.js",
+    "test:effects": "node tools/effects-check.js",
+    "test:integrity": "node tools/integrity-check.js",
+    "test": "npm run build && node tools/integrity-check.js && node tools/rules-check.js && node tools/combat-check.js && node tools/prereq-check.js && node tools/migration-check.js && node tools/effects-check.js && node tools/preview/check.js"
   },
   "keywords": [
     "foundry",
@@ -20,6 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "handlebars": "^4.7.8",
-    "playwright": "^1.49.0"
+    "playwright": "^1.49.0",
+    "typescript": "^7.0.2"
   }
 }
