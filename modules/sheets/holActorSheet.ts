@@ -1,6 +1,10 @@
-import { sheetTemplate } from '../constants.ts';
+import { sheetTemplate, WEAPON_GROUP_LABELS } from '../constants.ts';
 import { activateSheetTabs, getDragEventData } from '../helpers.ts';
 import { buildUnitProfile, terrainChoices, STAT_FLOOR, STAT_LABELS } from '../rules.ts';
+import {
+    checkSkillEligibility, nextSkillLevel, proficiencyAllowance, skillCapForLevel, slugForSkill,
+    type SkillCandidate, type SkillContext
+} from '../skills.ts';
 import { weaponTags, weaponRefines } from '../refineIndex.ts';
 import { STATUS_DEFS, STATUS_KEYS, statusEffects, statusFlags, applyStatus, removeStatus } from '../effects/statuses.ts';
 import { syncRefineEffects, supportBonusFrom } from '../effects/buffs.ts';
@@ -149,12 +153,45 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
 
         // Get skills
         const skills: (string | null)[] = system.skills || [];
-        const skillSlots: { item: Item | null }[] = [];
-        for (let i = 0; i < 8; i++) {
+        const skillCap = skillCapForLevel(Number(system.level) || 1);
+        const skillSlots: { item: Item | null; overCap: boolean; unlockLevel: number; issue: string }[] = [];
+
+        // Only render the slots the level has unlocked, plus any stragglers above the
+        // cap so leftover skills stay visible and removable.
+        const lastOccupied = skills.reduce((last, id, index) => (id ? index : last), -1);
+        const slotCount = Math.min(8, Math.max(skillCap, lastOccupied + 1));
+
+        for (let i = 0; i < slotCount; i++) {
             const id = skills[i];
-            skillSlots.push({ item: id ? actor.items.get(id) ?? null : null });
+            const skill = id ? actor.items.get(id) ?? null : null;
+            // A skill can stop qualifying after a level, movement or proficiency change.
+            const verdict = skill
+                ? checkSkillEligibility(skill as SkillCandidate, this._skillContext({ ignoreSkillId: id }))
+                : { ok: true as const };
+            skillSlots.push({
+                item: skill,
+                overCap: i >= skillCap,
+                // Slot i needs level 5*(i-1), the inverse of the cap formula.
+                unlockLevel: Math.max(1, (i - 1) * 5),
+                issue: verdict.ok ? '' : `No longer qualifies: it ${verdict.reason}.`
+            });
         }
         context['skillSlots'] = skillSlots;
+        context['skillCap'] = skillCap;
+        context['skillCount'] = skills.filter(Boolean).length;
+        context['skillsOverCap'] = skillSlots.some(slot => slot.overCap);
+        context['skillIssues'] = skillSlots.some(slot => slot.issue);
+        context['nextSkillLevel'] = nextSkillLevel(Number(system.level) || 1);
+
+        // One dropdown per proficiency a skill has granted beyond the starting one.
+        const knownSkills = skillSlots.map(slot => slot.item).filter((item): item is Item => !!item);
+        const extraAllowed = proficiencyAllowance(knownSkills) - 1;
+        const storedExtras = (system.extraProficiencies || []) as string[];
+        context['weaponGroupOptions'] = WEAPON_GROUP_LABELS;
+        context['extraProficiencySlots'] = Array.from({ length: extraAllowed }, (_unused, index) => ({
+            index,
+            value: storedExtras[index] ?? ''
+        }));
 
         // Get supports
         const supports: Record<string, SupportRank> = system.supports || {};
@@ -372,38 +409,23 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
     async _addSkillToActor(item: Item, slotIndex: number): Promise<void> {
         const actor = this.document as Actor;
         const skills = ((actor.system.skills || []) as (string | null)[]).slice();
+        if (!Number.isInteger(slotIndex) || slotIndex < 0) return;
 
-        // Skill mechanical fields live flat on `system.*` under the V14 DataModel.
-        const toPrereqArray = (value: unknown): string[] => {
-            if (Array.isArray(value)) return value;
-            return String(value ?? '').split(',').map(p => p.trim()).filter(Boolean);
-        };
-        const readSkillFields = (sys: Record<string, any> | undefined) => ({
-            typeGroup:      sys?.['typeGroup'] ?? '',
-            prerequisite:   toPrereqArray(sys?.['prerequisite']),
-            requiredCharge: sys?.['requiredCharge'] ?? 0
-        });
-
-        const newSkillData   = item.toObject();
-        const newFields      = readSkillFields(newSkillData['system']);
-        const skillSlug = (s: unknown): string => String(s || '').replace(/^skill\./, '');
-        // The random document `_id` is never a prerequisite key, so prefer the
-        // authored skill key and only fall back to a slug of the name.
-        const newSlug = skillSlug(
-            item.flags?.['heroes-of-lite']?.skillKey
-            || item.flags?.['heroes-of-lite']?.sourceId
-            || (item.name || '').toLowerCase().replace(/\s+/g, '-')
-        );
-
-        const level        = Number(actor.system.level) || 1;
-        const movementType = actor.system.movementType || '';
-        const weaponProf   = actor.system.weaponProficiency || '';
-        const traitText    = String(actor.system.trait || '').toLowerCase();
-
-        // 1) Skill cap: 2 at L1, +1 every 5 levels, max 8 (rules p.15)
-        const cap = Math.min(2 + Math.floor(level / 5), 8);
-        const currentCount  = skills.filter(Boolean).length;
+        const level = Number(actor.system.level) || 1;
+        const cap = skillCapForLevel(level);
         const replacingSkillId = skills[slotIndex] || null;
+
+        // 1) Slots unlock with level: 2 at L1, one more every 5 levels (rules p.15, p.17).
+        if (slotIndex >= cap) {
+            const next = nextSkillLevel(level);
+            ui.notifications.warn(
+                `Slot ${slotIndex + 1} is locked. This unit has ${cap} skill slot(s) at level ${level}`
+                + (next ? `; the next unlocks at level ${next}.` : '.')
+            );
+            return;
+        }
+
+        const currentCount = skills.filter(Boolean).length;
         if (!replacingSkillId && currentCount >= cap) {
             ui.notifications.warn(`This unit can only have ${cap} skill(s) at level ${level}.`);
             return;
@@ -420,151 +442,12 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             return;
         }
 
-        // Collect currently-known skill slugs (excluding the slot we're replacing)
-        const knownSlugs = new Set<string>();
-        for (const sId of skills.filter((id): id is string => !!id)) {
-            if (sId === replacingSkillId) continue;
-            const it = actor.items.get(sId);
-            if (!it) continue;
-            knownSlugs.add(skillSlug(
-                it.flags?.['heroes-of-lite']?.['skillKey']
-                || it.flags?.['heroes-of-lite']?.['sourceId']
-                || it.name.toLowerCase().replace(/\s+/g, '-')
-            ));
-        }
-
-        // 3) typeGroup qualification
-        const typeGroup: string = newFields.typeGroup;
-        const WEAPON_GROUP_MAP: Record<string, string[]> = {
-            'sword, lance, and axe':      ['sword', 'lance', 'axe'],
-            'dagger and bow':             ['dagger', 'bow'],
-            'anima, light, and dark':     ['anima', 'light', 'dark'],
-            'staff':                      ['staff'],
-            'strike, talons, and breath': ['strike', 'talons', 'breath'],
-            'shifting stone':             ['shiftingStone']
-        };
-        const MOVE_GROUPS = ['infantry', 'cavalry', 'flier', 'armor'];
-        const levelPrereqRaw = (newFields.prerequisite || []).find(p => String(p).startsWith('level:'));
-        const skillLevelReq  = levelPrereqRaw ? (Number(String(levelPrereqRaw).split(':')[1]) || 0) : 0;
-
-        let qualifies = false;
-        let qualifyReason = '';
-
-        if (typeGroup === 'all-access' || typeGroup === 'combat' || !typeGroup) {
-            qualifies = true;
-        } else if (typeGroup === 'fiend') {
-            // Fiend skills need the Monstrous skill or a Curse proficiency (rules p.37).
-            qualifies = traitText.includes('fiend') || weaponProf === 'curse' || knownSlugs.has('monstrous');
-            qualifyReason = 'requires the Monstrous skill, a Curse proficiency, or the Fiendish trait';
-        } else if (MOVE_GROUPS.includes(typeGroup)) {
-            if (movementType === typeGroup) {
-                qualifies = true;
-            } else {
-                const heritorMap: Record<string, string> = {
-                    'flier':   'heritor-of-feathers',
-                    'cavalry': 'heritor-of-furs',
-                    'armor':   'heritor-of-scales'
-                };
-                const requiredHeritor = heritorMap[typeGroup];
-                if (requiredHeritor && knownSlugs.has(requiredHeritor) && newSlug !== 'canter' && skillLevelReq <= 10) {
-                    qualifies = true;
-                } else {
-                    qualifyReason = `requires ${typeGroup} movement type`;
-                }
-            }
-        } else if (WEAPON_GROUP_MAP[typeGroup]) {
-            const allowed = WEAPON_GROUP_MAP[typeGroup]!;
-            if (allowed.includes(weaponProf)) {
-                qualifies = true;
-            } else {
-                qualifyReason = `requires weapon proficiency: ${allowed.join(' / ')}`;
-            }
-        } else {
-            qualifies = true;
-        }
-
-        if (!qualifies) {
-            ui.notifications.warn(`Cannot learn ${item.name}: ${qualifyReason}.`);
+        // 3) Group restriction and prerequisites.
+        const context = this._skillContext({ ignoreSkillId: replacingSkillId });
+        const verdict = checkSkillEligibility(item as SkillCandidate, context);
+        if (!verdict.ok) {
+            ui.notifications.warn(`Cannot learn ${item.name}: it ${verdict.reason}.`);
             return;
-        }
-
-        // 4) Itemised prereq parsing.
-        //    Armored units gain access to all skills 5 levels earlier (rules p.12).
-        const armorBonus     = movementType === 'armor' ? 5 : 0;
-        const effectiveLevel = level + armorBonus;
-
-        /**
-         * A prerequisite is a set of `kind:value` clauses joined by `|`, any one of
-         * which satisfies it. A clause without its own kind inherits the previous one,
-         * so `weapon:sword|lance` and `skill:monstrous|weapon:curse` both parse.
-         */
-        const parseAlternatives = (raw: unknown): { kind: string; value: string }[] => {
-            const alternatives: { kind: string; value: string }[] = [];
-            let kind = '';
-            for (const segment of String(raw).split('|')) {
-                const idx = segment.indexOf(':');
-                if (idx !== -1) {
-                    kind = segment.slice(0, idx);
-                    alternatives.push({ kind, value: segment.slice(idx + 1) });
-                } else if (kind) {
-                    alternatives.push({ kind, value: segment });
-                } else {
-                    // A valueless prerequisite such as `gmOnly` is the kind itself.
-                    alternatives.push({ kind: segment, value: '' });
-                }
-            }
-            return alternatives;
-        };
-
-        /** @returns True when satisfied, otherwise a human readable reason. */
-        const checkClause = ({ kind, value }: { kind: string; value: string }): true | string => {
-            switch (kind) {
-                case 'level': {
-                    const need = Number(value) || 0;
-                    if (effectiveLevel >= need) return true;
-                    return armorBonus
-                        ? `level ${need} (you are level ${level}; Armor counts as ${effectiveLevel})`
-                        : `level ${need} (you are level ${level})`;
-                }
-                case 'movement':
-                    return movementType === value || `movement type ${value}`;
-                case 'skill':
-                    return knownSlugs.has(value) || `the skill ${value.replace(/-/g, ' ')}`;
-                case 'weapon':
-                    return weaponProf === value || `weapon proficiency ${value}`;
-                case 'trait':
-                    return traitText.includes(value.toLowerCase()) || `the trait ${value}`;
-                case 'exclusive':
-                    return !knownSlugs.has(value) || `you already have the exclusive skill ${value.replace(/-/g, ' ')}`;
-                case 'requires':
-                    if (value !== 'combatArt') return true;
-                    return actor.items.some(i =>
-                        i.type === 'skill' && i.id !== replacingSkillId && i.system?.requiredCharge
-                    ) || 'at least one Combat Art';
-                case 'gmOnly':
-                case 'gmApproval':
-                    return game.user.isGM || 'the Game Master to assign it';
-                default:
-                    // Unmodelled prerequisite kinds are not enforced.
-                    return true;
-            }
-        };
-
-        for (const raw of newFields.prerequisite || []) {
-            const alternatives = parseAlternatives(raw);
-            const reasons = [];
-            let satisfied = false;
-
-            for (const clause of alternatives) {
-                const outcome = checkClause(clause);
-                if (outcome === true) { satisfied = true; break; }
-                reasons.push(outcome);
-            }
-
-            if (!satisfied) {
-                ui.notifications.warn(`${item.name} requires ${reasons.join(' or ')}.`);
-                return;
-            }
         }
 
         // ---- All checks passed: embed and assign ----
@@ -573,7 +456,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         if (existingItem) {
             skillId = existingItem.id;
         } else {
-            const created = await actor.createEmbeddedDocuments('Item', [newSkillData]);
+            const created = await actor.createEmbeddedDocuments('Item', [item.toObject()]);
             const first = created[0];
             if (!first) return;
             skillId = first.id;
@@ -582,6 +465,45 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         skills[slotIndex] = skillId;
         await actor.update({ 'system.skills': skills });
         ui.notifications.info(`Learned skill: ${item.name}.`);
+    }
+
+    /** The unit facts skill eligibility depends on, optionally ignoring one slot. */
+    _skillContext({ ignoreSkillId = null }: { ignoreSkillId?: string | null } = {}): SkillContext {
+        const actor = this.document as Actor;
+        const assigned = (actor.system.skills || []) as (string | null)[];
+
+        const knownSlugs = new Set<string>();
+        const known: Item[] = [];
+        let hasCombatArt = false;
+        for (const id of assigned) {
+            if (!id || id === ignoreSkillId) continue;
+            const skill = actor.items.get(id);
+            if (!skill) continue;
+            known.push(skill);
+            knownSlugs.add(slugForSkill(skill));
+            if (skill.system?.requiredCharge) hasCombatArt = true;
+        }
+
+        return {
+            level: Number(actor.system.level) || 1,
+            movementType: actor.system.movementType || '',
+            weaponProficiencies: this._proficiencies(known),
+            trait: String(actor.system.trait || ''),
+            knownSlugs,
+            hasCombatArt,
+            isGM: game.user.isGM
+        };
+    }
+
+    /**
+     * Every proficiency in effect. Extras beyond what the unit's skills grant are
+     * ignored, so losing Dual Wield immediately revokes the proficiency it gave.
+     */
+    _proficiencies(knownSkills: Item[]): Set<string> {
+        const actor = this.document as Actor;
+        const extraAllowed = proficiencyAllowance(knownSkills) - 1;
+        const extras = ((actor.system.extraProficiencies || []) as string[]).slice(0, extraAllowed);
+        return new Set([actor.system.weaponProficiency || '', ...extras].filter(Boolean));
     }
 
     async _addSupport(supportActor: Actor): Promise<void> {

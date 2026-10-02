@@ -85,10 +85,30 @@ export const actorContext = {
     { item: null }
   ],
   skillSlots: [
-    { item: weaponItem('s1', 'Canter') },
-    { item: weaponItem('s2', 'Darting Blow') },
-    { item: weaponItem('s3', 'Heritor of Furs') },
-    { item: null }, { item: null }, { item: null }, { item: null }, { item: null }
+    { item: weaponItem('s1', 'Canter'), overCap: false, unlockLevel: 1, issue: '' },
+    { item: weaponItem('s2', 'Darting Blow'), overCap: false, unlockLevel: 1, issue: '' },
+    {
+      item: weaponItem('s3', 'Heritor of Furs'),
+      overCap: false,
+      unlockLevel: 5,
+      issue: 'No longer qualifies: it requires cavalry movement type.'
+    },
+    { item: weaponItem('s4', 'Trample'), overCap: true, unlockLevel: 10, issue: '' }
+  ],
+  skillCap: 3,
+  skillCount: 4,
+  skillsOverCap: true,
+  skillIssues: true,
+  nextSkillLevel: 10,
+  weaponGroupOptions: {
+    sword: 'Sword', lance: 'Lance', axe: 'Axe', bow: 'Bow', dagger: 'Dagger',
+    anima: 'Anima', light: 'Light', dark: 'Dark', staff: 'Staff', strike: 'Strike',
+    talons: 'Talons', breath: 'Breath', shiftingStone: 'Shifting Stone',
+    curse: 'Curse', siege: 'Siege'
+  },
+  extraProficiencySlots: [
+    { index: 0, value: 'axe' },
+    { index: 1, value: '' }
   ],
   isInfantry: false,
   supportList: [

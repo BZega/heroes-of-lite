@@ -267,6 +267,44 @@
   font-size: 0.85rem;
 }
 
+.heroes-of-lite.hol-sheet .hol-warning {
+  margin: 0.5rem 0 0;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--hol-danger);
+  border-radius: var(--hol-radius-sm);
+  background: rgba(179, 54, 44, 0.1);
+  font-size: 0.78rem;
+  color: var(--hol-ink);
+}
+
+/* Skill slots beyond the level cap, and skills that stopped qualifying */
+.heroes-of-lite.hol-sheet .skill-slot.is-next {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.heroes-of-lite.hol-sheet .skill-slot.over-cap,
+.heroes-of-lite.hol-sheet .skill-slot.has-issue {
+  opacity: 1;
+  border-color: var(--hol-danger);
+  background: rgba(179, 54, 44, 0.08);
+}
+
+.heroes-of-lite.hol-sheet .skill-slot .slot-issue {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--hol-danger);
+}
+
+.heroes-of-lite.hol-sheet .locked-slot {
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 /* --------------------------------------------------------------------------
    Form controls
    -------------------------------------------------------------------------- */

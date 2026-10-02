@@ -5,60 +5,32 @@
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { checkPrerequisites, skillCapForLevel, nextSkillLevel, proficiencyAllowance } from '../modules/skills.ts';
 
 const skills = JSON.parse(await readFile(new URL('../data/seed/skills.json', import.meta.url), 'utf8'));
 const byId = new Map(skills.map(entry => [entry.id, entry]));
-
-/**
- * Mirror of the sheet's prerequisite grammar: `|` separates alternatives, a bare
- * alternative inherits the preceding kind, and a valueless clause is its own kind.
- */
-function parseAlternatives(raw) {
-  const alternatives = [];
-  let kind = '';
-  for (const segment of String(raw).split('|')) {
-    const idx = segment.indexOf(':');
-    if (idx !== -1) {
-      kind = segment.slice(0, idx);
-      alternatives.push({ kind, value: segment.slice(idx + 1) });
-    } else if (kind) {
-      alternatives.push({ kind, value: segment });
-    } else {
-      alternatives.push({ kind: segment, value: '' });
-    }
-  }
-  return alternatives;
-}
 
 /** Can `unit` satisfy every prerequisite on the skill? */
 function qualifies(skillId, unit) {
   const skill = byId.get(skillId);
   assert.ok(skill, `seed data is missing ${skillId}`);
 
-  const effectiveLevel = unit.level + (unit.movementType === 'armor' ? 5 : 0);
-
-  const check = ({ kind, value }) => {
-    switch (kind) {
-      case 'level': return effectiveLevel >= (Number(value) || 0);
-      case 'movement': return unit.movementType === value;
-      case 'skill': return unit.skills.has(value);
-      case 'weapon': return unit.weaponProficiency === value;
-      case 'trait': return unit.trait.toLowerCase().includes(value.toLowerCase());
-      case 'exclusive': return !unit.skills.has(value);
-      case 'requires': return value !== 'combatArt' || unit.hasCombatArt;
-      case 'gmOnly':
-      case 'gmApproval': return unit.isGM;
-      default: return true;
-    }
-  };
-
-  return (skill.prereq ?? []).every(prereq => parseAlternatives(prereq).some(check));
+  return checkPrerequisites(skill.prereq ?? [], {
+    level: unit.level,
+    movementType: unit.movementType,
+    weaponProficiencies: new Set([unit.weaponProficiency, ...(unit.extraProficiencies ?? [])].filter(Boolean)),
+    trait: unit.trait,
+    knownSlugs: unit.skills,
+    hasCombatArt: unit.hasCombatArt,
+    isGM: unit.isGM
+  }) === null;
 }
 
 const unit = (overrides = {}) => ({
   level: 30,
   movementType: 'infantry',
   weaponProficiency: 'sword',
+  extraProficiencies: [],
   trait: '',
   skills: new Set(),
   hasCombatArt: true,
@@ -157,6 +129,47 @@ const tests = {
       if (!candidates.some(candidate => qualifies(skill.id, candidate))) unreachable.push(skill.id);
     }
     assert.deepEqual(unreachable, [], 'no skill should be impossible to learn');
+  },
+
+  'Skill slots follow the level table': () => {
+    // 2 at creation, one more at each of 5/10/15/20/25/30 (rules p.15, p.17).
+    assert.equal(skillCapForLevel(1), 2);
+    assert.equal(skillCapForLevel(4), 2);
+    assert.equal(skillCapForLevel(5), 3);
+    assert.equal(skillCapForLevel(9), 3);
+    assert.equal(skillCapForLevel(10), 4);
+    assert.equal(skillCapForLevel(15), 5);
+    assert.equal(skillCapForLevel(20), 6);
+    assert.equal(skillCapForLevel(25), 7);
+    assert.equal(skillCapForLevel(30), 8);
+    // Level 30 is the suggested cap but play can continue past it.
+    assert.equal(skillCapForLevel(40), 8);
+  },
+
+  'The next unlock level is reported until the cap': () => {
+    assert.equal(nextSkillLevel(1), 5);
+    assert.equal(nextSkillLevel(5), 10);
+    assert.equal(nextSkillLevel(26), 30);
+    assert.equal(nextSkillLevel(30), null);
+  },
+
+  'Dual Wield and Master of Arms grant extra proficiencies': () => {
+    const skillFor = id => ({ system: { tags: byId.get(id).tags ?? [] } });
+
+    assert.equal(proficiencyAllowance([]), 1, 'one proficiency from character creation');
+    assert.equal(proficiencyAllowance([skillFor('skill.dual-wield')]), 2);
+    assert.equal(proficiencyAllowance([skillFor('skill.master-of-arms')]), 3);
+    // Skills without a grant tag leave the allowance alone.
+    assert.equal(proficiencyAllowance([skillFor('skill.pass')]), 1);
+  },
+
+  'A granted proficiency satisfies weapon prerequisites': () => {
+    // Lancebreaker needs an Axe proficiency; a sword user with Dual Wield can pick it up.
+    assert.equal(qualifies('skill.lancebreaker', unit({ weaponProficiency: 'sword' })), false);
+    assert.ok(qualifies('skill.lancebreaker', unit({
+      weaponProficiency: 'sword',
+      extraProficiencies: ['axe']
+    })));
   }
 };
 

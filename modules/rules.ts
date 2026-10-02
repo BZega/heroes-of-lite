@@ -6,6 +6,7 @@
  */
 
 import { STATUS_DEFS, activeStatusKeys } from './effects/statuses.ts';
+import { skillCapForLevel } from './skills.ts';
 import type {
   AggregateStatus, DerivedStats, EquippedWeapon, KnownSkill, MovementReport, MovementType,
   StatBlock, StatKey, StatusKey, TerrainEntry, TerrainMoveClass, TerrainMoveResult, TriangleRelation,
@@ -222,9 +223,7 @@ export function statCapsForLevel(level: number): { hp: number; stat: number } {
 }
 
 /** Skill slots: 2 at level 1, one more every 5 levels, capped at 8 (rules p.15). */
-export function skillCapForLevel(level: number): number {
-  return Math.min(2 + Math.floor(level / 5), 8);
-}
+export { skillCapForLevel };
 
 /** Terrain dropdown choices, labelled with the effects they grant. */
 export function terrainChoices(): Record<string, string> {

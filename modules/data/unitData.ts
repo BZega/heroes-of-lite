@@ -25,6 +25,8 @@ export default class UnitData extends foundry.abstract.TypeDataModel {
   declare size: SizeCategory;
   declare movementType: MovementType;
   declare weaponProficiency: string;
+  /** Additional proficiencies granted by Dual Wield / Master of Arms (rules p.33, p.39). */
+  declare extraProficiencies: string[];
   declare trait: string;
   declare terrain: string;
   /** @deprecated Statuses live on Active Effects; retained for unmigrated worlds. */
@@ -63,6 +65,10 @@ export default class UnitData extends foundry.abstract.TypeDataModel {
       size: choice(SIZES, 'medium'),
       movementType: choice(MOVEMENT_TYPES, 'infantry'),
       weaponProficiency: new StringField({ required: true, blank: true, initial: '', choices: ['', ...WEAPON_GROUPS] }),
+      extraProficiencies: new ArrayField(
+        new StringField({ required: true, blank: true, choices: ['', ...WEAPON_GROUPS] }),
+        { initial: [] }
+      ),
       trait: text(),
       terrain: new StringField({ required: true, blank: true, initial: '', choices: Object.keys(TERRAIN) }),
 

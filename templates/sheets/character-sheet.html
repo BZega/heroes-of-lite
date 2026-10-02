@@ -126,22 +126,22 @@
                                 <label>Weapon Proficiency</label>
                                 <select name="system.weaponProficiency">
                                     <option value="" {{#if (eq system.weaponProficiency "")}}selected{{/if}}>--</option>
-                                    <option value="sword" {{#if (eq system.weaponProficiency "sword")}}selected{{/if}}>Sword</option>
-                                    <option value="lance" {{#if (eq system.weaponProficiency "lance")}}selected{{/if}}>Lance</option>
-                                    <option value="axe" {{#if (eq system.weaponProficiency "axe")}}selected{{/if}}>Axe</option>
-                                    <option value="bow" {{#if (eq system.weaponProficiency "bow")}}selected{{/if}}>Bow</option>
-                                    <option value="dagger" {{#if (eq system.weaponProficiency "dagger")}}selected{{/if}}>Dagger</option>
-                                    <option value="anima" {{#if (eq system.weaponProficiency "anima")}}selected{{/if}}>Anima</option>
-                                    <option value="light" {{#if (eq system.weaponProficiency "light")}}selected{{/if}}>Light</option>
-                                    <option value="dark" {{#if (eq system.weaponProficiency "dark")}}selected{{/if}}>Dark</option>
-                                    <option value="staff" {{#if (eq system.weaponProficiency "staff")}}selected{{/if}}>Staff</option>
-                                    <option value="strike" {{#if (eq system.weaponProficiency "strike")}}selected{{/if}}>Strike</option>
-                                    <option value="talons" {{#if (eq system.weaponProficiency "talons")}}selected{{/if}}>Talons</option>
-                                    <option value="breath" {{#if (eq system.weaponProficiency "breath")}}selected{{/if}}>Breath</option>
-                                    <option value="shiftingStone" {{#if (eq system.weaponProficiency "shiftingStone")}}selected{{/if}}>Shifting Stone</option>
-                                    <option value="curse" {{#if (eq system.weaponProficiency "curse")}}selected{{/if}}>Curse</option>
+                                    {{#each weaponGroupOptions}}
+                                    <option value="{{@key}}" {{#if (eq ../system.weaponProficiency @key)}}selected{{/if}}>{{this}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
+                            {{#each extraProficiencySlots}}
+                            <div class="form-group">
+                                <label>Weapon Proficiency {{add this.index 2}} <span class="derived-tag" title="Granted by Dual Wield or Master of Arms">granted</span></label>
+                                <select name="system.extraProficiencies.{{this.index}}">
+                                    <option value="" {{#if (eq this.value "")}}selected{{/if}}>--</option>
+                                    {{#each ../weaponGroupOptions}}
+                                    <option value="{{@key}}" {{#if (eq ../this.value @key)}}selected{{/if}}>{{this}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            {{/each}}
                             <div class="form-group">
                                 <label>Trait</label>
                                 <input type="text" name="system.trait" value="{{system.trait}}" placeholder="None" />
@@ -336,20 +336,44 @@
                     </div>
 
                     <div class="tab" data-tab="skills">
-                        <h3>Skills</h3>
+                        <div class="section-header">
+                            <h3>Skills</h3>
+                            <div class="unallocated {{#if skillsOverCap}}over-cap{{/if}}">
+                                <label>Slots</label>
+                                <span>{{skillCount}} / {{skillCap}}</span>
+                            </div>
+                        </div>
+                        <p class="hol-hint">
+                            2 skills at level 1, one more every 5 levels to a maximum of 8 (rules p.15).
+                            {{#if nextSkillLevel}}Next slot unlocks at level {{nextSkillLevel}}.{{/if}}
+                        </p>
+                        {{#if skillsOverCap}}
+                        <p class="hol-warning">
+                            This unit holds more skills than its level allows. Remove the highlighted
+                            ones, or raise the level, before play.
+                        </p>
+                        {{/if}}
                         <div class="slot-grid two-up">
                             {{#each skillSlots}}
-                            <div class="hol-slot skill-slot" data-slot-type="skill" data-slot-index="{{@index}}">
+                            <div class="hol-slot skill-slot{{#if this.overCap}} over-cap{{/if}}{{#if this.issue}} has-issue{{/if}}"
+                                 data-slot-type="skill" data-slot-index="{{@index}}"
+                                 {{#if this.issue}}title="{{this.issue}}"{{/if}}>
                                 {{#if this.item}}
                                     <div class="slot-body">
                                         <a class="item-name skill-name" data-action="openEmbeddedItem" data-item-id="{{this.item.id}}" title="Open skill">{{this.item.name}}</a>
                                         <button type="button" class="hol-icon-button danger" data-action="removeItem" data-item-id="{{this.item.id}}" data-item-type="skill" title="Remove skill">&times;</button>
                                     </div>
+                                    {{#if this.issue}}<span class="slot-issue">{{this.issue}}</span>{{/if}}
                                 {{else}}
                                     <span class="empty-slot">Drop skill here</span>
                                 {{/if}}
                             </div>
                             {{/each}}
+                            {{#if nextSkillLevel}}
+                            <div class="hol-slot skill-slot is-next">
+                                <span class="empty-slot locked-slot">Next slot at level {{nextSkillLevel}}</span>
+                            </div>
+                            {{/if}}
                         </div>
                     </div>
 
