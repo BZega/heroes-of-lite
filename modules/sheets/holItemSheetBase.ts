@@ -43,6 +43,22 @@ export default class HolItemSheetBase extends foundry.applications.api.Handlebar
     activateSheetTabs(this);
   }
 
+  /** Report a rejected edit rather than letting it become an unhandled rejection. */
+  override _prepareSubmitData(
+    event: Event | null,
+    form: HTMLFormElement,
+    formData: unknown,
+    updateData?: Record<string, unknown>
+  ): Record<string, any> {
+    try {
+      return super._prepareSubmitData(event, form, formData, updateData);
+    } catch (error) {
+      console.error('HoL | Rejected item update:', error);
+      ui.notifications?.error(`Heroes of Lite: ${error instanceof Error ? error.message : String(error)}`);
+      return {};
+    }
+  }
+
   /** Compendium documents are not editable in place, so disable every control. */
   _applyCompendiumLock(): void {
     if (!this.document.pack) return;

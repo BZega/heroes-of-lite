@@ -27,8 +27,10 @@ declare global {
     readonly _stats?: { compendiumSource?: string | null };
     flags: DocumentFlags;
     update(data: Record<string, unknown>, operation?: Record<string, unknown>): Promise<this>;
+    updateSource(changes: Record<string, unknown>, options?: Record<string, unknown>): Record<string, unknown>;
     delete(): Promise<this>;
     toObject(): Record<string, any>;
+    _preCreate(data: Record<string, any>, options: Record<string, unknown>, user: unknown): Promise<boolean | void>;
     getFlag(scope: string, key: string): unknown;
     setFlag(scope: string, key: string, value: unknown): Promise<this>;
     unsetFlag(scope: string, key: string): Promise<this>;

@@ -27,6 +27,7 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
             closeOnSubmit: false
         },
         actions: {
+            adjustField: this._onAdjustField,
             incrementCharge: this._onIncrementCharge,
             decrementCharge: this._onDecrementCharge,
             equipWeapon: this._onEquipWeapon,
@@ -189,7 +190,26 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         this._activateDragDrop();
         this._updateBattleHPBar();
         this._restoreBattleMode();
-        void this._cleanupDuplicateInventory();
+        this._cleanupDuplicateInventory().catch(error => console.error('HoL | Inventory cleanup failed:', error));
+    }
+
+    /**
+     * Report a rejected edit instead of letting it surface as an unhandled promise
+     * rejection, which left the sheet looking broken with no explanation.
+     */
+    override _prepareSubmitData(
+        event: Event | null,
+        form: HTMLFormElement,
+        formData: unknown,
+        updateData?: Record<string, unknown>
+    ): Record<string, any> {
+        try {
+            return super._prepareSubmitData(event, form, formData, updateData);
+        } catch (error) {
+            console.error('HoL | Rejected sheet update:', error);
+            ui.notifications?.error(`Heroes of Lite: ${error instanceof Error ? error.message : String(error)}`);
+            return {};
+        }
     }
 
     /**
@@ -618,6 +638,26 @@ export default class HolActorSheet extends foundry.applications.api.HandlebarsAp
         if (next && partner && partner.system?.activeSupport !== actor.id) {
             ui.notifications.info(`${partner.name} must also set ${actor.name} as their active support for the bonus to apply.`);
         }
+    }
+
+    /**
+     * Step any numeric field up or down. The button carries the document path plus
+     * the bounds to clamp to, so one handler serves every stepper on the sheet.
+     */
+    static async _onAdjustField(this: HolActorSheet, _event: Event, target: HTMLElement): Promise<void> {
+        const field = target.dataset['field'];
+        if (!field) return;
+
+        const actor = this.document as Actor;
+        const delta = Number(target.dataset['delta']) || 0;
+        const min = target.dataset['min'] === undefined ? Number.NEGATIVE_INFINITY : Number(target.dataset['min']);
+        const max = target.dataset['max'] === undefined ? Number.POSITIVE_INFINITY : Number(target.dataset['max']);
+
+        const current = Number(foundry.utils.getProperty(actor, field)) || 0;
+        const next = Math.min(max, Math.max(min, current + delta));
+        if (next === current) return;
+
+        await actor.update({ [field]: next });
     }
 
     static async _onIncrementCharge(this: HolActorSheet): Promise<void> {

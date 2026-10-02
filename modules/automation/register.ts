@@ -9,7 +9,42 @@ import HolCombatForecast from '../combat/forecast.ts';
 import { runPhaseStart } from '../combat/actions.ts';
 import { advanceStatusPhase } from '../effects/statuses.ts';
 import { clearTonics } from '../effects/buffs.ts';
+import { inferWeaponGroup, MAGICAL_WEAPON_GROUPS } from '../data/common.ts';
 import { promptRegionTerrain, reportMovement, syncSceneTerrain } from './terrain.ts';
+
+/**
+ * Backfill the weapon group on world weapons that were created without one,
+ * guessing from the weapon name. Weapons that already have a group are left alone.
+ */
+async function repairWeaponGroups(): Promise<number> {
+  let repaired = 0;
+  for (const item of game.items) {
+    if (item.type !== 'weapon' || item.system.weaponGroup) continue;
+    const group = inferWeaponGroup(item.name);
+    if (!group) continue;
+    await item.update({
+      'system.weaponGroup': group,
+      'system.damageType': MAGICAL_WEAPON_GROUPS.has(group) ? 'magical' : 'physical'
+    });
+    repaired += 1;
+  }
+
+  for (const actor of game.actors) {
+    for (const item of actor.items) {
+      if (item.type !== 'weapon' || item.system.weaponGroup) continue;
+      const group = inferWeaponGroup(item.name);
+      if (!group) continue;
+      await item.update({
+        'system.weaponGroup': group,
+        'system.damageType': MAGICAL_WEAPON_GROUPS.has(group) ? 'magical' : 'physical'
+      });
+      repaired += 1;
+    }
+  }
+
+  ui.notifications?.info(`Heroes of Lite: set the weapon group on ${repaired} weapon(s).`);
+  return repaired;
+}
 
 /** Open the forecast for the controlled token against the single target. */
 async function quickAttack(): Promise<void> {
@@ -30,7 +65,8 @@ export function registerApi(): void {
     tagRegionTerrain: promptRegionTerrain,
     syncTerrain: syncSceneTerrain,
     movementReport: reportMovement,
-    runPhaseStart
+    runPhaseStart,
+    repairWeaponGroups
   };
 }
 

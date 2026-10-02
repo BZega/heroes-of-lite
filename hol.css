@@ -794,12 +794,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
+}
+
+.heroes-of-lite.hol-sheet .hp-values .hol-icon-button {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  line-height: 1;
+  font-weight: 800;
 }
 
 .heroes-of-lite.hol-sheet .hp-values input {
-  width: 72px;
-  flex: 0 0 72px;
+  width: 64px;
+  flex: 0 0 64px;
   text-align: center;
   font-size: 1.25rem;
   font-weight: 700;
@@ -903,9 +912,32 @@
 .heroes-of-lite.hol-sheet .stat-table .stat-header,
 .heroes-of-lite.hol-sheet .stat-table .stat-row {
   display: grid;
-  grid-template-columns: 70px 56px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: 70px 56px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.8fr);
   align-items: center;
   gap: 0.4rem;
+}
+
+/* Numeric stepper: [-] input [+] */
+.heroes-of-lite.hol-sheet .hol-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.heroes-of-lite.hol-sheet .hol-stepper input {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+}
+
+.heroes-of-lite.hol-sheet .hol-stepper .hol-icon-button {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  line-height: 1;
+  font-weight: 800;
 }
 
 .heroes-of-lite.hol-sheet .stat-table .stat-header {
@@ -1279,6 +1311,12 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--hol-ink-soft);
+}
+
+.heroes-of-lite.hol-sheet .battle-terrain-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--hol-navy);
 }
 
 /* --------------------------------------------------------------------------

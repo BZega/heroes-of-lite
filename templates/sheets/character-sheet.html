@@ -6,7 +6,11 @@
             <div class="header-details">
                 <div class="inline-field">
                     <label>Level</label>
-                    <input type="number" name="system.level" value="{{system.level}}" min="1" max="20" />
+                    <div class="hol-stepper">
+                        <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.level" data-delta="-1" data-min="1" data-max="20" title="Level down">&minus;</button>
+                        <input type="number" name="system.level" value="{{system.level}}" min="1" max="20" />
+                        <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.level" data-delta="1" data-min="1" data-max="20" title="Level up">&plus;</button>
+                    </div>
                 </div>
                 <div class="inline-field">
                     <label>Race</label>
@@ -37,7 +41,9 @@
                     <div class="hol-panel hp-display">
                         <label>HP</label>
                         <div class="hp-values">
+                            <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.resources.hp.value" data-delta="-1" data-min="0" data-max="{{combatStatTotals.hp}}" title="Take damage">&minus;</button>
                             <input type="number" name="system.resources.hp.value" value="{{currentHP}}" min="0" max="{{combatStatTotals.hp}}" />
+                            <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.resources.hp.value" data-delta="1" data-min="0" data-max="{{combatStatTotals.hp}}" title="Heal">&plus;</button>
                             <span class="hp-separator">/</span>
                             <span class="max-hp">{{combatStatTotals.hp}}</span>
                         </div>
@@ -175,7 +181,11 @@
                             {{#if showGauge}}
                             <div class="form-group">
                                 <label>Gauge <span class="derived-tag" title="Starts at 4 on Transforming, -1 each turn to a minimum of 1">shifter</span></label>
-                                <input type="number" name="system.gauge" value="{{system.gauge}}" min="0" max="4" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.gauge" data-delta="-1" data-min="0" data-max="4" title="Lower gauge">&minus;</button>
+                                    <input type="number" name="system.gauge" value="{{system.gauge}}" min="0" max="4" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.gauge" data-delta="1" data-min="0" data-max="4" title="Raise gauge">&plus;</button>
+                                </div>
                             </div>
                             {{/if}}
                             <div class="form-group">
@@ -220,7 +230,11 @@
                                 <span class="total">{{this.total}}</span>
                                 <input type="number" name="system.temp.{{this.key}}" value="{{this.temp}}" placeholder="0" />
                                 <input type="number" name="system.bonuses.{{this.key}}" value="{{this.bonus}}" placeholder="0" />
-                                <input type="number" name="system.stats.{{this.key}}" value="{{this.base}}" min="{{this.min}}" max="{{this.max}}" title="Base {{this.min}}-{{this.max}} at this level" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.stats.{{this.key}}" data-delta="-1" data-min="{{this.min}}" data-max="{{this.max}}" title="Decrease {{this.label}}">&minus;</button>
+                                    <input type="number" name="system.stats.{{this.key}}" value="{{this.base}}" min="{{this.min}}" max="{{this.max}}" title="Base {{this.min}}-{{this.max}} at this level" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.stats.{{this.key}}" data-delta="1" data-min="{{this.min}}" data-max="{{this.max}}" title="Increase {{this.label}}">&plus;</button>
+                                </div>
                             </div>
                             {{/each}}
                         </div>
@@ -238,19 +252,35 @@
                         <div class="field-grid">
                             <div class="form-group">
                                 <label>Strength</label>
-                                <input type="number" name="system.nonCombat.strength" value="{{system.nonCombat.strength}}" min="0" max="3" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.strength" data-delta="-1" data-min="0" data-max="3" title="Decrease">&minus;</button>
+                                    <input type="number" name="system.nonCombat.strength" value="{{system.nonCombat.strength}}" min="0" max="3" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.strength" data-delta="1" data-min="0" data-max="3" title="Increase">&plus;</button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Intellect</label>
-                                <input type="number" name="system.nonCombat.intellect" value="{{system.nonCombat.intellect}}" min="0" max="3" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.intellect" data-delta="-1" data-min="0" data-max="3" title="Decrease">&minus;</button>
+                                    <input type="number" name="system.nonCombat.intellect" value="{{system.nonCombat.intellect}}" min="0" max="3" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.intellect" data-delta="1" data-min="0" data-max="3" title="Increase">&plus;</button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Perception</label>
-                                <input type="number" name="system.nonCombat.perception" value="{{system.nonCombat.perception}}" min="0" max="3" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.perception" data-delta="-1" data-min="0" data-max="3" title="Decrease">&minus;</button>
+                                    <input type="number" name="system.nonCombat.perception" value="{{system.nonCombat.perception}}" min="0" max="3" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.perception" data-delta="1" data-min="0" data-max="3" title="Increase">&plus;</button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Charisma</label>
-                                <input type="number" name="system.nonCombat.charisma" value="{{system.nonCombat.charisma}}" min="0" max="3" />
+                                <div class="hol-stepper">
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.charisma" data-delta="-1" data-min="0" data-max="3" title="Decrease">&minus;</button>
+                                    <input type="number" name="system.nonCombat.charisma" value="{{system.nonCombat.charisma}}" min="0" max="3" />
+                                    <button type="button" class="hol-icon-button" data-action="adjustField" data-field="system.nonCombat.charisma" data-delta="1" data-min="0" data-max="3" title="Increase">&plus;</button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Fate <span class="derived-tag" title="Derived: min(3, floor(Luck / 5))">auto</span></label>
@@ -473,11 +503,11 @@
                     <div class="battle-inv-row"><span class="empty-text">No supports</span></div>
                     {{/each}}
                 </div>
+                {{!-- Display only: a second named input would collide with the Character Info
+                      terrain select and make every form submission fail validation. --}}
                 <div class="battle-terrain-section">
                     <label>Terrain</label>
-                    <select name="system.terrain">
-                        {{selectOptions terrainOptions selected=system.terrain}}
-                    </select>
+                    <span class="battle-terrain-value">{{lookup terrainOptions system.terrain}}</span>
                 </div>
             </div>
         </div>

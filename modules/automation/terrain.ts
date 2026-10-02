@@ -12,6 +12,11 @@ import { applyStatus } from '../effects/statuses.ts';
 
 const FLAG = 'terrain';
 
+const reportFailure = (error: unknown): void => {
+  console.error('HoL | Terrain sync failed:', error);
+  ui.notifications?.error(`Heroes of Lite terrain sync failed: ${error instanceof Error ? error.message : String(error)}`);
+};
+
 /** Terrain tagged on a region, or null if it is not a terrain region. */
 function regionTerrain(region: RegionDocument | null | undefined): string | null {
   const key = region?.flags?.[SYSTEM_ID]?.[FLAG] as string | undefined;
@@ -180,17 +185,17 @@ export function registerTerrainAutomation(): void {
     if (!movementKeys.some(key => key in changes)) return;
     // One writer only, otherwise every connected client races on the same update.
     if (!game.users.activeGM?.isSelf) return;
-    void syncTokenTerrain(tokenDocument);
+    syncTokenTerrain(tokenDocument).catch(reportFailure);
   });
 
   Hooks.on('createToken', (tokenDocument: TokenDocument) => {
     if (!game.users.activeGM?.isSelf) return;
-    void syncTokenTerrain(tokenDocument);
+    syncTokenTerrain(tokenDocument).catch(reportFailure);
   });
 
   Hooks.on('updateRegion', (region: RegionDocument) => {
     if (!game.users.activeGM?.isSelf) return;
     if (regionTerrain(region) === null && !(SYSTEM_ID in (region.flags ?? {}))) return;
-    void syncSceneTerrain(region.parent);
+    syncSceneTerrain(region.parent).catch(reportFailure);
   });
 }

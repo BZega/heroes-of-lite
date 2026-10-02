@@ -64,6 +64,39 @@ export const WEAPON_GROUPS = [
   'strike', 'talons', 'breath', 'shiftingStone', 'curse', 'siege'
 ] as const;
 
+export const MAGICAL_WEAPON_GROUPS: ReadonlySet<string> =
+  new Set(['anima', 'light', 'dark', 'shiftingStone', 'curse']);
+
+/**
+ * Name keywords that identify a weapon group, most specific first.
+ * Used only to fill a blank group on creation; an explicit group always wins.
+ */
+const WEAPON_GROUP_KEYWORDS: readonly (readonly [RegExp, string])[] = [
+  [/shifting\s*stone|\bstone\b/i, 'shiftingStone'],
+  [/ballista|catapult|\borb\b|onager|meteor|blizzard|bolting|hoist/i, 'siege'],
+  [/\bstaff\b|heal|mend|recover|physic|rescue|warp|fortify|catharsis|sacrifice|freeze|miswarp/i, 'staff'],
+  [/curse|screech|nightmare|ravager|wretched/i, 'curse'],
+  [/breath|fireball/i, 'breath'],
+  [/talon|beak/i, 'talons'],
+  [/strike|claw|fang|\bbite\b|\bpaw\b/i, 'strike'],
+  [/\bbow\b|longbow|shortbow|skadi|silencer/i, 'bow'],
+  [/dagger|knife|\bkard\b|stiletto|shuriken/i, 'dagger'],
+  [/\baxe\b|hammer|\bclub\b|tomahawk|freikugel/i, 'axe'],
+  [/lance|javelin|spear|naginata|vidofnir/i, 'lance'],
+  [/sword|\bedge\b|\bblade\b|rapier|falchion|katana/i, 'sword'],
+  [/anima|thunder|\bwind\b|\bfire\b|surge|sagittae|corvus|lightning|elfire|arcfire/i, 'anima'],
+  [/light|shine|prayer|aura|seraphim|purge|nosferatu|resire|ivaldi/i, 'light'],
+  [/\bdark\b|flux|waste|swarm|\bruin\b|goetia|almadel|theurgia|death|apocalypse|fenrir/i, 'dark']
+];
+
+/** Best-guess weapon group for a weapon name, or '' when nothing matches. */
+export function inferWeaponGroup(name: string): string {
+  for (const [pattern, group] of WEAPON_GROUP_KEYWORDS) {
+    if (pattern.test(name)) return group;
+  }
+  return '';
+}
+
 export const MOVEMENT_TYPES = ['infantry', 'cavalry', 'flier', 'armor'] as const;
 export const SIZES = ['small', 'medium', 'large', 'extraLarge'] as const;
 export const DAMAGE_TYPES = ['physical', 'magical'] as const;
